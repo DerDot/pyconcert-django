@@ -5,6 +5,11 @@
         <link rel="stylesheet" href="{{ STATIC_URL }}django_tables2/themes/paleblue/css/screen.css" />
     </head>
     <body>
+        <form action="{% url 'pyconcert:show_events' %}" method="POST">
+            {% csrf_token %}
+            <input type="submit" class="btn" value="Update events" name="update">
+            <input type="submit" class="btn" value="Artists from Spotify" name="spotify">
+        </form>
         {% render_table event_table %}
     </body>
 </html>

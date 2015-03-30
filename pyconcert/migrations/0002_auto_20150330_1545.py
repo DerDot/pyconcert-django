@@ -7,14 +7,14 @@ from django.db import models, migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('pyconcert', '0002_event'),
+        ('pyconcert', '0001_initial'),
     ]
 
     operations = [
-        migrations.AddField(
+        migrations.AlterField(
             model_name='event',
-            name='artist_names',
-            field=models.CharField(default=b'', max_length=200, editable=False),
+            name='artists',
+            field=models.CharField(max_length=500),
             preserve_default=True,
         ),
     ]

@@ -13,17 +13,10 @@ class Event(models.Model):
     date = models.DateField()
     time = models.TimeField()
     ticket_url = models.URLField()
-    artists = models.ManyToManyField(Artist)
-    artist_names = models.CharField(max_length=200, editable=False,
-                                    default="", verbose_name="Artists")
-
-    def clean(self):
-        artist_names = [unicode(artist) for artist in self.artists.all()]
-        self.artist_names = ", ".join(artist_names)
+    artists = models.CharField(max_length=500)
 
     def __unicode__(self):
-        artists = [unicode(artist) for artist in self.artists.all()]
-        name = u"{} at {} on {}".format(u", ".join(artists),
-                                      unicode(self.venue),
-                                      unicode(self.date.strftime("%Y-%m-%d")))
+        name = u"{} at {} on {}".format(unicode(self.artists),
+                                        unicode(self.venue),
+                                        unicode(self.date.strftime("%Y-%m-%d")))
         return name
