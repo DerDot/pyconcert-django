@@ -1,6 +1,6 @@
 from django.conf.urls import patterns, url
-from pyconcert import views 
+from pyconcert import views
 
 urlpatterns = patterns('',
-    url(r'^$', views.ShowEventsView.as_view(), name='show_events'),
+    url(r'^$', views.show_events, name='show_events'),
 )
