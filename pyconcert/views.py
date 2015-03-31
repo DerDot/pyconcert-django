@@ -50,3 +50,9 @@ def show_events(request):
     table = EventTable(Event.objects.all())
     RequestConfig(request).configure(table)
     return render(request, 'pyconcert/event_table.html', {'event_table': table})
+
+def add_local_artists(request):
+    if(request.POST.get("artists")):
+        artists = request.POST.get("artists")
+        _update_artists(artists)
+    return redirect("pyconcert:show_events")
