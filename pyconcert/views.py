@@ -3,6 +3,9 @@ from tables import EventTable
 from django_tables2.config import RequestConfig
 from django.shortcuts import render, redirect
 from api_calls import events_for_artists_bandsintown, spotify_auth, spotify_token, spotify_artists
+from django.views.decorators.csrf import csrf_exempt
+import utils
+from django.contrib.auth.decorators import login_required
 
 def _update_events():
     artists = [artist.name for artist in Artist.objects.all()]
@@ -20,10 +23,12 @@ def _update_events():
 
 def _update_artists(new_artists):
     for new_artist in new_artists:
+        new_artists = unicode(new_artists).decode("utf8").lower()
         artist, created = Artist.objects.get_or_create(name=new_artist)
         if created:
             artist.save()
 
+@login_required
 def show_events(request):
     if(request.POST.get('update')):
         _update_events()
@@ -51,8 +56,11 @@ def show_events(request):
     RequestConfig(request).configure(table)
     return render(request, 'pyconcert/event_table.html', {'event_table': table})
 
-def add_local_artists(request):
+@csrf_exempt
+@login_required
+def upload_artists(request):
     if(request.POST.get("artists")):
         artists = request.POST.get("artists")
+        artists = utils.parse_json(artists)
         _update_artists(artists)
     return redirect("pyconcert:show_events")

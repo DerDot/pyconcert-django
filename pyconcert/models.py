@@ -1,7 +1,9 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 class Artist(models.Model):
     name = models.CharField(max_length=200)
+    subscribers = models.ManyToManyField(User, related_name='artists')
 
     def __unicode__(self):
         return unicode(self.name)

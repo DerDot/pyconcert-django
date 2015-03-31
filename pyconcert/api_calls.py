@@ -1,15 +1,8 @@
 import urllib, urllib2
 from datetime import datetime
-from pyconcert.utils import random_string
+from pyconcert.utils import random_string, parse_json
 import requests
 import math
-
-try:
-    import cjson
-    parse_json = cjson.decode
-except ImportError:
-    import json
-    parse_json = json.loads
 
 with open("config.json") as config_file:
     config = parse_json(config_file.read())
@@ -119,8 +112,3 @@ def spotify_artists(token, limit=50):
                 all_artists.add(artist["name"])
         iteration += 1
     return all_artists
-
-req = urllib2.Request('http://www.example.com/')
-req.add_header('Referer', 'http://www.python.org/')
-resp = urllib2.urlopen(req)
-content = resp.read()
