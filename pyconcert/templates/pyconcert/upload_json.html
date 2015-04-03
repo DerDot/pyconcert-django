@@ -1,0 +1,5 @@
+<form enctype="multipart/form-data" method="post" action="{% url 'pyconcert:upload_json' %}">
+{% csrf_token %}
+{{ form }}  
+<input type="submit" value="Submit" />
+</form>

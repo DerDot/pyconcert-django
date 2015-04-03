@@ -46,4 +46,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
     artists = collect_artists(args.musicdirs)
     print "Found {} artists.".format(len(artists))
-    upload_artists(artists)
+    # upload_artists(artists)
+    artists = list(artists)
+    with open("out.json", "w") as json_file: 
+        json.dump(artists, json_file)

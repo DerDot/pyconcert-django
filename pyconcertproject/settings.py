@@ -87,3 +87,5 @@ STATIC_URL = '/static/'
 
 TEMPLATE_CONTEXT_PROCESSORS = global_settings.TEMPLATE_CONTEXT_PROCESSORS + ('django.core.context_processors.request',)
 LOGIN_REDIRECT_URL = '/'
+CONTENT_TYPES = ['application/json']
+MAX_UPLOAD_SIZE = 2 * 1024 ** 3

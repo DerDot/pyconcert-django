@@ -6,6 +6,9 @@ from api_calls import events_for_artists_bandsintown, spotify_auth, spotify_toke
 from django.views.decorators.csrf import csrf_exempt
 import utils
 from django.contrib.auth.decorators import login_required
+from pyconcert.forms import UploadFileForm
+from tempfile import NamedTemporaryFile
+import os
 
 def _update_events():
     artists = [artist.name for artist in Artist.objects.all()]
@@ -51,11 +54,25 @@ def show_events(request):
         request.session["token"] = token_info["access_token"]
         request.session["refresh_token"] = token_info["refresh_token"]
         artists = spotify_artists(token_info["access_token"])
-        _update_artists(artists)
+        _update_artists(artists, request.user)
 
     table = EventTable(Event.objects.all())
     RequestConfig(request).configure(table)
     return render(request, 'pyconcert/event_table.html', {'event_table': table})
+
+def _parse_json_file(request):
+    return utils.parse_json(request.FILES["artists"].read())
+
+@login_required
+def upload_json(request):
+    if request.method == 'POST':
+        form = UploadFileForm(request.POST, request.FILES)
+        if form.is_valid():
+            artists = _parse_json_file(request)
+            _update_artists(artists, request.user)
+    else:
+        form = UploadFileForm()
+    return render(request, 'pyconcert/upload_json.html', {'form':form})
 
 @csrf_exempt
 def upload_artists(request):
