@@ -21,12 +21,13 @@ def _update_events():
         if created:
             event.save()
 
-def _update_artists(new_artists):
+def _update_artists(new_artists, user):
     for new_artist in new_artists:
         new_artists = unicode(new_artists).decode("utf8").lower()
         artist, created = Artist.objects.get_or_create(name=new_artist)
         if created:
             artist.save()
+        artist.subscribers.add(user)
 
 @login_required
 def show_events(request):
@@ -57,7 +58,6 @@ def show_events(request):
     return render(request, 'pyconcert/event_table.html', {'event_table': table})
 
 @csrf_exempt
-@login_required
 def upload_artists(request):
     if(request.POST.get("artists")):
         artists = request.POST.get("artists")

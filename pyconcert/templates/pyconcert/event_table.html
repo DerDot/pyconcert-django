@@ -5,6 +5,7 @@
         <link rel="stylesheet" href="{{ STATIC_URL }}django_tables2/themes/paleblue/css/screen.css" />
     </head>
     <body>
+    	<p class="top-menu">Hello {{ user.username }} (<a href="{% url 'django.contrib.auth.views.logout' %}">Log out</a>)</p>
         <form action="{% url 'pyconcert:show_events' %}" method="POST">
             {% csrf_token %}
             <input type="submit" class="btn" value="Update events" name="update">
