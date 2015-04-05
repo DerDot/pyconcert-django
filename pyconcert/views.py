@@ -18,20 +18,11 @@ def _update_artists(new_artists, user):
         
 def _user_events(user):
     artists = Artist.objects.filter(subscribers=user)
-    events = Event.objects.filter(artists=artists)
-    print events
+    events = Event.objects.filter(artists=artists).distinct()
     return events
 
 @login_required
-def show_events(request):
-    if(request.POST.get('spotify')):
-        token = request.session.get("token")
-        token = None
-        if token is None:
-            auth_url, state = spotify_auth()
-            request.session["state"] = state
-            return redirect(auth_url)
-
+def spotify(request):
     if(request.GET.get('code')):
         code = request.GET.get('code')
         state = request.GET.get('state')
@@ -42,7 +33,16 @@ def show_events(request):
         request.session["refresh_token"] = token_info["refresh_token"]
         artists = spotify_artists(token_info["access_token"])
         _update_artists(artists, request.user)
+    else:
+        token = request.session.get("token")
+        token = None
+        if token is None:
+            auth_url, state = spotify_auth()
+            request.session["state"] = state
+            return redirect(auth_url)
 
+@login_required
+def show_events(request):
     table = EventTable(_user_events(request.user))
     RequestConfig(request).configure(table)
     return render(request, 'pyconcert/event_table.html', {'event_table': table})
@@ -57,6 +57,8 @@ def upload_json(request):
         if form.is_valid():
             artists = _parse_json_file(request)
             _update_artists(artists, request.user)
+        else:
+            print "Nope not valid"
     else:
         form = UploadFileForm()
     return render(request, 'pyconcert/upload_json.html', {'form':form})

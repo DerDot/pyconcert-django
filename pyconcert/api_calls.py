@@ -75,7 +75,7 @@ def spotify_auth():
     api_call = "https://accounts.spotify.com/authorize"
     args = [("client_id", config["SPOTIFY_ID"]),
             ("response_type", "code"),
-            ("redirect_uri", "http://127.0.0.1:8000/pyconcert/"),
+            ("redirect_uri", "http://127.0.0.1:8000/spotify"),
             ("scope", "user-library-read"),
             ("state", state)]
     api_call = "%s?%s" % (api_call, urllib.urlencode(args))
@@ -85,7 +85,7 @@ def spotify_token(code):
     api_call = "https://accounts.spotify.com/api/token"
     response = requests.post(api_call, data={'code': code,
                                              'grant_type':'authorization_code',
-                                             'redirect_uri':"http://127.0.0.1:8000/pyconcert/",
+                                             'redirect_uri':"http://127.0.0.1:8000/spotify",
                                              'client_id':config["SPOTIFY_ID"],
                                              'client_secret':config["SPOTIFY_SECRET"]})
     token_info = parse_json(response.text)

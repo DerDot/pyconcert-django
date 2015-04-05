@@ -1,15 +1,6 @@
+{% extends 'pyconcert/base.html' %}
+{% block content %}
+<link rel="stylesheet" href="{{ STATIC_URL }}django_tables2/themes/paleblue/css/screen.css" />
 {% load render_table from django_tables2 %}
-<!doctype html>
-<html>
-    <head>
-        <link rel="stylesheet" href="{{ STATIC_URL }}django_tables2/themes/paleblue/css/screen.css" />
-    </head>
-    <body>
-    	<p class="top-menu">Hello {{ user.username }} (<a href="{% url 'django.contrib.auth.views.logout' %}">Log out</a>)</p>
-        <form action="{% url 'pyconcert:show_events' %}" method="POST">
-            {% csrf_token %}
-			<input type="submit" class="btn" value="Artists from Spotify" name="spotify">
-        </form>
-        {% render_table event_table %}
-    </body>
-</html>
+{% render_table event_table %}
+{%endblock content %}
