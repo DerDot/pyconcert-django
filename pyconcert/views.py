@@ -7,11 +7,10 @@ from django.views.decorators.csrf import csrf_exempt
 import utils
 from django.contrib.auth.decorators import login_required
 from pyconcert.forms import UploadFileForm
-from tempfile import NamedTemporaryFile
-import os
 
-def _update_events():
-    artists = [artist.name for artist in Artist.objects.all()]
+def _update_events(user):
+    artists = [artist.name for artist in
+               Artist.objects.filter(subscribers=user)]
     api_events = events_for_artists_bandsintown(artists, "Berlin")
     for api_event in api_events:
         event, created = Event.objects.get_or_create(venue=api_event.venue,
@@ -35,7 +34,7 @@ def _update_artists(new_artists, user):
 @login_required
 def show_events(request):
     if(request.POST.get('update')):
-        _update_events()
+        _update_events(request.user)
 
     if(request.POST.get('spotify')):
         token = request.session.get("token")
