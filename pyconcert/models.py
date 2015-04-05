@@ -15,10 +15,12 @@ class Event(models.Model):
     date = models.DateField()
     time = models.TimeField()
     ticket_url = models.URLField()
-    artists = models.CharField(max_length=500)
+    artists = models.ManyToManyField(Artist, related_name='events')
 
     def __unicode__(self):
-        name = u"{} at {} on {}".format(unicode(self.artists),
+        artist_names = [artist.name for artist in
+                        self.artists.all()]
+        name = u"{} at {} on {}".format(u", ".join(artist_names),
                                         unicode(self.venue),
                                         unicode(self.date.strftime("%Y-%m-%d")))
         return name

@@ -8,21 +8,6 @@ import utils
 from django.contrib.auth.decorators import login_required
 from pyconcert.forms import UploadFileForm
 
-def _update_events(user):
-    artists = [artist.name for artist in
-               Artist.objects.filter(subscribers=user)]
-    api_events = events_for_artists_bandsintown(artists, "Berlin")
-    for api_event in api_events:
-        event, created = Event.objects.get_or_create(venue=api_event.venue,
-                                                     city=api_event.city,
-                                                     country=api_event.country,
-                                                     artists=", ".join(api_event.artists),
-                                                     date=api_event.date,
-                                                     time=api_event.time,
-                                                     ticket_url=api_event.ticket_url)
-        if created:
-            event.save()
-
 def _update_artists(new_artists, user):
     for new_artist in new_artists:
         new_artists = unicode(new_artists).decode("utf8").lower()
@@ -30,12 +15,15 @@ def _update_artists(new_artists, user):
         if created:
             artist.save()
         artist.subscribers.add(user)
+        
+def _user_events(user):
+    artists = Artist.objects.filter(subscribers=user)
+    events = Event.objects.filter(artists=artists)
+    print events
+    return events
 
 @login_required
 def show_events(request):
-    if(request.POST.get('update')):
-        _update_events(request.user)
-
     if(request.POST.get('spotify')):
         token = request.session.get("token")
         token = None
@@ -55,7 +43,7 @@ def show_events(request):
         artists = spotify_artists(token_info["access_token"])
         _update_artists(artists, request.user)
 
-    table = EventTable(Event.objects.all())
+    table = EventTable(_user_events(request.user))
     RequestConfig(request).configure(table)
     return render(request, 'pyconcert/event_table.html', {'event_table': table})
 
