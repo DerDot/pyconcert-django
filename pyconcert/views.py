@@ -33,6 +33,9 @@ def spotify(request):
         request.session["refresh_token"] = token_info["refresh_token"]
         artists = spotify_artists(token_info["access_token"])
         _update_artists(artists, request.user)
+        return render(request,
+                      'pyconcert/spotify.html',
+                      {'artists':", ".join(artists)})
     else:
         token = request.session.get("token")
         token = None
@@ -45,7 +48,9 @@ def spotify(request):
 def show_events(request):
     table = EventTable(_user_events(request.user))
     RequestConfig(request).configure(table)
-    return render(request, 'pyconcert/event_table.html', {'event_table': table})
+    return render(request,
+                  'pyconcert/event_table.html',
+                  {'event_table':table})
 
 def _parse_json_file(request):
     return utils.parse_json(request.FILES["artists"].read())
