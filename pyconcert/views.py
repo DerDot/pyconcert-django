@@ -2,8 +2,7 @@ from models import Event, Artist
 from tables import EventTable
 from django_tables2.config import RequestConfig
 from django.shortcuts import render, redirect
-from api_calls import events_for_artists_bandsintown, spotify_auth, spotify_token, spotify_artists
-from django.views.decorators.csrf import csrf_exempt
+from api_calls import spotify_auth, spotify_token, spotify_artists
 import utils
 from django.contrib.auth.decorators import login_required
 from pyconcert.forms import UploadFileForm
@@ -33,9 +32,11 @@ def spotify(request):
         request.session["refresh_token"] = token_info["refresh_token"]
         artists = spotify_artists(token_info["access_token"])
         _update_artists(artists, request.user)
+        artists_str = ', '.join(sorted(artists))
         return render(request,
-                      'pyconcert/spotify.html',
-                      {'artists':", ".join(artists)})
+                      'pyconcert/update_result.html',
+                      {'artists':artists_str,
+                       'source':'Spotify'})
     else:
         token = request.session.get("token")
         token = None
@@ -62,16 +63,13 @@ def upload_json(request):
         if form.is_valid():
             artists = _parse_json_file(request)
             _update_artists(artists, request.user)
-        else:
-            print "Nope not valid"
+            artists_str = ', '.join(sorted(artists))
+            return render(request,
+                          'pyconcert/update_result.html',
+                          {'artists':artists_str,
+                           'source':'JSON upload'})
     else:
         form = UploadFileForm()
-    return render(request, 'pyconcert/upload_json.html', {'form':form})
-
-@csrf_exempt
-def upload_artists(request):
-    if(request.POST.get("artists")):
-        artists = request.POST.get("artists")
-        artists = utils.parse_json(artists)
-        _update_artists(artists)
-    return redirect("pyconcert:show_events")
+    return render(request,
+                  'pyconcert/upload_json.html',
+                  {'form':form})
