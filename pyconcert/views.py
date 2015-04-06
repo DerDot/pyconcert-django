@@ -54,7 +54,11 @@ def show_events(request):
                   {'event_table':table})
 
 def _parse_json_file(request):
-    return utils.parse_json(request.FILES["artists"].read())
+    try:
+        parsed = utils.parse_json(request.FILES["artists"].read())
+    except ValueError:
+        parsed = []
+    return parsed
 
 @login_required
 def upload_json(request):

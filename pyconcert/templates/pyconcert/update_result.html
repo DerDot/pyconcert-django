@@ -1,5 +1,9 @@
 {% extends 'pyconcert/base.html' %}
 {% block content %}
-Updated artists using {{ source }}.
+{% if artists %}
 Got: {{ artists }}.
+Updated artists using {{ source }}.
+{% else %}
+Could not find any artists.
+{% endif %}
 {%endblock content %}
