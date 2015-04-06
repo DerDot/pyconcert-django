@@ -92,3 +92,4 @@ MAX_UPLOAD_SIZE = 2 * 1024 ** 2
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, "static"),
 )
+PAGINATION_SIZE = 25

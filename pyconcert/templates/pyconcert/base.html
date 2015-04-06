@@ -1,7 +1,7 @@
 {% load staticfiles %}
 <html>
 	<head> <title>Pyconcert</title> 
-		<link rel="stylesheet" href="{% static 'bootstrap/bootstrap.min.css' %}">
+		<link rel="stylesheet" href="{% static 'bootstrap/bootstrap_original.min.css' %}">
 		<link rel="stylesheet" href="{% static 'bootstrap/bootstrap-theme.min.css' %}">
 		<link rel="stylesheet" href="{% static 'css/pyconcert.css' %}">
 		<link href="//fonts.googleapis.com/css?family=Lobster&subset=latin,latin-ext" rel="stylesheet" type="text/css">
@@ -11,7 +11,7 @@
 
 <body>
     <div class="page-header">
-    <nav class="navbar navbar-default" role="navigation">
+    <nav class="navbar navbar-inverse" role="navigation">
       <div class="container-fluid">
         <div class="navbar-header">
           <button type="button" class="navbar-toggle" data-toggle="collapse"
@@ -24,7 +24,7 @@
           <a class="navbar-brand" href="/">PyConcert</a>
         </div>
 
-      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <div class="collapse navbar-collapse" id="collapse">
           <ul class="nav navbar-nav">
           	{% if user.is_authenticated %}
           	<li class="dropdown">
