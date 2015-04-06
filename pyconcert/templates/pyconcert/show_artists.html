@@ -15,9 +15,13 @@
             {% else %}
             	<li class="disabled"><span>&laquo;</span></li>
             {% endif %}
-            <span class="page-current">
-                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
-            </span>
+            {% for page in page_obj.paginator.page_range %}
+                {% if page_obj.number == page%}
+                    <li class="active"><a href="?page={{ page }}">{{ page }}</a></li>
+                 {% else %}
+                    <li><a href="?page={{ page }}">{{ page }}</a></li>
+                 {% endif %}
+            {% endfor %}
             {% if page_obj.has_next %}
             	<li><a href="?page={{ page_obj.next_page_number }}">&raquo;</a></li>
             {% else %}
@@ -30,24 +34,3 @@
 {% endif %}
 
 {% endblock content %}
-
-
-
-    <ul class="pagination">
-
-        <li class="disabled"><a href="#">&laquo;</a></li>
-
-        <li class="active"><a href="#">1</a></li>
-
-        <li><a href="#">2</a></li>
-
-        <li><a href="#">3</a></li>
-
-        <li><a href="#">4</a></li>
-
-        <li><a href="#">5</a></li>
-
-        <li><a href="#">&raquo;</a></li>
-
-    </ul>
-
