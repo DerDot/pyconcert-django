@@ -35,6 +35,9 @@ def _split_datetime(date_time):
     proper_datetime = datetime.strptime(date_time, "%Y-%m-%dT%H:%M:%S")
     return proper_datetime.date(), proper_datetime.time()
 
+def _normalize_artist(artist_name):
+    return artist_name.encode("utf8").lower()
+
 def _get_bandsintown_events(artists, location):
     api_call = "http://api.bandsintown.com/events/search"
     args = [("location", location),
@@ -46,7 +49,7 @@ def _get_bandsintown_events(artists, location):
     resp = parse_json(urllib.urlopen(api_call).read())
     ret = []
     for event in resp:
-        artists = [artist["name"].encode("utf8") for artist in event["artists"]]
+        artists = [_normalize_artist(artist) for artist in event["artists"]]
         venue = event["venue"]["name"]
         city = event["venue"]["city"]
         country = event["venue"]["country"]
@@ -109,6 +112,7 @@ def spotify_artists(token, limit=50):
         for track in response["items"]:
             artists = track["track"]["artists"]
             for artist in artists:
-                all_artists.add(artist["name"])
+                normalized_artist = _normalize_artist(artist["name"])
+                all_artists.add(normalized_artist)
         iteration += 1
     return all_artists
