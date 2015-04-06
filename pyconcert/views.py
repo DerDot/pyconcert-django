@@ -66,7 +66,9 @@ class ArtistsView(ListView):
         return ListView.dispatch(self, *args, **kwargs)
 
     def get_queryset(self):
-        subscribed_artists = Artist.objects.filter(subscribers=self.request.user)
+        name_filter = self.request.GET.get("filter", "")
+        subscribed_artists = Artist.objects.filter(subscribers=self.request.user,
+                                                   name__icontains=name_filter)
         return subscribed_artists.order_by("name")
 
 def _parse_json_file(request):

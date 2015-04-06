@@ -1,6 +1,20 @@
 {% extends 'pyconcert/base.html' %}
 {% block content %}
 
+<form action="{% url 'pyconcert:show_artists' %}" method="get">
+    <div class="input-group">
+      <input id="id_filter"
+           class="form-control"
+           placeholder="Filter..."
+           value="{{ request.GET.filter|default:"" }}"
+           name="filter"
+           type="text">
+      <span class="input-group-btn">
+        <button class="btn btn-default" type="submit">Go!</button>
+      </span>
+    </div>
+</form>
+
 {% if artists %}
     <ul class="list-group">
     {% for artist in artists %}
@@ -30,7 +44,11 @@
         </ul>
     {% endif %}
 {% else %}
-    <p>You are not subscribed to any artists yet. Import some :)</p>
+    {% if request.GET.filter%}
+        <p>No artists matching {{ request.GET.filter }}.</p>
+    {% else %}
+        <p>You are not subscribed to any artists yet. Import some :)</p>
+    {% endif %}
 {% endif %}
 
 {% endblock content %}
