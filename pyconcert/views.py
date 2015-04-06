@@ -6,6 +6,8 @@ from api_calls import spotify_auth, spotify_token, spotify_artists
 import utils
 from django.contrib.auth.decorators import login_required
 from pyconcert.forms import UploadFileForm
+from django.views.generic import ListView
+from django.utils.decorators import method_decorator
 
 def _update_artists(new_artists, user):
     for new_artist in new_artists:
@@ -52,6 +54,19 @@ def show_events(request):
     return render(request,
                   'pyconcert/event_table.html',
                   {'event_table':table})
+    
+class ArtistsView(ListView):
+    template_name = 'pyconcert/show_artists.html'
+    context_object_name = 'artists'
+    paginate_by = 50
+    
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):
+        return ListView.dispatch(self, *args, **kwargs)
+    
+    def get_queryset(self):
+        subscribed_artists = Artist.objects.filter(subscribers=self.request.user)
+        return subscribed_artists.order_by("name")
 
 def _parse_json_file(request):
     try:
