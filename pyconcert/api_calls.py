@@ -19,11 +19,11 @@ class Event(object):
         self.ticket_url = ticket_url
 
     def __str__(self):
-        return "Event by {artists} in {venue} ({city}, {country}).".format(artists=", ".join(self.artists),
-                                                                          venue=self.venue,
-                                                                          city=self.city,
-                                                                          country=self.country)
-
+        return "Event by {artists} in {venue} ({city}, {country}).".format(artists=u", ".join(self.artists),
+                                                                           venue=self.venue,
+                                                                           city=self.city,
+                                                                           country=self.country)
+ 
     def __repr__(self):
         return self.__str__()
 
@@ -46,7 +46,7 @@ def _get_bandsintown_events(artists, location):
     resp = parse_json(urllib.urlopen(api_call).read())
     ret = []
     for event in resp:
-        artists = [artist["name"] for artist in event["artists"]]
+        artists = [artist["name"].encode("utf8") for artist in event["artists"]]
         venue = event["venue"]["name"]
         city = event["venue"]["city"]
         country = event["venue"]["country"]
