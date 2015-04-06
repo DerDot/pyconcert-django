@@ -23,7 +23,7 @@ class Event(object):
                                                                            venue=self.venue,
                                                                            city=self.city,
                                                                            country=self.country)
- 
+
     def __repr__(self):
         return self.__str__()
 
@@ -49,7 +49,7 @@ def _get_bandsintown_events(artists, location):
     resp = parse_json(urllib.urlopen(api_call).read())
     ret = []
     for event in resp:
-        artists = [_normalize_artist(artist) for artist in event["artists"]]
+        artists = [_normalize_artist(artist["name"]) for artist in event["artists"]]
         venue = event["venue"]["name"]
         city = event["venue"]["city"]
         country = event["venue"]["country"]
