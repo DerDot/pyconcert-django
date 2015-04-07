@@ -1,0 +1,71 @@
+{% extends 'pyconcert/base.html' %}
+{% block content %}
+
+<form action="{% url 'pyconcert:show_events' %}" method="get">
+    <div class="input-group">
+      <input id="id_filter"
+           class="form-control"
+           placeholder="Filter..."
+           value="{{ request.GET.filter|default:"" }}"
+           name="filter"
+           type="text">
+      <span class="input-group-btn">
+        <button class="btn btn-default" type="submit">Go!</button>
+      </span>
+    </div>
+</form>
+
+{% if events %}
+      <table class="table table-hover">
+	    <thead>
+	      <tr>
+	        <th>Date</th>
+	        <th>Artists</th>
+	      </tr>
+	    </thead>
+	    <tbody>
+	      {% for event in events %}
+	      <tr>
+	        <td>{{event.date|date}}</td>
+	        <td>
+	         {% for artist in event.artists.all %}
+               {{ artist|title }}
+               {% if not forloop.last %}, {% endif %}
+             {% endfor %}
+             </td>
+	      </tr>
+	    {% endfor %}
+	    </tbody>
+	  </table>
+	</div>
+    
+    {% if is_paginated %}
+        <ul class="pagination">
+        	{% if page_obj.has_previous %}
+            	<li><a href="?page={{ page_obj.previous_page_number }}">&laquo;</a></li>
+            {% else %}
+            	<li class="disabled"><span>&laquo;</span></li>
+            {% endif %}
+            {% for page in page_obj.paginator.page_range %}
+                {% if page_obj.number == page%}
+                    <li class="active"><a href="?page={{ page }}">{{ page }}</a></li>
+                 {% else %}
+                    <li><a href="?page={{ page }}">{{ page }}</a></li>
+                 {% endif %}
+            {% endfor %}
+            {% if page_obj.has_next %}
+            	<li><a href="?page={{ page_obj.next_page_number }}">&raquo;</a></li>
+            {% else %}
+            	<li class="disabled"><span>&raquo;</span></li>
+            {% endif %}
+        </ul>
+    {% endif %}
+{% else %}
+    {% if request.GET.filter%}
+        <p>No events matching {{ request.GET.filter }}.</p>
+    {% else %}
+        <p>Your subscribed artists don't have events any time soon :(</p>
+    {% endif %}
+{% endif %}
+
+{% endblock content %}
