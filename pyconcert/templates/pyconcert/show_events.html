@@ -1,0 +1,79 @@
+{% extends 'pyconcert/base.html' %}
+{% block content %}
+
+<form action="{% url 'pyconcert:show_events' %}" method="get">
+    <div class="input-group">
+      <input id="id_filter"
+           class="form-control"
+           placeholder="Filter..."
+           value="{{ request.GET.filter|default:"" }}"
+           name="filter"
+           type="text">
+      <span class="input-group-btn">
+        <button class="btn btn-default" type="submit">Go!</button>
+      </span>
+    </div>
+</form>
+
+{% if events %}
+    <div class="panel-group" id="accordion">
+    {% for event in events %}
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#accordion" href="#collapse{{forloop.counter}}">
+                    {{event.date|date}}: 
+                    {% for artist in event.artists.all %}
+                       {{ artist|title }}
+                       {% if not forloop.last %}, {% endif %}
+                    {% endfor %}
+                    </a>
+                </h4>
+            </div>
+            <div id="collapse{{forloop.counter}}" class="panel-collapse collapse">
+	            <div class="panel-body">
+	               This event by
+	               {% for artist in event.artists.all %}
+                      {{ artist|title }}
+                      {% if not forloop.last %}, {% endif %}
+                   {% endfor %}
+                   is going to take place at <b>{{event.venue}}</b> in <b>{{event.city}}</b> ({{event.country}}).<br>
+                   Be there at <b>{{event.time}}</b> on <b>{{event.date}}</b>.<br>
+                   You can book your tickets here: <a href={{event.ticket_url}}>Click me!</a>.<br>
+                   <i>Enjoy :)</i>
+	            </div>
+	        </div>
+        </div>
+    {% endfor %}
+    </div>
+    
+    {% if is_paginated %}
+        <ul class="pagination">
+        	{% if page_obj.has_previous %}
+            	<li><a href="?page={{ page_obj.previous_page_number }}">&laquo;</a></li>
+            {% else %}
+            	<li class="disabled"><span>&laquo;</span></li>
+            {% endif %}
+            {% for page in page_obj.paginator.page_range %}
+                {% if page_obj.number == page%}
+                    <li class="active"><a href="?page={{ page }}">{{ page }}</a></li>
+                 {% else %}
+                    <li><a href="?page={{ page }}">{{ page }}</a></li>
+                 {% endif %}
+            {% endfor %}
+            {% if page_obj.has_next %}
+            	<li><a href="?page={{ page_obj.next_page_number }}">&raquo;</a></li>
+            {% else %}
+            	<li class="disabled"><span>&raquo;</span></li>
+            {% endif %}
+        </ul>
+    {% endif %}
+{% else %}
+    {% if request.GET.filter%}
+        <p>No events matching {{ request.GET.filter }}.</p>
+    {% else %}
+        <p>Your subscribed artists don't have events any time soon :(</p>
+    {% endif %}
+{% endif %}
+
+{% endblock content %}

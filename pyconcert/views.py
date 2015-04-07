@@ -49,25 +49,43 @@ def spotify(request):
             return redirect(auth_url)
 
 @login_required
-def show_events(request):
+def events_table(request):
     table = EventTable(_user_events(request.user))
     RequestConfig(request).configure(table)
     return render(request,
                   'pyconcert/event_table.html',
                   {'event_table':table})
 
-class ArtistsView(ListView):
-    template_name = 'pyconcert/show_artists.html'
-    context_object_name = 'artists'
+class CustomListView(ListView):
     paginate_by = settings.PAGINATION_SIZE
 
     @method_decorator(login_required)
     def dispatch(self, *args, **kwargs):
         return ListView.dispatch(self, *args, **kwargs)
 
+    def _filtered_and_sorted(self, name_filter, user):
+        raise NotImplementedError
+
     def get_queryset(self):
         name_filter = self.request.GET.get("filter", "")
-        subscribed_artists = Artist.objects.filter(subscribers=self.request.user,
+        return self._filtered_and_sorted(name_filter, self.request.user)
+
+class EventsView(CustomListView):
+    template_name = 'pyconcert/show_events.html'
+    context_object_name = 'events'
+
+    def _filtered_and_sorted(self, name_filter, user):
+        subscribed_artists = Artist.objects.filter(subscribers=user,
+                                                   name__icontains=name_filter)
+        subscribed_events = Event.objects.filter(artists__in=subscribed_artists)
+        return subscribed_events.order_by("date")
+
+class ArtistsView(CustomListView):
+    template_name = 'pyconcert/show_artists.html'
+    context_object_name = 'artists'
+
+    def _filtered_and_sorted(self, name_filter, user):
+        subscribed_artists = Artist.objects.filter(subscribers=user,
                                                    name__icontains=name_filter)
         return subscribed_artists.order_by("name")
 

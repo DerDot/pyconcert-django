@@ -18,7 +18,7 @@ class Event(models.Model):
     artists = models.ManyToManyField(Artist, related_name='events')
 
     def __unicode__(self):
-        artist_names = [artist.name for artist in
+        artist_names = [artist.name.title() for artist in
                         self.artists.all()]
         name = u"{} at {} on {}".format(u", ".join(artist_names),
                                         unicode(self.venue),
