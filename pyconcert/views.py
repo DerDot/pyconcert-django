@@ -71,7 +71,7 @@ class CustomListView(ListView):
         return self._filtered_and_sorted(name_filter, self.request.user)
 
 class EventsView(CustomListView):
-    template_name = 'pyconcert/show_events.html'
+    template_name = 'pyconcert/show_events_table.html'
     context_object_name = 'events'
 
     def _filtered_and_sorted(self, name_filter, user):
