@@ -5,7 +5,7 @@
         $(element).find("tr:not(.odd)").hide();
         $(element).find("tr:first-child").show();
         $(element).find("tr.odd").click(function() {
-            $(this).next("tr").toggle("slow");
+            $(this).next("tr").toggle();
         });       
     }   
 })(jQuery);
