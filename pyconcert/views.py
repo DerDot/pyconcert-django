@@ -9,6 +9,7 @@ from pyconcert.forms import UploadFileForm
 from django.views.generic import ListView
 from django.utils.decorators import method_decorator
 from pyconcertproject import settings
+from django.views.generic.base import TemplateView
 
 def _update_artists(new_artists, user):
     for new_artist in new_artists:
@@ -25,7 +26,7 @@ def _user_events(user):
 
 @login_required
 def spotify(request):
-    if(request.GET.get('code')):
+    if request.GET.get('code') is not None:
         code = request.GET.get('code')
         state = request.GET.get('state')
         if request.session.get("state") != state:
@@ -40,13 +41,16 @@ def spotify(request):
                       'pyconcert/update_result.html',
                       {'artists':artists_str,
                        'source':'Spotify'})
-    else:
+
+    elif request.GET.get('import') is not None:
         token = request.session.get("token")
         token = None
         if token is None:
             auth_url, state = spotify_auth()
             request.session["state"] = state
             return redirect(auth_url)
+    else:
+        return render(request, 'pyconcert/spotify.html')
 
 @login_required
 def events_table(request):
@@ -80,14 +84,36 @@ class EventsView(CustomListView):
         subscribed_events = Event.objects.filter(artists__in=subscribed_artists)
         return subscribed_events.order_by("date")
 
+def _unsubscribe_artist(artist, user):
+    try:
+        artist = Artist.objects.get(name=artist)
+        artist.subscribers.remove(user)
+    except Artist.DoesNotExist:
+        pass
+
 class ArtistsView(CustomListView):
     template_name = 'pyconcert/show_artists.html'
     context_object_name = 'artists'
+
+    def get(self, request):
+        unsubscribe = request.GET.get("remove")
+        if unsubscribe is not None:
+            _unsubscribe_artist(unsubscribe, request.user)
+        return CustomListView.get(self, request)
 
     def _filtered_and_sorted(self, name_filter, user):
         subscribed_artists = Artist.objects.filter(subscribers=user,
                                                    name__icontains=name_filter)
         return subscribed_artists.order_by("name")
+
+class AddArtistsView(TemplateView):
+    template_name = 'pyconcert/add_artists.html'
+
+    def get(self, request):
+        add_artist = request.GET.get("add")
+        if add_artist is not None:
+            _update_artists([add_artist], request.user)
+        return TemplateView.get(self, request)
 
 def _parse_json_file(request):
     try:

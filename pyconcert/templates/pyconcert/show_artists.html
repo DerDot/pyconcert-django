@@ -3,6 +3,7 @@
 
 <form action="{% url 'pyconcert:show_artists' %}" method="get">
     <div class="input-group">
+      <span class="input-group-addon"><i class="glyphicon glyphicon-search"></i></span>
       <input id="id_filter"
            class="form-control"
            placeholder="Filter..."
@@ -16,12 +17,17 @@
 </form>
 
 {% if artists %}
+    <form action="{% url 'pyconcert:show_artists' %}" method="get">
     <ul class="list-group">
+    <button type="submit" style="display:none;"></button>
     {% for artist in artists %}
-        <li class="list-group-item"> {{ artist.name }} </li>
+        <li class="list-group-item"> {{ artist.name }} <button type="submit" class="btn btn-xs pull-right" name="remove" value="{{ artist.name }}">
+                                                                    <span class="glyphicon glyphicon-remove"></span>
+                                                                  </button>
+        </li>
     {% endfor %}
     </ul>
-    
+    </form>    
 {% include "pyconcert/pagination.html"%}
 
 {% else %}
