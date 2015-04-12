@@ -1,6 +1,4 @@
 from models import Event, Artist
-from tables import EventTable
-from django_tables2.config import RequestConfig
 from django.shortcuts import render, redirect
 from api_calls import spotify_auth, spotify_token, spotify_artists
 import utils
@@ -52,14 +50,6 @@ def spotify(request):
     else:
         return render(request, 'pyconcert/spotify.html')
 
-@login_required
-def events_table(request):
-    table = EventTable(_user_events(request.user))
-    RequestConfig(request).configure(table)
-    return render(request,
-                  'pyconcert/event_table.html',
-                  {'event_table':table})
-
 class CustomListView(ListView):
     paginate_by = settings.PAGINATION_SIZE
 
@@ -108,6 +98,10 @@ class ArtistsView(CustomListView):
 
 class AddArtistsView(TemplateView):
     template_name = 'pyconcert/add_artists.html'
+
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):
+        return TemplateView.dispatch(self, *args, **kwargs)
 
     def get(self, request):
         add_artist = request.GET.get("add")
