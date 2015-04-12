@@ -90,6 +90,6 @@ LOGIN_REDIRECT_URL = '/'
 CONTENT_TYPES = ['application/json']
 MAX_UPLOAD_SIZE = 2 * 1024 ** 2
 STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, "static"),
+    os.path.join(BASE_DIR, "provided_static"),
 )
 PAGINATION_SIZE = 25
