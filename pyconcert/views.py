@@ -10,10 +10,12 @@ from pyconcertproject import settings
 from django.views.generic.base import TemplateView
 
 def _update_artists(new_artists, user):
+    added_artists = []
     for new_artist in new_artists:
-        new_artists = unicode(new_artists).decode("utf8").lower()
+        new_artist = unicode(new_artists).decode("utf8").lower()
         artist, created = Artist.objects.get_or_create(name=new_artist)
         if created:
+            added_artists.append(new_artist)
             artist.save()
         artist.subscribers.add(user)
 
