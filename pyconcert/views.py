@@ -8,6 +8,7 @@ from django.views.generic import ListView
 from django.utils.decorators import method_decorator
 from pyconcertproject import settings
 from django.views.generic.base import TemplateView
+from pyconcert.management.commands.update_events import update_events
 
 def _update_artists(new_artists, user):
     added_artists = []
@@ -18,6 +19,7 @@ def _update_artists(new_artists, user):
             added_artists.append(new_artist)
             artist.save()
         artist.subscribers.add(user)
+    update_events(added_artists)
 
 def _user_events(user):
     artists = Artist.objects.filter(subscribers=user)
