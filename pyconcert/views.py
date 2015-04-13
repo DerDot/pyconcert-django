@@ -110,7 +110,7 @@ class AddArtistsView(TemplateView):
     def get(self, request):
         add_artist = request.GET.get("add")
         if add_artist is not None:
-            _update_artists([add_artist], request.user)
+            _update_artists(add_artist, request.user)
         return TemplateView.get(self, request)
 
 def _parse_json_file(request):
