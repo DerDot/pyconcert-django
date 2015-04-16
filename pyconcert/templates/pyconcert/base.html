@@ -33,7 +33,7 @@
           </ul>
           <ul class="nav navbar-nav navbar-right">
           	{% if user.is_authenticated %}
-        	<li><a href="{% url 'django.contrib.auth.views.logout' %}">Log out ({{ user.username }})</a></li>
+        	   <li><a href="{% url 'django.contrib.auth.views.logout' %}">Log out ({{ user.username }})</a></li>
           	{%endif%}
           </ul>
         </div>
