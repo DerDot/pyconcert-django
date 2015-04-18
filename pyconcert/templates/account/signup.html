@@ -1,0 +1,70 @@
+{% extends "pyconcert/base.html" %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-4">
+            <form id="signup_form" method="post" action="{% url "account_signup" %}" autocapitalize="off" {% if form.is_multipart %} enctype="multipart/form-data"{% endif %}>
+                {% csrf_token %}
+                <div class="input-group">
+				    <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+				    <input id="{{ form.username.id_for_label }}"
+				           class="form-control"
+				           placeholder="Username"
+				           required=""
+				           autofocus=""
+				           type="text"
+				           name="{{ form.username.html_name }}">
+				</div>
+				<div class="input-group">
+				    <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+				    <input id="{{ form.password.id_for_label }}"
+				           class="form-control"
+				           placeholder="Password"
+				           required=""
+				           autofocus=""
+				           type="password"
+				           name="{{ form.password.html_name }}">
+				</div>
+				<div class="input-group">
+                    <span class="input-group-addon"><i class="glyphicon glyphicon-repeat"></i></span>
+                    <input id="{{ form.password_confirm.id_for_label }}"
+                           class="form-control"
+                           placeholder="Password (repeat)"
+                           required=""
+                           autofocus=""
+                           type="password"
+                           name="{{ form.password_confirm.html_name }}">
+                </div>
+                <div class="input-group">
+                    <span class="input-group-addon"><i class="glyphicon glyphicon-envelope"></i></span>
+                    <input id="{{ form.email.id_for_label }}"
+                           class="form-control"
+                           placeholder="E-Mail"
+                           required=""
+                           autofocus=""
+                           type="text"
+                           name="{{ form.email.html_name }}">
+                </div>
+                {% if redirect_field_value %}
+                    <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+                {% endif %}
+                <button type="submit" class="btn btn-primary">Sign up</button>
+            </form>
+            <p class="login-signup">
+                <small>
+                    Already have an account?  <strong><a href="{% url 'login_view' %}">Log in</a></strong>
+                </small>
+            </p>
+        </div>
+    </div>
+    
+{% if form.errors %}
+     <p><i>Account could not be created: {{ form.errors.values.0|striptags}}</i></p>
+{% endif %}
+
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#id_username').focus();
+    });
+</script>
+{% endblock %}
