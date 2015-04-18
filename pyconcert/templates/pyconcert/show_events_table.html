@@ -1,5 +1,6 @@
 {% extends 'pyconcert/base.html' %}
 {% block content %}
+<legend>All events of all your subscribed artists. We hope you find something nice.</legend>
 
 <form action="{% url 'pyconcert:show_events' %}" method="get">
     {% include "pyconcert/filter.html"%}
@@ -52,7 +53,7 @@ $('#events-table').jExpand();
     {% if request.GET.filter%}
         <p>No events matching {{ request.GET.filter }}.</p>
     {% else %}
-        <p>Your subscribed artists don't have events any time soon :(</p>
+        <p>Your <a href="{% url 'pyconcert:show_artists' %}">subscribed artists</a> don't have events any time soon :(</p>
     {% endif %}
 {% endif %}
 

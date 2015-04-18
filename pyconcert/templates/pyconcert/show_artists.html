@@ -1,6 +1,7 @@
 {% extends 'pyconcert/base.html' %}
 {% block content %}
 
+<legend>Have a look at all your subscribed artists.</legend>
 <form action="{% url 'pyconcert:show_artists' %}" method="get">
     {% include "pyconcert/filter.html"%}
 </form>
@@ -23,7 +24,7 @@
     {% if request.GET.filter%}
         <p>No artists matching {{ request.GET.filter }}.</p>
     {% else %}
-        <p>You are not subscribed to any artists yet. Import some :)</p>
+        <p>You are not subscribed to any artists yet. Add some :)</p>
     {% endif %}
 {% endif %}
 
