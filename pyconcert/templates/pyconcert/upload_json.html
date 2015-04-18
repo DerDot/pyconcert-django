@@ -14,7 +14,7 @@
 </form>
 
 {% if form.errors %}
-<p>Could not upload file: {{ form.errors.artists|striptags }}</p>
+<p><i>Could not upload file: {{ form.errors.artists|striptags }}</i></p>
 {% endif %}
 
 {%endblock content %}
