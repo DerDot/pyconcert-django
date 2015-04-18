@@ -1,27 +1,16 @@
 {% extends 'pyconcert/base.html' %}
+{% load widget_tweaks %}
 {% block content %}
 
 <form method="post" action="{% url 'django.contrib.auth.views.login' %}">
 {% csrf_token %}
 <div class="input-group">
-	<span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-	<input id="{{ form.username.id_for_label }}"
-		   class="form-control"
-		   placeholder="Username"
-		   required=""
-		   autofocus=""
-		   type="text"
-		   name="{{ form.username.html_name }}">
+    <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+    {{ form.username|add_class:"form-control"|attr:"placeholder:Username" }}
 </div>
 <div class="input-group">
-	<span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-	<input id="{{ form.password.id_for_label }}"
-		   class="form-control"
-		   placeholder="Password"
-		   required=""
-		   autofocus=""
-		   type="password"
-		   name="{{ form.password.html_name }}">
+    <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+    {{ form.password|add_class:"form-control"|attr:"placeholder:Password" }}
 </div>
 <input type="submit" class="btn btn-primary" value="Login" />
 <input type="hidden" name="next" value="{{ next }}" />

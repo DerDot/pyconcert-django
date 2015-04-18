@@ -1,15 +1,14 @@
 {% extends 'pyconcert/base.html' %}
+{% load widget_tweaks %}
 {% load staticfiles%}
+
 {% block content %}
 <form class="form-inline" enctype="multipart/form-data" method="post" action="{% url 'pyconcert:upload_json' %}">
 {% csrf_token %}
 <div class="form-group">
-<script src="{% static 'bootstrap/bootstrap-filestyle.min.js' %}"></script>
-<input type="file"
-	   class="filestyle"
-	   name="{{ form.artists.html_name }}"
-	   id="{{ form.artists.id_for_label }}"
-       value="{{ form.artists.value }}">
+<script src="{% static 'jquery/bootstrap-filestyle.min.js' %}"></script>
+<div class="input-group">
+    {{ form.artists|add_class:"filestyle"}}
 </div>
 <button type="submit" class="btn btn-primary">Upload</button>
 </form>
