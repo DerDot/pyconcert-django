@@ -16,4 +16,8 @@
     </div>
 </form>
 
+{% if request.GET.add %}
+Sucesfully added {{ request.GET.add|title }}. Maybe they have an <a href="/">event</a> soon?
+{% endif %}
+
 {% endblock content %}

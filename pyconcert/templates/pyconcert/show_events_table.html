@@ -1,6 +1,6 @@
 {% extends 'pyconcert/base.html' %}
 {% block content %}
-<legend>All events of all your subscribed artists. We hope you find something nice.</legend>
+<legend>All your events. We hope you find something nice.</legend>
 
 <form action="{% url 'pyconcert:show_events' %}" method="get">
     {% include "pyconcert/filter.html"%}
