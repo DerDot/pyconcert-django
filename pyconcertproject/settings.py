@@ -91,10 +91,16 @@ STATIC_ROOT = os.path.join(BASE_DIR, "static/")
 
 TEMPLATE_CONTEXT_PROCESSORS = global_settings.TEMPLATE_CONTEXT_PROCESSORS + ('django.core.context_processors.request',
                                                                              "account.context_processors.account",)
-LOGIN_REDIRECT_URL = '/'
-CONTENT_TYPES = ['application/json']
-MAX_UPLOAD_SIZE = 2 * 1024 ** 2
+
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, "provided_static"),
 )
+
+# Should be in application specific settings
+LOGIN_REDIRECT_URL = '/'
+LOGIN_URL = '/account/login'
+
 PAGINATION_SIZE = 25
+
+CONTENT_TYPES = ['application/json']
+MAX_UPLOAD_SIZE = 2 * 1024 ** 2
