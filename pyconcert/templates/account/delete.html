@@ -1,0 +1,13 @@
+{% extends "pyconcert/base.html" %}
+
+{% block content %}
+    <h1>Delete Account</h1>
+    
+    <p>Are you really sure? If you click this bright red button your account will be <b>deleted permanently</b>.</p>
+    
+    <form method="post" action="{% url "account_delete" %}" autocapitalize="off">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Delete {{ user.username }}</button>
+    </form>
+    
+{% endblock %}

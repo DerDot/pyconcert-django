@@ -2,25 +2,33 @@
 {% load widget_tweaks %}
 
 {% block content %}
+<legend>Log in below. All shows of your favorite artists are waiting.</legend>
 <form method="POST" action="{% url "account_login" %}" autocapitalize="off" {% if form.is_multipart %} enctype="multipart/form-data"{% endif %}>
     {% csrf_token %}
-    <div class="input-group">
-	    <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-	    {{ form.username|add_class:"form-control"|attr:"placeholder:Username" }}
+    <div class="form-group">
+	    <div class="input-group">
+		    <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+		    {{ form.username|add_class:"form-control"|attr:"placeholder:Username" }}
+		</div>
+		<div class="input-group">
+		    <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+		    {{ form.password|add_class:"form-control"|attr:"placeholder:Password" }}
+		</div>
+		<div class="input-group">
+	        {{ form.remember.label_tag }} {{ form.remember }}
+	    </div>
+	    {% if redirect_field_value %}
+	        <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+	    {% endif %}
 	</div>
-	<div class="input-group">
-	    <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-	    {{ form.password|add_class:"form-control"|attr:"placeholder:Password" }}
-	</div>
-	<div class="input-group">
-        {{ form.remember.label_tag }} {{ form.remember }}
-    </div>
-    {% if redirect_field_value %}
-        <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
-    {% endif %}
     <button type="submit" class="btn btn-primary">Log in</button>
     <a href="{% url "account_password_reset" %}" class="btn btn-link">Forgot your password?</a>
 </form>
+
+{% if form.errors %}
+     <p><i>Sorry your username and password don't match. Or maybe you want to sign up? You can find a link for this right below this text.</i></p>
+{% endif %}
+
 {% if ACCOUNT_OPEN_SIGNUP %}
     <p class="login-signup">
         <small>

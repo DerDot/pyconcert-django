@@ -10,9 +10,9 @@
     <ul class="list-group">
     <button type="submit" style="display:none;"></button>
     {% for artist in artists %}
-        <li class="list-group-item"> {{ artist.name }} <button type="submit" class="btn btn-xs pull-right" name="remove" value="{{ artist.name }}">
-                                                                    <span class="glyphicon glyphicon-remove"></span>
-                                                                  </button>
+        <li class="list-group-item"> {{ artist.name|title }} <button type="submit" class="btn btn-xs pull-right" name="remove" value="{{ artist.name }}">
+                                                            <span class="glyphicon glyphicon-remove"></span>
+                                                       </button>
         </li>
     {% endfor %}
     </ul>

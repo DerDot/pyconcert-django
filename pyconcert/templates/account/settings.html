@@ -2,24 +2,25 @@
 {% load widget_tweaks %}
 
 {% block content %}
-    <div class="row">
-        <div class="col-md-5">
-            <form method="POST" action="{% url "account_settings" %}">
-                {% csrf_token %}
-                <div class="input-group">
-                    <span class="input-group-addon"><i class="glyphicon glyphicon-envelope"></i></span>
-                    {{ form.email|add_class:"form-control" }}
-                </div>
-                <div class="input-group">
-                    <span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>
-                    {{ form.timezone|add_class:"form-control" }}
-                </div>
-                <div class="input-group">
-                    <span class="input-group-addon"><i class="glyphicon glyphicon-flag"></i></span>
-                    {{ form.language|add_class:"form-control" }}
-                </div>
-                <button class="btn btn-primary" type="submit">Save</button>
-            </form>
-        </div>
-    </div>
+<legend>Hey {{ user.username }}. Change your settings below.</legend>
+<form method="POST" action="{% url "account_settings" %}">
+    {% csrf_token %}
+    <div class="form-group">
+	    <div class="input-group">
+	        <span class="input-group-addon"><i class="glyphicon glyphicon-envelope"></i></span>
+	        {{ form.email|add_class:"form-control" }}
+	    </div>
+	    <div class="input-group">
+	        <span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>
+	        {{ form.timezone|add_class:"form-control" }}
+	    </div>
+	    <div class="input-group">
+	        <span class="input-group-addon"><i class="glyphicon glyphicon-flag"></i></span>
+	        {{ form.language|add_class:"form-control" }}
+	    </div>
+	</div>
+    <button class="btn btn-primary" type="submit">Save</button>
+</form>
+<p><a href={% url 'account_password' %}>Change password</a></p>
+<p><a href={% url 'account_delete' %}>Delete account</a></p>
 {% endblock %}
