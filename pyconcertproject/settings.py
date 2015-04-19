@@ -99,6 +99,7 @@ STATICFILES_DIRS = (
 # Should be in application specific settings
 LOGIN_REDIRECT_URL = '/'
 LOGIN_URL = '/account/login'
+ACCOUNT_EMAIL_CONFIRMATION_REQUIRED = True
 
 PAGINATION_SIZE = 25
 
