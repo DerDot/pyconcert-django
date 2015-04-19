@@ -11,16 +11,17 @@
 	        {{ form.email|add_class:"form-control" }}
 	    </div>
 	    <div class="input-group">
-	        <span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>
-	        {{ form.timezone|add_class:"form-control" }}
-	    </div>
-	    <div class="input-group">
-	        <span class="input-group-addon"><i class="glyphicon glyphicon-flag"></i></span>
-	        {{ form.language|add_class:"form-control" }}
-	    </div>
+            <span class="input-group-addon"><i class="glyphicon glyphicon-home"></i></span>
+            {{ form.city|add_class:"form-control" }}
+        </div>
 	</div>
     <button class="btn btn-primary" type="submit">Save</button>
 </form>
 <p><a href={% url 'account_password' %}>Change password</a></p>
 <p><a href={% url 'account_delete' %}>Delete account</a></p>
+
+{% if form.errors %}
+     <p><i>Sorry, couldn't save settings: {{ form.errors.values.0|striptags}}</i></p>
+{% endif %}
+
 {% endblock %}

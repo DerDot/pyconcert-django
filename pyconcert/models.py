@@ -24,3 +24,10 @@ class Event(models.Model):
                                         unicode(self.venue),
                                         unicode(self.date.strftime("%Y-%m-%d")))
         return name
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, unique=True)
+    city = models.CharField(max_length=200)
+
+    def __unicode__(self):
+        return self.user.username

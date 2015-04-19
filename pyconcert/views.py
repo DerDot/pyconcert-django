@@ -1,14 +1,18 @@
-from models import Event, Artist
+from models import Event, Artist, UserProfile
+
 from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+from django.views.generic import ListView, FormView, TemplateView
+
+from account import views as account_views
+
+from pyconcert.forms import UploadFileForm, SignupForm, SettingsForm
+from pyconcert.management.commands.update_events import update_events
+from pyconcertproject import settings
 from api_calls import spotify_auth, spotify_token, spotify_artists
 import utils
-from django.contrib.auth.decorators import login_required
-from pyconcert.forms import UploadFileForm
-from django.views.generic import ListView
-from django.utils.decorators import method_decorator
-from pyconcertproject import settings
-from django.views.generic.base import TemplateView
-from pyconcert.management.commands.update_events import update_events
+from account.mixins import LoginRequiredMixin
+from django.http.response import HttpResponseRedirect
 
 def _update_artists(new_artists, user):
     added_artists = []
@@ -54,12 +58,8 @@ def spotify(request):
     else:
         return render(request, 'pyconcert/spotify.html')
 
-class CustomListView(ListView):
+class CustomListView(LoginRequiredMixin, ListView):
     paginate_by = settings.PAGINATION_SIZE
-
-    @method_decorator(login_required)
-    def dispatch(self, *args, **kwargs):
-        return ListView.dispatch(self, *args, **kwargs)
 
     def _filtered_and_sorted(self, name_filter, user):
         raise NotImplementedError
@@ -100,12 +100,8 @@ class ArtistsView(CustomListView):
                                                    name__icontains=name_filter)
         return subscribed_artists.order_by("name")
 
-class AddArtistsView(TemplateView):
+class AddArtistsView(LoginRequiredMixin, TemplateView):
     template_name = 'pyconcert/add_artists.html'
-
-    @method_decorator(login_required)
-    def dispatch(self, *args, **kwargs):
-        return TemplateView.dispatch(self, *args, **kwargs)
 
     def get(self, request):
         add_artist = request.GET.get("add")
@@ -137,3 +133,41 @@ def upload_json(request):
     return render(request,
                   'pyconcert/upload_json.html',
                   {'form':form})
+
+class SignupView(account_views.SignupView):
+    form_class = SignupForm
+
+    def after_signup(self, form):
+        self.create_profile(form)
+        super(SignupView, self).after_signup(form)
+
+    def create_profile(self, form):
+        profile, created = UserProfile.objects.get_or_create(user=self.created_user,
+                                                             city=form.cleaned_data["city"])
+        if created:
+            profile.save()
+
+class SettingsView(FormView):
+    template_name = 'account/settings.html'
+    form_class = SettingsForm
+    success_url = '/account/settings'
+
+    def get_initial(self):
+        initial = super(SettingsView, self).get_initial()
+        initial['email'] = self.request.user.email
+        initial['city'] = self.request.user.userprofile.city
+        return initial
+
+    def form_valid(self, form):
+        user = self.request.user
+        user.email = form.cleaned_data['email']
+        user_profile = user.userprofile
+        user_profile.city = form.cleaned_data['city']
+        user.save()
+        user_profile.save()
+        return super(SettingsView, self).form_valid(form)
+
+    def get_form_kwargs(self):
+        kwargs = super(SettingsView, self).get_form_kwargs()
+        kwargs.update({'user': self.request.user})
+        return kwargs

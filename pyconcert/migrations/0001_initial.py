@@ -39,4 +39,15 @@ class Migration(migrations.Migration):
             },
             bases=(models.Model,),
         ),
+        migrations.CreateModel(
+            name='UserProfile',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('city', models.CharField(max_length=200)),
+                ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL, unique=True)),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
     ]
