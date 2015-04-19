@@ -1,1 +1,1 @@
-Confirm your address for {{ current_site.name }}
+Confirm your address

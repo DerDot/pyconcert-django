@@ -1,7 +1,8 @@
-Someone (hopefully you) has created an account on {{ current_site.name }}.
-
-To confirm your address, click <a href="{{ activate_url }}">this link</a>.
-If whatver displays this message does not play nicely with html, just copy the following monster of a line to your browser: 
-{{ activate_url }}
-
+<html>
+Someone (hopefully you) has created an account on {{ current_site.name }}. <br>
+<br>
+To confirm your address, click <a href="{{ activate_url }}">this link</a> or copy the following monster of a line to your browser: <br>
+{{ activate_url }} <br>
+<br>
 If you did not sign up for this site yourself, just ignore this message. But maybe take some seconds first to consider signing up, it's worth it.
+</html>

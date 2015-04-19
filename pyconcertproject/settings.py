@@ -37,6 +37,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    "email_html",
     "account",
     "widget_tweaks",
     'pyconcert'
@@ -105,3 +106,5 @@ PAGINATION_SIZE = 25
 
 CONTENT_TYPES = ['application/json']
 MAX_UPLOAD_SIZE = 2 * 1024 ** 2
+
+EMAIL_SUBJECT_PREFIX = "[EventOwl] "
