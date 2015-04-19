@@ -1,0 +1,9 @@
+{% extends "pyconcert/base.html" %}
+
+{% block content %}
+    <h2>Please confirm your mail address</h2>
+    
+    <p>We have sent you a mail to <b>{{ email }}</b> for verification, let's hope that this really yours.
+    Click the link in your mail to verify your account. See you then!</p>
+    <p><a href="{{ success_url }}">Back to the login.</a></p>
+{% endblock %}

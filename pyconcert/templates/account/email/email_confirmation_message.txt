@@ -1,6 +1,7 @@
-{% load i18n account_tags %}{% blocktrans with site_name=current_site.name %}A user on {{ site_name }} has created an account using this email address.
+Someone (hopefully you) has created an account on {{ current_site.name }}.
 
-To confirm this email address, go to {{ activate_url }}
+To confirm your address, click <a href="{{ activate_url }}">this link</a>.
+If whatver displays this message does not play nicely with html, just copy the following monster of a line to your browser: 
+{{ activate_url }}
 
-If you did not sign up for this site, you can ignore this message.
-{% endblocktrans %}
+If you did not sign up for this site yourself, just ignore this message. But maybe take some seconds first to consider signing up, it's worth it.

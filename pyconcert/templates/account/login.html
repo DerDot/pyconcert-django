@@ -26,7 +26,7 @@
 </form>
 
 {% if form.errors %}
-     <p><i>Sorry your username and password don't match. Or maybe you want to sign up? You can find a link for this right below this text.</i></p>
+     <p><i>Sorry, couldn't log you in: {{ form.errors.values.0|striptags}}</i></p>
 {% endif %}
 
 {% if ACCOUNT_OPEN_SIGNUP %}
