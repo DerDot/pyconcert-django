@@ -1,4 +1,4 @@
-from pyconcert.models import Artist, Event
+from pyconcert.models import Artist, Event, UserProfile
 from pyconcert.api_calls import events_for_artists_bandsintown
 from django.core.management.base import BaseCommand
 
@@ -11,19 +11,30 @@ def _db_artists(api_event):
         artists.append(artist)
     return artists
 
-def update_events(artists):
-    api_events = events_for_artists_bandsintown(artists, "Berlin")
-    for api_event in api_events:
-        event, created = Event.objects.get_or_create(venue=api_event.venue,
-                                             city=api_event.city,
-                                             country=api_event.country,
-                                             date=api_event.date,
-                                             time=api_event.time,
-                                             ticket_url=api_event.ticket_url)
-        if created:
-            event.save()
-        for db_artist in _db_artists(api_event):
-            event.artists.add(db_artist)
+def _all_cities():
+    cities = []
+    for user_profile in UserProfile.objects.all():
+        cities.append(user_profile.city)
+    return cities
+
+def update_events(artists, cities=None):
+    if cities is None:
+        cities = _all_cities()
+
+    for city in cities:
+        print "Updating events for", city
+        api_events = events_for_artists_bandsintown(artists, city)
+        for api_event in api_events:
+            event, created = Event.objects.get_or_create(venue=api_event.venue,
+                                                         city=api_event.city,
+                                                         country=api_event.country,
+                                                         date=api_event.date,
+                                                         time=api_event.time,
+                                                         ticket_url=api_event.ticket_url)
+            if created:
+                event.save()
+            for db_artist in _db_artists(api_event):
+                event.artists.add(db_artist)
 
 class Command(BaseCommand):
     help = 'Update events for all artists. Used by cron.'

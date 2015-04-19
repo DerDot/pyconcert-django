@@ -5,14 +5,13 @@ from django.contrib.auth.decorators import login_required
 from django.views.generic import ListView, FormView, TemplateView
 
 from account import views as account_views
+from account.mixins import LoginRequiredMixin
 
 from pyconcert.forms import UploadFileForm, SignupForm, SettingsForm
 from pyconcert.management.commands.update_events import update_events
 from pyconcertproject import settings
 from api_calls import spotify_auth, spotify_token, spotify_artists
 import utils
-from account.mixins import LoginRequiredMixin
-from django.http.response import HttpResponseRedirect
 
 def _update_artists(new_artists, user):
     added_artists = []
@@ -23,7 +22,7 @@ def _update_artists(new_artists, user):
             added_artists.append(new_artist)
             artist.save()
         artist.subscribers.add(user)
-    update_events(added_artists)
+    update_events(added_artists, [user.userprofile.city])
 
 def _user_events(user):
     artists = Artist.objects.filter(subscribers=user)
@@ -75,7 +74,8 @@ class EventsView(CustomListView):
     def _filtered_and_sorted(self, name_filter, user):
         subscribed_artists = Artist.objects.filter(subscribers=user,
                                                    name__icontains=name_filter)
-        subscribed_events = Event.objects.filter(artists__in=subscribed_artists)
+        subscribed_events = Event.objects.filter(artists__in=subscribed_artists,
+                                                 city__iexact=user.userprofile.city)
         return subscribed_events.order_by("date")
 
 def _unsubscribe_artist(artist, user):

@@ -67,7 +67,8 @@ def _get_bandsintown_events(artists, location):
 
 def events_for_artists_bandsintown(artists, location):
     all_events = []
-    for artists_chunk in _chunks(list(artists), 50):
+    for idx, artists_chunk in enumerate(_chunks(list(artists), 50)):
+        print "Working on artists number {} to {}".format(idx * 50, (idx + 1) * 50)
         events = _get_bandsintown_events(artists_chunk, location)
         for event in events:
             all_events.append(event)
