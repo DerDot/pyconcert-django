@@ -161,10 +161,18 @@ class SettingsView(FormView):
     def form_valid(self, form):
         user = self.request.user
         user.email = form.cleaned_data['email']
-        user_profile = user.userprofile
-        user_profile.city = form.cleaned_data['city']
+
+        old_city = user.userprofile.city
+        new_city = form.cleaned_data['city']
+        user.userprofile.city = new_city
+
         user.save()
-        user_profile.save()
+        user.userprofile.save()
+
+        if old_city != new_city:
+            subscribed_artists = [artist.name for artist in user.artists.all()]
+            update_events(subscribed_artists, [new_city])
+
         return super(SettingsView, self).form_valid(form)
 
     def get_form_kwargs(self):
