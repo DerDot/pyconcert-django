@@ -126,13 +126,14 @@ def upload_json(request):
             artists_str = ', '.join(sorted(artists))
             return render(request,
                           'pyconcert/update_result.html',
-                          {'artists':artists_str,
-                           'source':'JSON upload'})
+                          {'artists': artists_str,
+                           'source': 'JSON upload'})
     else:
         form = UploadFileForm()
     return render(request,
                   'pyconcert/upload_json.html',
-                  {'form':form})
+                  {'form': form,
+                   'max_size_mb': settings.MAX_UPLOAD_SIZE / 1024 ** 2})
 
 class SignupView(account_views.SignupView):
     form_class = SignupForm
@@ -179,3 +180,9 @@ class SettingsView(FormView):
         kwargs = super(SettingsView, self).get_form_kwargs()
         kwargs.update({'user': self.request.user})
         return kwargs
+
+class ImpressumView(TemplateView):
+    template_name = 'pyconcert/impressum.html'
+
+class AboutView(TemplateView):
+    template_name = 'pyconcert/about.html'
