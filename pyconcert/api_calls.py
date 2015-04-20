@@ -46,7 +46,9 @@ def _split_datetime(date_time):
     return proper_datetime.date(), proper_datetime.time()
 
 def normalize_artist(artist_name):
-    return artist_name.encode("utf8").lower()
+    if isinstance(artist_name, unicode):
+        artist_name = artist_name.encode("utf8")
+    return artist_name.lower()
 
 def _get_bandsintown_events(artists, location):
     api_call = "http://api.bandsintown.com/events/search"
@@ -120,7 +122,7 @@ def spotify_token(code):
 def spotify_artists(token, limit=50):
     all_artists = set()
     base_api_call = "https://api.spotify.com/v1/me/tracks"
-    iteration = 0
+    iteration = 90
     while True:
         args = [("limit", limit),
                 ("offset", limit * iteration)]
@@ -138,4 +140,5 @@ def spotify_artists(token, limit=50):
                 normalized_artist = normalize_artist(artist["name"])
                 all_artists.add(normalized_artist)
         iteration += 1
+        break
     return all_artists
