@@ -122,7 +122,7 @@ def spotify_token(code):
 def spotify_artists(token, limit=50):
     all_artists = set()
     base_api_call = "https://api.spotify.com/v1/me/tracks"
-    iteration = 90
+    iteration = 0
     while True:
         args = [("limit", limit),
                 ("offset", limit * iteration)]
