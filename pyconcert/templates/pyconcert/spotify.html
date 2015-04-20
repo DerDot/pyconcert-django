@@ -1,6 +1,7 @@
 {% extends 'pyconcert/base.html' %}
 {% block content %}
 <legend>Import new artitsts from spotify. How very extraordinary.</legend>
+<p>This really might take a while, especially for a larger library. So sit back and enjoy.</p>
 <form action="{% url 'pyconcert:spotify' %}" method="get">
 	<span class="input-group-btn">
 	    <button class="btn btn-primary" id="import" type="submit" name="import" value="true">Import</button>
