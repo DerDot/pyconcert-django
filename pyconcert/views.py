@@ -10,13 +10,13 @@ from account.mixins import LoginRequiredMixin
 from pyconcert.forms import UploadFileForm, SignupForm, SettingsForm
 from pyconcert.management.commands.update_events import update_events
 from pyconcertproject import settings
-from api_calls import spotify_auth, spotify_token, spotify_artists
-import utils
+from pyconcert.api_calls import spotify_auth, spotify_token, spotify_artists, normalize_artist
+import pyconcert.utils as utils
 
 def _update_artists(new_artists, user):
     added_artists = []
     for new_artist in new_artists:
-        new_artist = unicode(new_artists).decode("utf8").lower()
+        new_artist = normalize_artist(new_artist)
         artist, created = Artist.objects.get_or_create(name=new_artist)
         if created:
             added_artists.append(new_artist)
@@ -106,7 +106,7 @@ class AddArtistsView(LoginRequiredMixin, TemplateView):
     def get(self, request):
         add_artist = request.GET.get("add")
         if add_artist is not None:
-            _update_artists(add_artist, request.user)
+            _update_artists([add_artist], request.user)
         return TemplateView.get(self, request)
 
 def _parse_json_file(request):

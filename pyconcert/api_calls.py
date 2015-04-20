@@ -3,6 +3,7 @@ from datetime import datetime
 from pyconcert.utils import random_string, parse_json
 import requests
 import math
+from itertools import izip
 
 with open("config.json") as config_file:
     config = parse_json(config_file.read())
@@ -19,13 +20,22 @@ class Event(object):
         self.ticket_url = ticket_url
 
     def __str__(self):
-        return "Event by {artists} in {venue} ({city}, {country}).".format(artists=u", ".join(self.artists),
+        return "Event by {artists} in {venue} ({city}, {country}).".format(artists=", ".join(self.artists),
                                                                            venue=self.venue,
                                                                            city=self.city,
                                                                            country=self.country)
 
     def __repr__(self):
         return self.__str__()
+
+    def __eq__(self, other):
+        for self_var, other_var in izip(vars(self), vars(other)):
+            if self_var != other_var:
+                return False
+        return True
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
 
 def _chunks(l, n):
     for i in xrange(0, len(l), n):
@@ -35,7 +45,7 @@ def _split_datetime(date_time):
     proper_datetime = datetime.strptime(date_time, "%Y-%m-%dT%H:%M:%S")
     return proper_datetime.date(), proper_datetime.time()
 
-def _normalize_artist(artist_name):
+def normalize_artist(artist_name):
     return artist_name.encode("utf8").lower()
 
 def _get_bandsintown_events(artists, location):
@@ -44,12 +54,12 @@ def _get_bandsintown_events(artists, location):
             ("format", "json"),
             ("app_id", "pyconcert")]
     for artist in artists:
-        args.append(("artists[]", artist.encode("utf8")))
+        args.append(("artists[]", artist))
     api_call = "%s?%s" % (api_call, urllib.urlencode(args))
     resp = parse_json(urllib.urlopen(api_call).read())
     ret = []
     for event in resp:
-        artists = [_normalize_artist(artist["name"]) for artist in event["artists"]]
+        artists = [normalize_artist(artist["name"]) for artist in event["artists"]]
         venue = event["venue"]["name"]
         city = event["venue"]["city"]
         country = event["venue"]["country"]
@@ -65,7 +75,19 @@ def _get_bandsintown_events(artists, location):
         ret.append(result_event)
     return ret
 
+def _normalize_inputs(artists, location):
+    normalized_artists = []
+    for artist in artists:
+        if isinstance(artist, unicode):
+            artist = artist.encode("utf8")
+        normalized_artists.append(artist)
+
+    if isinstance(location, unicode):
+        location = location.encode("utf8")
+    return normalized_artists, location
+
 def events_for_artists_bandsintown(artists, location):
+    artists, location = _normalize_inputs(artists, location)
     all_events = []
     for idx, artists_chunk in enumerate(_chunks(list(artists), 50)):
         print "Working on artists number {} to {}".format(idx * 50, (idx + 1) * 50)
@@ -113,7 +135,7 @@ def spotify_artists(token, limit=50):
         for track in response["items"]:
             artists = track["track"]["artists"]
             for artist in artists:
-                normalized_artist = _normalize_artist(artist["name"])
+                normalized_artist = normalize_artist(artist["name"])
                 all_artists.add(normalized_artist)
         iteration += 1
     return all_artists

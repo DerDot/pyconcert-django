@@ -12,9 +12,9 @@ def _db_artists(api_event):
     return artists
 
 def _all_cities():
-    cities = []
+    cities = set()
     for user_profile in UserProfile.objects.all():
-        cities.append(user_profile.city)
+        cities.add(user_profile.city.lower())
     return cities
 
 def update_events(artists, cities=None):
@@ -43,4 +43,3 @@ class Command(BaseCommand):
         artists = [artist.name for artist in
                    Artist.objects.all()]
         update_events(artists)
-
