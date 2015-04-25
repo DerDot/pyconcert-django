@@ -5,6 +5,7 @@
 {% block content %}
 <legend>Upload a json file with new artists. How very fancy.</legend>
 <p>This file should be in json format and contain a list of artist names that you want to add. Please keep it under {{max_size_mb}}MB, thanks.</p>
+<p>A file like this can automatically be generated from your local music library using this <a href="{% url 'pyconcert:provide_tool' %}">fancy little tool</a></p>
 <form class="form-inline" enctype="multipart/form-data" method="post" action="{% url 'pyconcert:upload_json' %}">
 {% csrf_token %}
 <div class="form-group">

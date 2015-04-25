@@ -1,0 +1,20 @@
+{% extends 'pyconcert/base.html' %}
+{% load staticfiles%}
+
+{% block content %}
+<legend>Collect information from your local library</legend>
+This little tool allows you to collect artist information from your local music library.
+<div class="container">
+    <div class="row row-centered">
+        <div class="col-xs-3 col-centered">
+            <a href="{% static 'tool/eventowl_windows.exe' %}"><font size="6"><i class="fa fa-windows"></i> Windows</font></a>
+        </div>
+        <div class="col-xs-3 col-centered">
+            <a href="{% static 'tool/eventowl_linux.bin' %}"><font size="6"><i class="fa fa-linux"></i> Linux</font></a>
+        </div>
+        <div class="col-xs-3 col-centered">
+            <a href="{% static 'tool/eventowl_osx.bin' %}"><font size="6"><i class="fa fa-apple"></i> OSX</font></a>
+        </div>
+    </div>
+</div>
+{%endblock content %}

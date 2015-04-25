@@ -3,7 +3,9 @@
 	<head> <title>EventOwl</title> 
 		<link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
 		<link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap-theme.min.css' %}">
+		<link rel="stylesheet" href="{% static 'bootstrap/css/font-awesome.min.css' %}">
 		<link rel="stylesheet" href="{% static 'pyconcert.css' %}">
+
 		<script src="{% static 'jquery/jquery.min.js' %}"></script>
 		<script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
 		<script type="text/javascript" src="{% static 'jquery/jExpand.js' %}"></script>
@@ -25,7 +27,7 @@
 		              <a href="#" class="dropdown-toggle" data-toggle="dropdown"> Add artists <b class="caret"></b></a>
 		              <ul class="dropdown-menu" role="menu">
 		                <li><a href="{% url 'pyconcert:spotify' %}">Spotify</a></li>
-		                <li><a href="{% url 'pyconcert:upload_json' %}">JSON File</a></li>
+		                <li><a href="{% url 'pyconcert:upload_json' %}">Local library</a></li>
 		                <li><a href="{% url 'pyconcert:add_artists' %}">Manually</a></li>
 		              </ul>
 		            </li>

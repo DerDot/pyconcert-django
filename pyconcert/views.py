@@ -186,3 +186,6 @@ class ImpressumView(TemplateView):
 
 class AboutView(TemplateView):
     template_name = 'pyconcert/about.html'
+
+class ToolView(TemplateView):
+    template_name = 'pyconcert/tool.html'
