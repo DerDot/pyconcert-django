@@ -38,15 +38,15 @@ def existing_dir(path):
 
 if __name__ == "__main__":
     import argparse
-    
+
     parser = argparse.ArgumentParser(description='Upload local artists to pyconcert')
     parser.add_argument('musicdirs', metavar='musicdirs', type=existing_dir, nargs="+",
                         help='Directories to search.')
-            
+
     args = parser.parse_args()
     artists = collect_artists(args.musicdirs)
     print "Found {} artists.".format(len(artists))
     # upload_artists(artists)
     artists = list(artists)
-    with open("out.json", "w") as json_file: 
+    with open("out.json", "w") as json_file:
         json.dump(artists, json_file)

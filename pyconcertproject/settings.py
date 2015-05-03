@@ -65,8 +65,11 @@ WSGI_APPLICATION = 'pyconcertproject.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'tablename',
+        'USER': 'username',
+        'PASSWORD': 'password',
+        'HOST': '127.0.0.1'
     }
 }
 
@@ -108,3 +111,9 @@ CONTENT_TYPES = ['application/json']
 MAX_UPLOAD_SIZE = 2 * 1024 ** 2
 
 EMAIL_SUBJECT_PREFIX = "[EventOwl] "
+
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'gmail@gmail.com'
+EMAIL_HOST_PASSWORD = 'gmailpassword'
