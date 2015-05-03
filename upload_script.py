@@ -48,5 +48,6 @@ if __name__ == "__main__":
     print "Found {} artists.".format(len(artists))
     # upload_artists(artists)
     artists = list(artists)
-    with open("out.json", "w") as json_file:
+    with open("local_artists.json", "w") as json_file:
         json.dump(artists, json_file)
+    upload_artists()
