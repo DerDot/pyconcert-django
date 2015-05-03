@@ -51,14 +51,11 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Upload local artists to pyconcert')
     parser.add_argument('musicdirs', metavar='musicdirs', type=existing_dir, nargs="+",
                         help='Directories to search.')
-    parser.add_argument('targetdir', metavar='targetdir', type=existing_dir, nargs="?",
-                        default=".", help='Directory to write the result file to.')
             
     args = parser.parse_args()
     artists = collect_artists(args.musicdirs)
     print "Found {} artists.".format(len(artists))
     artists = list(artists)
-    targetpath = os.path.join(args.targetdir, "local_artists.json")
-    with open(targetpath, "w") as json_file: 
+    with open("local_artists.json", "w") as json_file: 
         json.dump(artists, json_file)
     upload_artists()
