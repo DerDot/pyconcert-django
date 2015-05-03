@@ -1,4 +1,5 @@
 {
 "SPOTIFY_ID":"id",
-"SPOTIFY_SECRET":"secret"
+"SPOTIFY_SECRET":"secret",
+"URL":"redirect"
 }
