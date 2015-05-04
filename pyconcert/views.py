@@ -10,8 +10,9 @@ from account.mixins import LoginRequiredMixin
 from pyconcert.forms import UploadFileForm, SignupForm, SettingsForm
 from pyconcert.management.commands.update_events import update_events
 from pyconcertproject import settings
-from pyconcert.api_calls import spotify_auth, spotify_token, spotify_artists, normalize_artist
+from pyconcert.api_calls import spotify_auth, spotify_token, normalize_artist
 import pyconcert.utils as utils
+from pyconcert.tasks import spotify_artists
 
 def _update_artists(new_artists, user):
     added_artists = []
@@ -39,7 +40,8 @@ def spotify(request):
         token_info = spotify_token(code)
         request.session["token"] = token_info["access_token"]
         request.session["refresh_token"] = token_info["refresh_token"]
-        artists = spotify_artists(token_info["access_token"])
+        task = spotify_artists.delay(token_info["access_token"])
+        artists = task.get()
         _update_artists(artists, request.user)
         artists_str = ', '.join(sorted(artists))
         return render(request,
