@@ -54,7 +54,7 @@ def _get_bandsintown_events(artists, location):
     api_call = "http://api.bandsintown.com/events/search"
     args = [("location", location),
             ("format", "json"),
-            ("app_id", "pyconcert")]
+            ("app_id", "eventowl")]
     for artist in artists:
         args.append(("artists[]", artist))
     api_call = "%s?%s" % (api_call, urllib.urlencode(args))
