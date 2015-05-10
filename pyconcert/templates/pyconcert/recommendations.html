@@ -1,0 +1,41 @@
+{% extends 'pyconcert/base.html' %}
+{% block content %}
+
+<legend>Based on what you added (yes, we are watching) you might like these artists too.</legend>
+<form action="{% url 'pyconcert:recommendations' %}" method="get">
+    {% include "pyconcert/filter.html"%}
+</form>
+
+{% if artists %}
+    <form action="{% url 'pyconcert:recommendations' %}" method="get">
+    <ul class="list-group">
+    <button type="submit" style="display:none;"></button>
+    {% for artist in artists %}
+        <li class="list-group-item">
+        {{ artist.name|title }}
+        {% if artist.genre %}({{artist.genre|title}}) {% endif %}
+        <button type="submit" class="btn btn-xs pull-right" name="new_artist" value="{{ artist.name }}">
+            <span class="glyphicon glyphicon-plus"></span>
+        </button>
+        </li>
+    {% endfor %}
+    </ul>
+    </form>    
+{% include "pyconcert/pagination.html"%}
+
+{% else %}
+    {% if request.GET.filter%}
+        <p>No artists matching {{ request.GET.filter }}.</p>
+    {% else %}
+        <p>There are no new recommendations for you. Sorry...</p>
+    {% endif %}
+{% endif %}
+
+<form action="{% url 'pyconcert:recommendations' %}" method="get">
+    <button type="submit" class="btn btn-default" name="action" value="add">
+       Add
+       <span class="glyphicon glyphicon-refresh"></span>
+    </button>
+</form>
+
+{% endblock content %}

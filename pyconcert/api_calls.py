@@ -4,6 +4,7 @@ from pyconcert.utils import random_string, parse_json
 import requests
 import math
 from itertools import izip
+import random
 
 with open("config.json") as config_file:
     config = parse_json(config_file.read())
@@ -60,21 +61,22 @@ def _get_bandsintown_events(artists, location):
     api_call = "%s?%s" % (api_call, urllib.urlencode(args))
     resp = parse_json(urllib.urlopen(api_call).read())
     ret = []
-    for event in resp:
-        artists = [normalize_artist(artist["name"]) for artist in event["artists"]]
-        venue = event["venue"]["name"]
-        city = event["venue"]["city"]
-        country = event["venue"]["country"]
-        date, time = _split_datetime(event["datetime"])
-        url = event["url"]
-        result_event = Event(artists,
-                             venue,
-                             city,
-                             country,
-                             date,
-                             time,
-                             url)
-        ret.append(result_event)
+    if not resp.has_key('errors'):
+        for event in resp:
+            artists = [normalize_artist(artist["name"]) for artist in event["artists"]]
+            venue = event["venue"]["name"]
+            city = event["venue"]["city"]
+            country = event["venue"]["country"]
+            date, time = _split_datetime(event["datetime"])
+            url = event["url"]
+            result_event = Event(artists,
+                                 venue,
+                                 city,
+                                 country,
+                                 date,
+                                 time,
+                                 url)
+            ret.append(result_event)
     return ret
 
 def _normalize_inputs(artists, location):
@@ -87,6 +89,42 @@ def _normalize_inputs(artists, location):
     if isinstance(location, unicode):
         location = location.encode("utf8")
     return normalized_artists, location
+
+def _random_subset(collection, size=10):
+    if len(collection) > size:
+        return random.sample(collection, size)
+    return collection
+
+def recommended_artists(artists):
+    api_call = 'http://api.seatgeek.com/2/recommendations/performers'
+    args = [('client_id', config["SEATGEEK_ID"])]
+    artists = _random_subset(artists)
+    print artists
+    for artist in artists:
+        performer_id = _seatgeek_performer_id(artist)
+        if performer_id is None:
+            continue
+        args.append(("performers.id", performer_id))
+    api_call = "%s?%s" % (api_call, urllib.urlencode(args))
+    resp = parse_json(urllib.urlopen(api_call).read())
+    ret = []
+    for recommendation in resp['recommendations']:
+        name = recommendation['performer']['name']
+        genres = [genre['name'] for genre in recommendation['performer'].get('genres', [])]
+        genre = ", ".join(genres)
+        ret.append((name, genre))
+    return ret
+
+def _seatgeek_performer_id(artist):
+    api_call = 'http://api.seatgeek.com/2/performers'
+    args = [('q', artist)]
+    api_call = "%s?%s" % (api_call, urllib.urlencode(args))
+    resp = parse_json(urllib.urlopen(api_call).read())
+    performers = resp['performers']
+    if performers:
+        return performers[0]['id']
+    else:
+        return None
 
 def events_for_artists_bandsintown(artists, location):
     artists, location = _normalize_inputs(artists, location)

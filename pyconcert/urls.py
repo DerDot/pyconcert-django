@@ -11,5 +11,6 @@ urlpatterns = patterns('',
     url(r'^spotify$', views.spotify, name='spotify'),
     url(r'^show_artists$', views.ArtistsView.as_view(), name='show_artists'),
     url(r'^add_artists$', views.AddArtistsView.as_view(), name='add_artists'),
+    url(r'^recommendations$', views.RecommendationsView.as_view(), name='recommendations'),
     url(r'^$', views.EventsView.as_view(), name='show_events'),
 )

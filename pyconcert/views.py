@@ -10,7 +10,7 @@ from account.mixins import LoginRequiredMixin
 from pyconcert.forms import UploadFileForm, SignupForm, SettingsForm
 from pyconcert.management.commands.update_events import update_events
 from pyconcertproject import settings
-from pyconcert.api_calls import spotify_auth, spotify_token, normalize_artist
+from pyconcert.api_calls import spotify_auth, spotify_token, normalize_artist, recommended_artists
 import pyconcert.utils as utils
 from pyconcert.tasks import spotify_artists
 
@@ -24,6 +24,22 @@ def _update_artists(new_artists, user):
             artist.save()
         artist.subscribers.add(user)
     update_events(added_artists, [user.userprofile.city])
+    if added_artists:
+        _update_recommendations(user)
+
+def _update_recommendations(user):
+    artists = Artist.objects.filter(subscribers=user)
+    recommended = recommended_artists(artists)
+    _add_recommendations(recommended, user)
+
+def _add_recommendations(recommended, user):
+    for artist, genre in recommended:
+        artist = normalize_artist(artist)
+        artist, created = Artist.objects.get_or_create(name=artist,
+                                                       genre=genre)
+        if created:
+            artist.save()
+        artist.recommendedtos.add(user)
 
 def _user_events(user):
     artists = Artist.objects.filter(subscribers=user)
@@ -101,6 +117,26 @@ class ArtistsView(CustomListView):
         subscribed_artists = Artist.objects.filter(subscribers=user,
                                                    name__icontains=name_filter)
         return subscribed_artists.order_by("name")
+
+class RecommendationsView(CustomListView):
+    template_name = 'pyconcert/recommendations.html'
+    context_object_name = 'artists'
+
+    def get(self, request):
+        new_artist = request.GET.get("new_artist")
+        if new_artist is not None:
+            _update_artists([new_artist], request.user)
+
+        action = request.GET.get("action")
+        if action == "add":
+            _update_recommendations(request.user)
+
+        return CustomListView.get(self, request)
+
+    def _filtered_and_sorted(self, name_filter, user):
+        recommended_artists = Artist.objects.filter(recommendedtos=user,
+                                                    name__icontains=name_filter).exclude(subscribers=user)
+        return recommended_artists.order_by("name")
 
 class AddArtistsView(LoginRequiredMixin, TemplateView):
     template_name = 'pyconcert/add_artists.html'
