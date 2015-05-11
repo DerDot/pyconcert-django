@@ -17,11 +17,9 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('name', models.CharField(max_length=200)),
-                ('subscribers', models.ManyToManyField(related_name='artists', to=settings.AUTH_USER_MODEL)),
+                ('genre', models.CharField(max_length=200, null=True)),
+                ('favoritedby', models.ManyToManyField(related_name='favorit_artists', to=settings.AUTH_USER_MODEL)),
             ],
-            options={
-            },
-            bases=(models.Model,),
         ),
         migrations.CreateModel(
             name='Event',
@@ -35,19 +33,32 @@ class Migration(migrations.Migration):
                 ('ticket_url', models.URLField()),
                 ('artists', models.ManyToManyField(related_name='events', to='pyconcert.Artist')),
             ],
-            options={
-            },
-            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='RecommendedArtist',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('score', models.FloatField()),
+                ('artist', models.ForeignKey(to='pyconcert.Artist')),
+                ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
+            ],
         ),
         migrations.CreateModel(
             name='UserProfile',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('city', models.CharField(max_length=200)),
-                ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL, unique=True)),
+                ('user', models.OneToOneField(to=settings.AUTH_USER_MODEL)),
             ],
-            options={
-            },
-            bases=(models.Model,),
+        ),
+        migrations.AddField(
+            model_name='artist',
+            name='recommendedtos',
+            field=models.ManyToManyField(to=settings.AUTH_USER_MODEL, through='pyconcert.RecommendedArtist'),
+        ),
+        migrations.AddField(
+            model_name='artist',
+            name='subscribers',
+            field=models.ManyToManyField(related_name='artists', to=settings.AUTH_USER_MODEL),
         ),
     ]

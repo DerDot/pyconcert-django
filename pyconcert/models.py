@@ -5,10 +5,16 @@ class Artist(models.Model):
     name = models.CharField(max_length=200)
     genre = models.CharField(max_length=200, null=True)
     subscribers = models.ManyToManyField(User, related_name='artists')
-    recommendedtos = models.ManyToManyField(User, related_name='recommended_artists')
+    recommendedtos = models.ManyToManyField(User, through='RecommendedArtist')
+    favoritedby = models.ManyToManyField(User, related_name='favorit_artists')
 
     def __unicode__(self):
         return unicode(self.name)
+
+class RecommendedArtist(models.Model):
+    artist = models.ForeignKey(Artist, related_name="recommendation")
+    user = models.ForeignKey(User)
+    score = models.FloatField(null=True)
 
 class Event(models.Model):
     venue = models.CharField(max_length=200)

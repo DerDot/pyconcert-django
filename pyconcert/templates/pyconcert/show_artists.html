@@ -11,9 +11,20 @@
     <ul class="list-group">
     <button type="submit" style="display:none;"></button>
     {% for artist in artists %}
-        <li class="list-group-item"> {{ artist.name|title }} <button type="submit" class="btn btn-xs pull-right" name="remove" value="{{ artist.name }}">
-                                                            <span class="glyphicon glyphicon-remove"></span>
-                                                       </button>
+        <li class="list-group-item">
+	        {{ artist.name|title }}
+	        <button type="submit" class="btn btn-xs pull-right" name="remove" value="{{ artist.name }}">
+	            <span class="glyphicon glyphicon-remove"></span>
+	        </button>
+	        {% if artist in favorites %}
+		        <button type="submit" class="btn btn-xs pull-right" name="unfavorite" value="{{ artist.name }}">
+	                 <font color="DarkOrange"><span class="glyphicon glyphicon-star"></span></font>
+	            </button>
+	        {% else %}
+	            <button type="submit" class="btn btn-xs pull-right" name="favorite" value="{{ artist.name }}">
+                     <span class="glyphicon glyphicon-star"></span>
+                </button>
+	        {% endif %}
         </li>
     {% endfor %}
     </ul>

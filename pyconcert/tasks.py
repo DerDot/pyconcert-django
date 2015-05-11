@@ -13,3 +13,7 @@ from pyconcert import api_calls
 @app.task
 def spotify_artists(token):
     return api_calls.spotify_artists(token)
+
+@app.task
+def recommended_artists(artists):
+    return api_calls.recommended_artists(artists)

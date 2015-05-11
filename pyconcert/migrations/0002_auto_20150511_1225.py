@@ -7,13 +7,13 @@ from django.db import models, migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('pyconcert', '0003_artist_recommendedtos'),
+        ('pyconcert', '0001_initial'),
     ]
 
     operations = [
-        migrations.AddField(
-            model_name='artist',
-            name='genre',
-            field=models.CharField(max_length=200, null=True),
+        migrations.AlterField(
+            model_name='recommendedartist',
+            name='score',
+            field=models.FloatField(null=True),
         ),
     ]

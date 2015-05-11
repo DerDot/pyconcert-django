@@ -1,7 +1,7 @@
 {% extends 'pyconcert/base.html' %}
 {% block content %}
 
-<legend>Based on what you added (yes, we are watching) you might like these artists too.</legend>
+<legend>Based on what you favorited (yes, we are watching) you might like these artists too.</legend>
 <form action="{% url 'pyconcert:recommendations' %}" method="get">
     {% include "pyconcert/filter.html"%}
 </form>
@@ -27,14 +27,14 @@
     {% if request.GET.filter%}
         <p>No artists matching {{ request.GET.filter }}.</p>
     {% else %}
-        <p>There are no new recommendations for you. Sorry...</p>
+        <p>There are no new recommendations for you. Sorry...<br>
+        Maybe you want to favorite some more artists (it's the little star besides the artist name).</p>
     {% endif %}
 {% endif %}
 
 <form action="{% url 'pyconcert:recommendations' %}" method="get">
-    <button type="submit" class="btn btn-default" name="action" value="add">
-       Add
-       <span class="glyphicon glyphicon-refresh"></span>
+    <button type="submit" class="btn btn-default" name="action" value="update">
+       Update <span class="glyphicon glyphicon-refresh"></span>
     </button>
 </form>
 

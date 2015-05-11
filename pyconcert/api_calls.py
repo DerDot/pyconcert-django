@@ -61,7 +61,7 @@ def _get_bandsintown_events(artists, location):
     api_call = "%s?%s" % (api_call, urllib.urlencode(args))
     resp = parse_json(urllib.urlopen(api_call).read())
     ret = []
-    if not resp.has_key('errors'):
+    if resp and not resp.has_key('errors'):
         for event in resp:
             artists = [normalize_artist(artist["name"]) for artist in event["artists"]]
             venue = event["venue"]["name"]
@@ -90,16 +90,16 @@ def _normalize_inputs(artists, location):
         location = location.encode("utf8")
     return normalized_artists, location
 
-def _random_subset(collection, size=10):
+def _random_subset(collection, size=20):
     if len(collection) > size:
         return random.sample(collection, size)
     return collection
 
 def recommended_artists(artists):
     api_call = 'http://api.seatgeek.com/2/recommendations/performers'
-    args = [('client_id', config["SEATGEEK_ID"])]
+    args = [('client_id', config["SEATGEEK_ID"]),
+            ('per_page', 50)]
     artists = _random_subset(artists)
-    print artists
     for artist in artists:
         performer_id = _seatgeek_performer_id(artist)
         if performer_id is None:
@@ -112,7 +112,8 @@ def recommended_artists(artists):
         name = recommendation['performer']['name']
         genres = [genre['name'] for genre in recommendation['performer'].get('genres', [])]
         genre = ", ".join(genres)
-        ret.append((name, genre))
+        score = float(recommendation['score'])
+        ret.append((name, genre, score))
     return ret
 
 def _seatgeek_performer_id(artist):
