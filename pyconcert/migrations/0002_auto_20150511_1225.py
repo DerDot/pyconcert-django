@@ -18,11 +18,6 @@ class Migration(migrations.Migration):
             name='recommendedtos',
             field=models.ManyToManyField(to=settings.AUTH_USER_MODEL, through='pyconcert.RecommendedArtist'),
         ),
-        migrations.AlterField(
-            model_name='recommendedartist',
-            name='score',
-            field=models.FloatField(null=True),
-        ),
         migrations.CreateModel(
             name='RecommendedArtist',
             fields=[
@@ -31,5 +26,10 @@ class Migration(migrations.Migration):
                 ('artist', models.ForeignKey(to='pyconcert.Artist')),
                 ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
             ],
+        ),
+        migrations.AlterField(
+            model_name='recommendedartist',
+            name='score',
+            field=models.FloatField(null=True),
         ),
     ]
