@@ -44,11 +44,6 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name='artist',
-            name='recommendedtos',
-            field=models.ManyToManyField(to=settings.AUTH_USER_MODEL, through='pyconcert.RecommendedArtist'),
-        ),
-        migrations.AddField(
-            model_name='artist',
             name='subscribers',
             field=models.ManyToManyField(related_name='artists', to=settings.AUTH_USER_MODEL),
         ),

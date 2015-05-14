@@ -13,6 +13,11 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
+        migrations.AddField(
+            model_name='artist',
+            name='recommendedtos',
+            field=models.ManyToManyField(to=settings.AUTH_USER_MODEL, through='pyconcert.RecommendedArtist'),
+        ),
         migrations.AlterField(
             model_name='recommendedartist',
             name='score',
