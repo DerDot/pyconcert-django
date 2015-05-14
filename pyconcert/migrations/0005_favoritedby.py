@@ -7,7 +7,7 @@ from django.conf import settings
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('pyconcert', '0003_auto_20150511_1234'),
+        ('pyconcert', '0004_genre'),
     ]
 
     operations = [
