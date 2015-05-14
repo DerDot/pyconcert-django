@@ -1,4 +1,4 @@
-from models import Event, Artist, UserProfile, RecommendedArtist
+from models import Event, Artist, UserProfile
 
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
@@ -12,7 +12,7 @@ from pyconcert.management.commands.update_events import update_events
 from pyconcertproject import settings
 from pyconcert.api_calls import spotify_auth, spotify_token, normalize_artist
 import pyconcert.utils as utils
-from pyconcert.tasks import spotify_artists, recommended_artists
+from pyconcert.tasks import spotify_artists, update_recommended_artists
 
 def _update_artists(new_artists, user):
     added_artists = []
@@ -24,26 +24,6 @@ def _update_artists(new_artists, user):
             artist.save()
         artist.subscribers.add(user)
     update_events(added_artists, [user.userprofile.city])
-
-def _update_recommendations(user):
-    artists = Artist.objects.filter(favoritedby=user)
-    task = recommended_artists.delay(artists)
-    recommended = task.get()
-    _add_recommendations(recommended, user)
-
-def _add_recommendations(recommended, user):
-    for artist, genre, score in recommended:
-        artist = normalize_artist(artist)
-        artist, created = Artist.objects.get_or_create(name=artist)
-        if created:
-            artist.genre = genre
-            artist.save()
-
-        recommendation, created = RecommendedArtist.objects.get_or_create(artist=artist,
-                                                                          user=user)
-        if created or recommendation.score != score:
-            recommendation.score = score
-            recommendation.save()
 
 def _user_events(user):
     artists = Artist.objects.filter(subscribers=user)
@@ -104,19 +84,26 @@ def _unsubscribe_artist(artist, user):
     try:
         artist = Artist.objects.get(name=artist)
         artist.subscribers.remove(user)
+        _unfavorite_artist(artist, user)
     except Artist.DoesNotExist:
         pass
+
+def _update_recommendations(user):
+    artists = [a.name for a in Artist.objects.filter(favoritedby=user)]
+    update_recommended_artists.delay(artists, user.username)
 
 def _unfavorite_artist(artist, user):
     try:
         artist = Artist.objects.get(name=artist)
         artist.favoritedby.remove(user)
+        _update_recommendations(user)
     except Artist.DoesNotExist:
         pass
 
 def _favorite_artist(artist, user):
     artist = Artist.objects.get(name=artist)
     artist.favoritedby.add(user)
+    _update_recommendations(user)
 
 class ArtistsView(CustomListView):
     template_name = 'pyconcert/show_artists.html'
@@ -155,10 +142,6 @@ class RecommendationsView(CustomListView):
         new_artist = request.GET.get("new_artist")
         if new_artist is not None:
             _update_artists([new_artist], request.user)
-
-        action = request.GET.get("action")
-        if action == "update":
-            _update_recommendations(request.user)
 
         return CustomListView.get(self, request)
 
