@@ -11,6 +11,7 @@
         <thead>
           <tr>
             <th>Date</th>
+            <th>Title</th>
             <th>Authors</th>
           </tr>
         </thead>
@@ -18,6 +19,7 @@
           {% for event in events %}
           <tr>
             <td>{{event.date|date}}</td>
+            <td>{{event.title|title}}</td>
             <td>
              {% for author in event.authors.all %}
                {{ author|title }}
@@ -27,11 +29,13 @@
            </tr>
            <tr>
              <td colspan="2">
-                This event by
                {% for author in event.authors.all %}
                   {{ author|title }}
                   {% if not forloop.last %}, {% endif %}
                {% endfor %}
+               will release a new book on {{event.date|date}}.<br>
+               It's going to be called '{{event.title|title}}'.<br>
+               You can buy it <a href={{event.buy_url}} target="_blank">here</a>. Enjoy!
             </td>
           </tr>
         {% endfor %}

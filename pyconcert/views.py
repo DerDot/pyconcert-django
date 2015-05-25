@@ -9,13 +9,12 @@ from account.mixins import LoginRequiredMixin
 
 from eventowl import views as baseviews
 from eventowl.models import UserProfile
-from eventowl.common_utils import normalize
+from eventowl.common_utils import normalize, parse_json
 
 from pyconcert.forms import UploadFileForm, SignupForm, SettingsForm
 from pyconcert.management.commands.update_events import update_events
 from pyconcertproject import settings
 from pyconcert.api_calls import spotify_auth, spotify_token
-import pyconcert.utils as utils
 from pyconcert.tasks import spotify_artists, update_recommended_artists
 
 def _update_artists(new_artists, user):
@@ -157,7 +156,7 @@ class AddArtistsView(baseviews.AddView):
 
 def _parse_json_file(request):
     try:
-        parsed = utils.parse_json(request.FILES["artists"].read())
+        parsed = parse_json(request.FILES["artists"].read())
     except ValueError:
         parsed = []
     return parsed

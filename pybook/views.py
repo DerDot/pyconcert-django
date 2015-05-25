@@ -3,6 +3,8 @@ from models import Book, Author
 from eventowl import views as baseviews
 from eventowl.common_utils import normalize
 
+from pybook.management.commands.update_releases import ReleaseConnector
+
 class EventsView(baseviews.EventsView):
     template_name = 'pybook/show_events_table.html'
     event_model = Book
@@ -18,7 +20,8 @@ def _update_authors(new_authors, user):
             added_authors.append(new_author)
             author.save()
         author.subscribers.add(user)
-    update_events(added_authors, [user.userprofile.region])
+    con = ReleaseConnector([user.userprofile.api_region])
+    con.update_events(added_authors)
 
 class AddAuthorsView(baseviews.AddView):
     template_name = 'pybook/add_authors.html'

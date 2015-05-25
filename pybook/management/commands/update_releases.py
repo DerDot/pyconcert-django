@@ -14,10 +14,10 @@ class ReleaseConnector(EventConnector):
         return book_releases(authors, region)
 
     def _get_or_create_object(self, api_release):
-        release, created = Book.objects.get_or_create(title=api_release.venue,
-                                                      isbn=api_release.city,
-                                                      date=api_release.country,
-                                                      buy_url=api_release.date)
+        release, created = Book.objects.get_or_create(title=api_release.title,
+                                                      isbn=api_release.isbn,
+                                                      date=api_release.date,
+                                                      buy_url=api_release.buy_url)
         return release, created
 
 class Command(BaseCommand):

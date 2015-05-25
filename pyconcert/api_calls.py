@@ -1,5 +1,4 @@
-from pyconcert.utils import random_string, parse_json
-from eventowl.common_utils import normalize
+from eventowl.common_utils import normalize, random_string, parse_json, config
 
 import urllib, urllib2
 from datetime import datetime
@@ -7,9 +6,6 @@ import requests
 import math
 from itertools import izip
 import random
-
-with open("config.json") as config_file:
-    config = parse_json(config_file.read())
 
 class Event(object):
     def __init__(self, artists, venue, city,
