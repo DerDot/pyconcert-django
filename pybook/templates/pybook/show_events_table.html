@@ -1,0 +1,56 @@
+{% extends 'pybook/base.html' %}
+{% block content %}
+<legend>All new book releases. We hope you find something nice.</legend>
+
+<form action="{% url 'pybook:show_events' %}" method="get">
+    {% include "eventowl/filter.html"%}
+</form>
+
+{% if events %}
+      <table class="table table-hover table-striped" id=events-table>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Authors</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for event in events %}
+          <tr>
+            <td>{{event.date|date}}</td>
+            <td>
+             {% for author in event.authors.all %}
+               {{ author|title }}
+               {% if not forloop.last %}, {% endif %}
+             {% endfor %}
+             </td>
+           </tr>
+           <tr>
+             <td colspan="2">
+                This event by
+               {% for author in event.authors.all %}
+                  {{ author|title }}
+                  {% if not forloop.last %}, {% endif %}
+               {% endfor %}
+            </td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+
+
+<script type="text/javascript">
+$('#events-table').jExpand();
+</script>
+    
+{% include "eventowl/pagination.html" %}
+
+{% else %}
+    {% if request.GET.filter%}
+        <p>No events matching {{ request.GET.filter }}.</p>
+    {% else %}
+        <p>Your subscribed authors don't release any books anytime soon :(</p>
+    {% endif %}
+{% endif %}
+
+{% endblock content %}

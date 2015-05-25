@@ -37,11 +37,13 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    "djcelery",
-    "email_html",
-    "account",
-    "widget_tweaks",
-    'pyconcert'
+    'djcelery',
+    'email_html',
+    'account',
+    'widget_tweaks',
+    'eventowl',
+    'pyconcert',
+    'pybook'
 )
 
 MIDDLEWARE_CLASSES = (

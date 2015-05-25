@@ -17,7 +17,7 @@
 </form>
 
 {% if request.GET.add %}
-Sucesfully added {{ request.GET.add|title }}. Maybe they have an <a href="/">event</a> soon?
+Sucesfully added {{ request.GET.add|title }}. Maybe they have an <a href="{% url 'pyconcert:show_events' %}">event</a> soon?
 {% endif %}
 
 {% endblock content %}

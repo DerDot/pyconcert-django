@@ -1,6 +1,9 @@
-from pyconcert.models import Artist, Event, UserProfile
-from pyconcert.api_calls import events_for_artists_bandsintown
 from django.core.management.base import BaseCommand
+
+from eventowl.models import UserProfile
+
+from pyconcert.models import Artist, Event
+from pyconcert.api_calls import events_for_artists_bandsintown
 
 def _db_artists(api_event):
     artists = []

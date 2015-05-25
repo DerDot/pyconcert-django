@@ -1,4 +1,4 @@
-from models import Event, Artist, UserProfile
+from models import Event, Artist
 
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
@@ -7,17 +7,21 @@ from django.views.generic import ListView, FormView, TemplateView
 from account import views as account_views
 from account.mixins import LoginRequiredMixin
 
+from eventowl import views as baseviews
+from eventowl.models import UserProfile
+from eventowl.common_utils import normalize
+
 from pyconcert.forms import UploadFileForm, SignupForm, SettingsForm
 from pyconcert.management.commands.update_events import update_events
 from pyconcertproject import settings
-from pyconcert.api_calls import spotify_auth, spotify_token, normalize_artist
+from pyconcert.api_calls import spotify_auth, spotify_token
 import pyconcert.utils as utils
 from pyconcert.tasks import spotify_artists, update_recommended_artists
 
 def _update_artists(new_artists, user):
     added_artists = []
     for new_artist in new_artists:
-        new_artist = normalize_artist(new_artist)
+        new_artist = normalize(new_artist)
         artist, created = Artist.objects.get_or_create(name=new_artist)
         if created:
             added_artists.append(new_artist)
@@ -69,16 +73,11 @@ class CustomListView(LoginRequiredMixin, ListView):
         name_filter = self.request.GET.get("filter", "")
         return self._filtered_and_sorted(name_filter, self.request.user)
 
-class EventsView(CustomListView):
+class EventsView(baseviews.EventsView):
     template_name = 'pyconcert/show_events_table.html'
-    context_object_name = 'events'
-
-    def _filtered_and_sorted(self, name_filter, user):
-        subscribed_artists = Artist.objects.filter(subscribers=user,
-                                                   name__icontains=name_filter)
-        subscribed_events = Event.objects.filter(artists__in=subscribed_artists,
-                                                 city__iexact=user.userprofile.city)
-        return subscribed_events.order_by("date")
+    event_model = Event
+    originator_model = Artist
+    originator_name = 'artists'
 
 def _unsubscribe_artist(artist, user):
     try:
@@ -150,14 +149,11 @@ class RecommendationsView(CustomListView):
                                                     name__icontains=name_filter).exclude(subscribers=user)
         return _recommended_artists.order_by('-recommendation__score')
 
-class AddArtistsView(LoginRequiredMixin, TemplateView):
+class AddArtistsView(baseviews.AddView):
     template_name = 'pyconcert/add_artists.html'
 
-    def get(self, request):
-        add_artist = request.GET.get("add")
-        if add_artist is not None:
-            _update_artists([add_artist], request.user)
-        return TemplateView.get(self, request)
+    def update_func(self, *args, **kwargs):
+        return _update_artists(*args, **kwargs)
 
 def _parse_json_file(request):
     try:
@@ -230,12 +226,6 @@ class SettingsView(FormView):
         kwargs = super(SettingsView, self).get_form_kwargs()
         kwargs.update({'user': self.request.user})
         return kwargs
-
-class ImpressumView(TemplateView):
-    template_name = 'pyconcert/impressum.html'
-
-class AboutView(TemplateView):
-    template_name = 'pyconcert/about.html'
 
 class ToolView(TemplateView):
     template_name = 'pyconcert/tool.html'

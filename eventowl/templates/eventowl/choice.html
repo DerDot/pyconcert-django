@@ -1,0 +1,17 @@
+{% extends 'eventowl/base.html' %}
+{% load staticfiles%}
+
+{% block content %}
+<legend>Welcome to StarOwl</legend>
+We provide several services to track all the fun aspects of your life.<br>
+<div class="container">
+    <div class="row row-centered">
+        <div class="col-xs-3 col-centered">
+            <a href="{% url 'pybook:show_events' %}"><font size="12"><i class="fa fa-leanpub"></i> Books</font></a>
+        </div>
+        <div class="col-xs-3 col-centered">
+            <a href="{% url 'pyconcert:show_events' %}"><font size="12"><i class="fa fa-music"></i> Concerts</font></a>
+        </div>
+    </div>
+</div>
+{%endblock content %}

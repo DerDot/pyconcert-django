@@ -1,6 +1,8 @@
+from pyconcert.utils import random_string, parse_json
+from eventowl.common_utils import normalize
+
 import urllib, urllib2
 from datetime import datetime
-from pyconcert.utils import random_string, parse_json
 import requests
 import math
 from itertools import izip
@@ -46,11 +48,6 @@ def _split_datetime(date_time):
     proper_datetime = datetime.strptime(date_time, "%Y-%m-%dT%H:%M:%S")
     return proper_datetime.date(), proper_datetime.time()
 
-def normalize_artist(artist_name):
-    if isinstance(artist_name, unicode):
-        artist_name = artist_name.encode("utf8")
-    return artist_name.lower()
-
 def _get_bandsintown_events(artists, location):
     api_call = "http://api.bandsintown.com/events/search"
     args = [("location", location),
@@ -61,9 +58,9 @@ def _get_bandsintown_events(artists, location):
     api_call = "%s?%s" % (api_call, urllib.urlencode(args))
     resp = parse_json(urllib.urlopen(api_call).read())
     ret = []
-    if resp and not resp.has_key('errors'):
+    if resp and not isinstance(resp, dict):
         for event in resp:
-            artists = [normalize_artist(artist["name"]) for artist in event["artists"]]
+            artists = [normalize(artist["name"]) for artist in event["artists"]]
             venue = event["venue"]["name"]
             city = event["venue"]["city"]
             country = event["venue"]["country"]
@@ -176,7 +173,7 @@ def spotify_artists(token, limit=50):
         for track in response["items"]:
             artists = track["track"]["artists"]
             for artist in artists:
-                normalized_artist = normalize_artist(artist["name"])
+                normalized_artist = normalize(artist["name"])
                 all_artists.add(normalized_artist)
         iteration += 1
     return all_artists

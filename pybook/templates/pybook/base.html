@@ -24,16 +24,15 @@
 		          <ul class="nav navbar-nav">
 		          	{% if user.is_authenticated %}
 		          	<li class="dropdown">
-		              <a href="#" class="dropdown-toggle" data-toggle="dropdown"> Add artists <b class="caret"></b></a>
+		              <a href="#" class="dropdown-toggle" data-toggle="dropdown"> Add authors <b class="caret"></b></a>
 		              <ul class="dropdown-menu" role="menu">
-		                <li><a href="{% url 'pyconcert:spotify' %}">Spotify</a></li>
-		                <li><a href="{% url 'pyconcert:upload_json' %}">Local library</a></li>
-		                <li><a href="{% url 'pyconcert:add_artists' %}">Manually</a></li>
-		                <li><a href="{% url 'pyconcert:recommendations' %}">Recommendations</a></li>
+		                <li><a href="{% url 'pybook:add_authors' %}">Manually</a></li>
+		                <li><a href="{% url 'pybook:calibre' %}">Calibre</a></li>
+		                <li><a href="{% url 'pybook:recommendations' %}">Recommendations</a></li>
 		              </ul>
 		            </li>
-		            <li><a href="{% url 'pyconcert:show_artists' %}">Show Artists</a></li>
-		            <li><a href="{% url 'pyconcert:show_events' %}">Show Events</a></li>
+		            <li><a href="{% url 'pybook:show_authors' %}">Show Authors</a></li>
+		            <li><a href="{% url 'pybook:show_events' %}">Show Releases</a></li>
 		            {%endif%}
 		          </ul>
 		          <ul class="nav navbar-nav navbar-right">

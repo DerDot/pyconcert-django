@@ -1,0 +1,23 @@
+{% extends 'pybook/base.html' %}
+{% block content %}
+
+<legend>Add new authors manually. Fits this old school medium just fine.</legend>
+<form action="{% url 'pybook:add_authors' %}" method="get">
+    <div class="input-group">
+      <span class="input-group-addon"><i class="glyphicon glyphicon-book"></i></span>
+      <input id="id_filter"
+           class="form-control"
+           placeholder="New author..."
+           name="add"
+           type="text">
+      <span class="input-group-btn">
+        <button class="btn btn-default" type="submit">Add!</button>
+      </span>
+    </div>
+</form>
+
+{% if request.GET.add %}
+Sucesfully added {{ request.GET.add|title }}. Maybe this author is releasing a <a href="{% url 'pybook:show_events' %}">book</a> soon?
+{% endif %}
+
+{% endblock content %}
