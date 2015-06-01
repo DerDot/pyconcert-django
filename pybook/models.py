@@ -18,7 +18,7 @@ class RecommendedAuthor(models.Model):
 
 class Book(models.Model):
     title = models.CharField(max_length=200)
-    isbn = models.CharField(max_length=20)
+    isbn = models.CharField(max_length=20, null=True)
     date = models.DateField()
     buy_url = models.URLField()
     authors = models.ManyToManyField(Author, related_name='books')

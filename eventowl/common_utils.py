@@ -56,5 +56,5 @@ class EventConnector(object):
     def _all_locations(self):
         locations = set()
         for user_profile in UserProfile.objects.all():
-            locations.add(user_profile.get(self.location_name))
+            locations.add(getattr(user_profile, self.location_name))
         return locations

@@ -1,0 +1,31 @@
+{% extends 'pybook/base.html' %}
+{% load widget_tweaks %}
+{% load staticfiles%}
+
+{% block content %}
+<legend>Upload a csv file with new authors. Nice idea.</legend>
+<p>This file should be in csv format and contain a column called 'authors'. Please keep it under {{max_size_mb}}MB, it's appreciated.</p>
+<p>You can create a file just like this using calibre:
+<ol>
+    <li>Click the dropdown arrow right next to 'convert books'</li>
+    <li>Choose the very concisely named 'Create a catalog of the books in your calibre library'</li>
+    <li>Choose CSV as 'catalog format'</li>
+    <li>In 'CSV/XML settings' make sure at least 'authors' is selected</li>
+    <li>Click OK and voila. Wasn't that hard, was it?</li>
+</ol>
+</p>
+<form class="form-inline" enctype="multipart/form-data" method="post" action="{% url 'pybook:calibre' %}">
+{% csrf_token %}
+<div class="form-group">
+<script src="{% static 'jquery/bootstrap-filestyle.min.js' %}"></script>
+<div class="input-group">
+    {{ form.authors|add_class:"filestyle"}}
+</div>
+<button type="submit" class="btn btn-primary">Upload</button>
+</form>
+
+{% if form.errors %}
+<p><i>Could not upload file: {{ form.errors.authors|striptags }}</i></p>
+{% endif %}
+
+{%endblock content %}

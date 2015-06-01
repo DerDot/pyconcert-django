@@ -1,38 +1,11 @@
+from pyconcertproject import settings
+from eventowl.forms import RestrictedFileField
+
 from django import forms
 from django.core.exceptions import ValidationError
-from django.template.defaultfilters import filesizeformat
 from django.contrib.auth.models import User
 
 from account import forms as account_forms
-
-from pyconcertproject import settings
-
-class RestrictedFileField(forms.FileField):
-
-    def __init__(self, *args, **kwargs):
-        self.content_types = kwargs.pop("content_types")
-        self.max_upload_size = kwargs.pop("max_upload_size")
-
-        forms.FileField.__init__(self, *args, **kwargs)
-
-    def clean(self, data, initial=None):
-        afile = forms.FileField.clean(self, data, initial)
-
-        try:
-            content_type = afile.content_type
-            if content_type in self.content_types:
-                if afile._size > self.max_upload_size:
-                    raise ValidationError('Please keep filesize under %s. Current filesize %s' % (filesizeformat(self.max_upload_size), filesizeformat(afile._size)))
-            else:
-                raise ValidationError('Filetype not supported.')
-        except AttributeError:
-            pass
-
-        return data
-
-class UploadFileForm(forms.Form):
-    artists = RestrictedFileField(content_types=settings.CONTENT_TYPES,
-                                max_upload_size=settings.MAX_UPLOAD_SIZE)
 
 class SignupForm(account_forms.SignupForm):
     city = forms.CharField(max_length=200)
@@ -52,3 +25,7 @@ class SettingsForm(forms.Form):
             User.objects.filter(email__iexact=email).exists()):
             raise ValidationError('E-mail already in use.')
         return cleaned_data
+
+class UploadFileForm(forms.Form):
+    artists = RestrictedFileField(content_types=['application/json'],
+                                  max_upload_size=settings.MAX_UPLOAD_SIZE)

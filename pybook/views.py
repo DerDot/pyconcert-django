@@ -4,6 +4,15 @@ from eventowl import views as baseviews
 from eventowl.common_utils import normalize
 
 from pybook.management.commands.update_releases import ReleaseConnector
+from pybook.forms import UploadFileForm
+
+from django.views.generic import FormView
+from django.core.urlresolvers import reverse_lazy, reverse
+from account.mixins import LoginRequiredMixin
+
+from StringIO import StringIO
+import pandas as pd
+
 
 class EventsView(baseviews.EventsView):
     template_name = 'pybook/show_events_table.html'
@@ -28,3 +37,22 @@ class AddAuthorsView(baseviews.AddView):
 
     def update_func(self, *args, **kwargs):
         return _update_authors(*args, **kwargs)
+
+def _parse_csv(request):
+    author_stream = StringIO(request.FILES["authors"].read())
+    df = pd.read_csv(author_stream,
+                     encoding='utf-8-sig')
+    return set(df['authors'])
+
+class UploadCsv(LoginRequiredMixin, FormView):
+    template_name = 'pybook/upload_csv.html'
+    form_class = UploadFileForm
+
+    def form_valid(self, form):
+        authors = _parse_csv(self.request)
+        self.authors = authors
+        _update_authors(authors, self.request.user)
+        return super(UploadCsv, self).form_valid(form)
+
+    def get_success_url(self):
+        return reverse('pybook:calibre')

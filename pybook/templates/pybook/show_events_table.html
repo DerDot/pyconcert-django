@@ -28,7 +28,7 @@
              </td>
            </tr>
            <tr>
-             <td colspan="2">
+             <td colspan="3">
                {% for author in event.authors.all %}
                   {{ author|title }}
                   {% if not forloop.last %}, {% endif %}
