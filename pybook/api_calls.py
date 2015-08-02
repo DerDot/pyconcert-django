@@ -1,9 +1,10 @@
 from eventowl.common_utils import config, normalize
 
-from amazon.api import AmazonAPI
+import bottlenose
 from datetime import date
 from itertools import izip
-from time import sleep
+
+import xmltodict
 
 class Release(object):
 
@@ -32,25 +33,43 @@ class Release(object):
     def __ne__(self, other):
         return not self.__eq__(other)
 
+def _parse_date(date_string, format="%Y-%m-%d"):
+    try:
+        date.strftime(date_string, format)
+    except:
+        return None
+
+
 def _book_release(author, api):
-    api_releases = api.search(Author=author,
-                              Sort='-publication_date',
-                              SearchIndex='Books')
+    search_result = api.ItemSearch(Author=author,
+                                  Sort='-publication_date',
+                                  SearchIndex='Books',
+                                  ResponseGroup='ItemAttributes')
+    search_result_parsed = xmltodict.parse(search_result)
+    items_dict = search_result_parsed['ItemSearchResponse']['Items']
+    num_results = int(items_dict['TotalResults'])
+
+    if num_results == 0:
+        return []
+
+    api_releases = items_dict['Item']
+    if num_results == 1:
+        api_releases = [api_releases]
 
     num_releases = 0
     releases = []
     for api_release in api_releases:
-        print num_releases
-        sleep(1.1)
-        if (api_release.publication_date is not None and
-            api_release.publication_date >= date.today() and
+        attributes = api_release['ItemAttributes']
+        publication_date = _parse_date(attributes.get('PublicationDate'))
+        if (publication_date is not None and
+            publication_date >= date.today() and
             num_releases < 5):
-            if api_release.edition != "Reprint" and api_release.binding == "Hardcover":
-                release = Release(api_release.title,
-                                  api_release.isbn,
-                                  api_release.publication_date,
-                                  api_release.offer_url,
-                                  [normalize(author) for author in api_release.authors])
+            if attributes.edition != "Reprint" and attributes['Binding'] == "Hardcover":
+                release = Release(attributes['Title'],
+                                  attributes['ISBN'],
+                                  publication_date,
+                                  attributes['OfferUrl'],
+                                  [normalize(attributes['Author'])]) #TODO: other authors?
                 releases.append(release)
                 num_releases += 1
         else:
@@ -59,16 +78,15 @@ def _book_release(author, api):
     return releases
 
 def book_releases(authors, region):
-    api = AmazonAPI(str(config['AWS_ACCESS_KEY_ID']),
-                       str(config['AWS_SECRET_ACCESS_KEY']),
-                       str(config['AWS_ASSOCIATE_TAG']),
-                       region=region)
+    api = bottlenose.Amazon(str(config['AWS_ACCESS_KEY_ID']),
+                            str(config['AWS_SECRET_ACCESS_KEY']),
+                            str(config['AWS_ASSOCIATE_TAG']),
+                            MaxQPS=0.9)
 
     releases = []
     for idx, author in enumerate(authors):
-        print "Working on author number {} of {} ({})".format(idx + 1, len(authors), author)
+        print u"Working on author number {} of {} ({})".format(idx + 1, len(authors), author)
         author_releases = _book_release(author, api)
         releases += author_releases
-        sleep(1)
 
     return releases
