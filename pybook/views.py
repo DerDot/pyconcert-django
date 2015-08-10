@@ -7,7 +7,7 @@ from pybook.management.commands.update_releases import ReleaseConnector
 from pybook.forms import UploadFileForm
 
 from django.views.generic import FormView
-from django.core.urlresolvers import reverse_lazy, reverse
+from django.core.urlresolvers import reverse
 from account.mixins import LoginRequiredMixin
 
 from StringIO import StringIO
@@ -56,3 +56,11 @@ class UploadCsv(LoginRequiredMixin, FormView):
 
     def get_success_url(self):
         return reverse('pybook:calibre')
+
+class AuthorsView(baseviews.OriginatorView):
+    template_name = 'pybook/show_authors.html'
+    context_object_name = 'authors'
+    #unsubscribe_func = _unsubscribe_artist
+    #favorite_func = _favorite_artist
+    #unfavorite_func = _unfavorite_artist
+    originator_model = Author

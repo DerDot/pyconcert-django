@@ -16,6 +16,7 @@ from pyconcertproject import settings
 from pyconcert.api_calls import spotify_auth, spotify_token
 from pyconcert.tasks import spotify_artists, update_recommended_artists
 
+
 def _update_artists(new_artists, user):
     added_artists = []
     for new_artist in new_artists:
@@ -27,10 +28,12 @@ def _update_artists(new_artists, user):
         artist.subscribers.add(user)
     update_events(added_artists, [user.userprofile.city])
 
+
 def _user_events(user):
     artists = Artist.objects.filter(subscribers=user)
     events = Event.objects.filter(artists=artists).distinct()
     return events
+
 
 @login_required
 def spotify(request):
@@ -61,6 +64,7 @@ def spotify(request):
     else:
         return render(request, 'pyconcert/spotify.html')
 
+
 class EventsView(baseviews.EventsView):
     template_name = 'pyconcert/show_events_table.html'
     event_model = Event
@@ -71,6 +75,7 @@ class EventsView(baseviews.EventsView):
         pre_filtered = super(self.__class__, self)._filtered_and_sorted(name_filter, user)
         return pre_filtered.filter(city__iexact=user.userprofile.city)
 
+
 def _unsubscribe_artist(artist, user):
     try:
         artist = Artist.objects.get(name=artist)
@@ -79,9 +84,11 @@ def _unsubscribe_artist(artist, user):
     except Artist.DoesNotExist:
         pass
 
+
 def _update_recommendations(user):
     artists = [a.name for a in Artist.objects.filter(favoritedby=user)]
     update_recommended_artists.delay(artists, user.username)
+
 
 def _unfavorite_artist(artist, user):
     try:
@@ -91,39 +98,21 @@ def _unfavorite_artist(artist, user):
     except Artist.DoesNotExist:
         pass
 
+
 def _favorite_artist(artist, user):
     artist = Artist.objects.get(name=artist)
     artist.favoritedby.add(user)
     _update_recommendations(user)
 
-class ArtistsView(baseviews.CustomListView):
+
+class ArtistsView(baseviews.OriginatorView):
     template_name = 'pyconcert/show_artists.html'
     context_object_name = 'artists'
+    unsubscribe_func = _unsubscribe_artist
+    favorite_func = _favorite_artist
+    unfavorite_func = _unfavorite_artist
+    originator_model = Artist
 
-    def get(self, request):
-        unsubscribe = request.GET.get("remove")
-        if unsubscribe is not None:
-            _unsubscribe_artist(unsubscribe, request.user)
-
-        favorite = request.GET.get("favorite")
-        if favorite is not None:
-            _favorite_artist(favorite, request.user)
-
-        unfavorite = request.GET.get("unfavorite")
-        if unfavorite is not None:
-            _unfavorite_artist(unfavorite, request.user)
-
-        return baseviews.CustomListView.get(self, request)
-
-    def get_context_data(self, **kwargs):
-        context = super(ArtistsView, self).get_context_data(**kwargs)
-        context['favorites'] = Artist.objects.filter(favoritedby=self.request.user)
-        return context
-
-    def _filtered_and_sorted(self, name_filter, user):
-        subscribed_artists = Artist.objects.filter(subscribers=user,
-                                                   name__icontains=name_filter)
-        return subscribed_artists.order_by("name")
 
 class RecommendationsView(baseviews.CustomListView):
     template_name = 'pyconcert/recommendations.html'
@@ -141,11 +130,13 @@ class RecommendationsView(baseviews.CustomListView):
                                                     name__icontains=name_filter).exclude(subscribers=user)
         return _recommended_artists.order_by('-recommendation__score')
 
+
 class AddArtistsView(baseviews.AddView):
     template_name = 'pyconcert/add_artists.html'
 
     def update_func(self, *args, **kwargs):
         return _update_artists(*args, **kwargs)
+
 
 def _parse_json_file(request):
     try:
@@ -153,6 +144,7 @@ def _parse_json_file(request):
     except ValueError:
         parsed = []
     return parsed
+
 
 @login_required
 def upload_json(request):
@@ -173,6 +165,7 @@ def upload_json(request):
                   {'form': form,
                    'max_size_mb': settings.MAX_UPLOAD_SIZE / 1024 ** 2})
 
+
 class SignupView(account_views.SignupView):
     form_class = SignupForm
 
@@ -185,6 +178,7 @@ class SignupView(account_views.SignupView):
                                                              city=form.cleaned_data["city"])
         if created:
             profile.save()
+
 
 class SettingsView(FormView):
     template_name = 'account/settings.html'
@@ -218,6 +212,7 @@ class SettingsView(FormView):
         kwargs = super(SettingsView, self).get_form_kwargs()
         kwargs.update({'user': self.request.user})
         return kwargs
+
 
 class ToolView(TemplateView):
     template_name = 'pyconcert/tool.html'

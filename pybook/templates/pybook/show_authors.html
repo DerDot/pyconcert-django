@@ -1,27 +1,27 @@
-{% extends 'pyconcert/base.html' %}
+{% extends 'pybook/base.html' %}
 {% block content %}
 
-<legend>Have a look at all your subscribed artists.</legend>
-<form action="{% url 'pyconcert:show_artists' %}" method="get">
+<legend>Have a look at all your subscribed authors.</legend>
+<form action="{% url 'pybook:show_authors' %}" method="get">
     {% include "eventowl/filter.html"%}
 </form>
 
-{% if artists %}
-    <form action="{% url 'pyconcert:show_artists' %}" method="get">
+{% if authors %}
+    <form action="{% url 'pybook:show_authors' %}" method="get">
     <ul class="list-group">
     <button type="submit" style="display:none;"></button>
-    {% for artist in artists %}
+    {% for author in authors %}
         <li class="list-group-item">
-	        {{ artist.name|title }}
-	        <button type="submit" class="btn btn-xs pull-right" name="remove" value="{{ artist.name }}">
+	        {{ author.name|title }}
+	        <button type="submit" class="btn btn-xs pull-right" name="remove" value="{{ author.name }}">
 	            <span class="glyphicon glyphicon-remove"></span>
 	        </button>
 	        {% if artist in favorites %}
-		        <button type="submit" class="btn btn-xs pull-right" name="unfavorite" value="{{ artist.name }}">
+		        <button type="submit" class="btn btn-xs pull-right" name="unfavorite" value="{{ author.name }}">
 	                 <font color="DarkOrange"><span class="glyphicon glyphicon-star"></span></font>
 	            </button>
 	        {% else %}
-	            <button type="submit" class="btn btn-xs pull-right" name="favorite" value="{{ artist.name }}">
+	            <button type="submit" class="btn btn-xs pull-right" name="favorite" value="{{ author.name }}">
                      <span class="glyphicon glyphicon-star"></span>
                 </button>
 	        {% endif %}
@@ -33,9 +33,9 @@
 
 {% else %}
     {% if request.GET.filter%}
-        <p>No artists matching {{ request.GET.filter }}.</p>
+        <p>No authors matching {{ request.GET.filter }}.</p>
     {% else %}
-        <p>You are not subscribed to any artists yet. Add some :)</p>
+        <p>You are not subscribed to any authors yet. Add some :)</p>
     {% endif %}
 {% endif %}
 
