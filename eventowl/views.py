@@ -1,6 +1,7 @@
+from datetime import date, timedelta
+
 from django.views.generic import TemplateView
 from django.views.generic import ListView
-
 from account.mixins import LoginRequiredMixin
 
 from pyconcertproject import settings
@@ -29,7 +30,10 @@ class EventsView(CustomListView):
         subscribed_originators = self.originator_model.objects.filter(subscribers=user,
                                                                       name__icontains=name_filter)
         #kwargs = {'city__iexact': user.userprofile.city,
-        kwargs = {self.originator_name + '__in': subscribed_originators}
+        oldest_shown = date.today() - timedelta(days=settings.DAYS_BACK)
+        
+        kwargs = {self.originator_name + '__in': subscribed_originators,
+                  'date__gte': oldest_shown}
         subscribed_events = self.event_model.objects.filter(**kwargs)
         return subscribed_events.order_by("date")
 

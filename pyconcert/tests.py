@@ -1,14 +1,19 @@
 # -*- coding: utf-8 -*-
 from StringIO import StringIO
-from datetime import date, time
+from datetime import date, time, timedelta
 import json
 
 from django.test import TestCase
-
-import api_calls
+from django.contrib.auth.models import User
 from nose.tools import assert_equal, assert_list_equal
 
+import api_calls
+from pyconcert.models import Artist, Event
+from pyconcert.views import EventsView
+
+
 ori_urlopen = api_calls.urllib.urlopen
+
 
 def urlopen_bit_mock(*args, **kwargs):
     response = [{u'url': u'test.com',
@@ -30,6 +35,7 @@ def urlopen_bit_mock(*args, **kwargs):
                  u'id': 1234567}]
     file_like = StringIO(json.dumps(response))
     return file_like
+
 
 class APITestCase(TestCase):
     def setUp(self):
@@ -62,3 +68,36 @@ class APITestCase(TestCase):
                                  date(2015, 5, 13), time(19), 'test.com?app_id=pyconcert')
         expected = "Event by ümlautbänd in Webster Hall (New York, United States)."
         assert_equal(result.__repr__(), expected)
+
+
+class EventsViewTest(TestCase):
+    
+    def setUp(self):
+        self.user = User.objects.create()
+        self.artist = Artist.objects.create(name="TestArtist",
+                                            genre="TestGenre")
+        self.artist.subscribers.add(self.user)
+        
+        self.event1 = Event.objects.create(venue="TestVenue1",
+                                           city="TestCity1",
+                                           country="TestCountry1",
+                                           date=date.today() - timedelta(days=8),
+                                           time=time(19),
+                                           ticket_url="www.test1.url")
+        self.event1.artists.add(self.artist)
+        
+        self.event2 = Event.objects.create(venue="TestVenue2",
+                                           city="TestCity2",
+                                           country="TestCountry2",
+                                           date=date.today() + timedelta(days=7),
+                                           time=time(19),
+                                           ticket_url="www.test2.url")
+        self.event2.artists.add(self.artist)
+        
+    def test_correct_events(self):
+        target = EventsView()
+        filtered_query_set = target._filtered_and_sorted(self.artist.name,
+                                                         self.user)
+        actual = list(filtered_query_set)
+        expected = [self.event2]
+        assert_list_equal(actual, expected)

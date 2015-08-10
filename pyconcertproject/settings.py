@@ -120,3 +120,5 @@ EMAIL_HOST = 'smtp.host'
 EMAIL_PORT = 587
 EMAIL_HOST_USER = 'mail@pyconcert'
 EMAIL_HOST_PASSWORD = 'password'
+
+DAYS_BACK = 3
