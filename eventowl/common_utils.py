@@ -35,7 +35,6 @@ class EventConnector(object):
 
     def update_events(self, originators):
         for location in self.locations:
-            print "Updating events for", location
             api_events = self._get_event(originators, location)
             for api_event in api_events:
                 event, created = self._get_or_create_object(api_event)

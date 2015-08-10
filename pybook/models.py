@@ -17,10 +17,10 @@ class RecommendedAuthor(models.Model):
     score = models.FloatField(null=True)
 
 class Book(models.Model):
-    title = models.CharField(max_length=200)
+    title = models.CharField(max_length=300)
     isbn = models.CharField(max_length=20, null=True)
     date = models.DateField()
-    buy_url = models.URLField()
+    buy_url = models.URLField(max_length=300)
     authors = models.ManyToManyField(Author, related_name='books')
 
     def __unicode__(self):

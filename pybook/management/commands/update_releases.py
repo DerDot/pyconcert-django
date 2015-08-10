@@ -5,6 +5,7 @@ from eventowl.common_utils import EventConnector
 from pybook.models import Book, Author
 from pybook.api_calls import book_releases
 
+
 class ReleaseConnector(EventConnector):
     originator_name = 'authors'
     originator_model = Author
@@ -19,6 +20,7 @@ class ReleaseConnector(EventConnector):
                                                       date=api_release.date,
                                                       buy_url=api_release.buy_url)
         return release, created
+
 
 class Command(BaseCommand):
     help = 'Update book releases for all authors. Used by cron.'

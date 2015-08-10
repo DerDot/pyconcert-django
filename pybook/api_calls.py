@@ -1,10 +1,12 @@
 from eventowl.common_utils import config, normalize
 
 import bottlenose
-from datetime import date
+from datetime import date, datetime
 from itertools import izip
 
 import xmltodict
+from pprint import pprint
+from eventowl.utils import as_list
 
 class Release(object):
 
@@ -33,11 +35,20 @@ class Release(object):
     def __ne__(self, other):
         return not self.__eq__(other)
 
-def _parse_date(date_string, format="%Y-%m-%d"):
+def _parse_date(date_string, format_string="%Y-%m-%d"):
     try:
-        date.strftime(date_string, format)
+        return datetime.strptime(date_string, format_string).date()
     except:
         return None
+
+
+def is_first_release(attributes):
+    edition = attributes.get('Edition')
+    binding = attributes.get('Binding')
+
+    return (edition != "Reprint" and
+            (binding is None or
+             binding == "Hardcover"))
 
 
 def _book_release(author, api):
@@ -61,15 +72,19 @@ def _book_release(author, api):
     for api_release in api_releases:
         attributes = api_release['ItemAttributes']
         publication_date = _parse_date(attributes.get('PublicationDate'))
+
         if (publication_date is not None and
             publication_date >= date.today() and
             num_releases < 5):
-            if attributes.edition != "Reprint" and attributes['Binding'] == "Hardcover":
+
+            if is_first_release(attributes):
+                authors = as_list(attributes['Author'])
+                normalized_authors = [normalize(author) for author in authors]
                 release = Release(attributes['Title'],
                                   attributes['ISBN'],
                                   publication_date,
-                                  attributes['OfferUrl'],
-                                  [normalize(attributes['Author'])]) #TODO: other authors?
+                                  api_release['DetailPageURL'],
+                                  normalized_authors)
                 releases.append(release)
                 num_releases += 1
         else:
