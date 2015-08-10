@@ -2,10 +2,9 @@ from models import Event, Artist
 
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from django.views.generic import ListView, FormView, TemplateView
+from django.views.generic import FormView, TemplateView
 
 from account import views as account_views
-from account.mixins import LoginRequiredMixin
 
 from eventowl import views as baseviews
 from eventowl.models import UserProfile
@@ -62,16 +61,6 @@ def spotify(request):
     else:
         return render(request, 'pyconcert/spotify.html')
 
-class CustomListView(LoginRequiredMixin, ListView):
-    paginate_by = settings.PAGINATION_SIZE
-
-    def _filtered_and_sorted(self, name_filter, user):
-        raise NotImplementedError
-
-    def get_queryset(self):
-        name_filter = self.request.GET.get("filter", "")
-        return self._filtered_and_sorted(name_filter, self.request.user)
-
 class EventsView(baseviews.EventsView):
     template_name = 'pyconcert/show_events_table.html'
     event_model = Event
@@ -103,7 +92,7 @@ def _favorite_artist(artist, user):
     artist.favoritedby.add(user)
     _update_recommendations(user)
 
-class ArtistsView(CustomListView):
+class ArtistsView(baseviews.CustomListView):
     template_name = 'pyconcert/show_artists.html'
     context_object_name = 'artists'
 
@@ -120,7 +109,7 @@ class ArtistsView(CustomListView):
         if unfavorite is not None:
             _unfavorite_artist(unfavorite, request.user)
 
-        return CustomListView.get(self, request)
+        return baseviews.CustomListView.get(self, request)
 
     def get_context_data(self, **kwargs):
         context = super(ArtistsView, self).get_context_data(**kwargs)
@@ -132,7 +121,7 @@ class ArtistsView(CustomListView):
                                                    name__icontains=name_filter)
         return subscribed_artists.order_by("name")
 
-class RecommendationsView(CustomListView):
+class RecommendationsView(baseviews.CustomListView):
     template_name = 'pyconcert/recommendations.html'
     context_object_name = 'artists'
 
@@ -141,7 +130,7 @@ class RecommendationsView(CustomListView):
         if new_artist is not None:
             _update_artists([new_artist], request.user)
 
-        return CustomListView.get(self, request)
+        return baseviews.CustomListView.get(self, request)
 
     def _filtered_and_sorted(self, name_filter, user):
         _recommended_artists = Artist.objects.filter(recommendedtos=user,
