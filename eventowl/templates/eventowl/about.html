@@ -3,7 +3,10 @@
 
 {% block content %}
 <legend>About EventOwl.<img src="{% static 'icons/eventowl.png' %}"></legend>
-<b>EventOwl</b> helps you find events by you favourite artists.
-What sets it apart is the multitude of options to import all your artists and see all their events at a glance.
-And of course the huge amounts of fun to be had here :)
+<b>EventOwl</b> aims to be your one stop solution to find everything that is fun around you.
+You can find concerts of your <a href="{% url 'pyconcert:show_artists' %}">favorite artists</a> around where you live.
+And as we know better than you what kind of music you like, we of course also offer a <a href="{% url 'pyconcert:recommendations' %}">artists recommendation</a>.<br/>
+As life would pretty boring without books (or is it pretty boring with books in it?) we also tell you when your <a href="{% url 'pybook:show_authors' %}">favorite authors</a> publish a new book.
+Pretty nifty, huh?<br/>
+So, please enjoy your stay here and have as much fun as possible!
 {%endblock content %}
