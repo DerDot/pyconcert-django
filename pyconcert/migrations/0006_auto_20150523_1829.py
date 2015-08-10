@@ -7,7 +7,7 @@ from django.db import models, migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('pyconcert', '0005_favoritedby'),
+        ('pyconcert', '0003_auto_20150511_1234'),
     ]
 
     operations = [
