@@ -29,9 +29,9 @@ class EventsView(CustomListView):
     def _filtered_and_sorted(self, name_filter, user):
         subscribed_originators = self.originator_model.objects.filter(subscribers=user,
                                                                       name__icontains=name_filter)
-        #kwargs = {'city__iexact': user.userprofile.city,
+
         oldest_shown = date.today() - timedelta(days=settings.DAYS_BACK)
-        
+
         kwargs = {self.originator_name + '__in': subscribed_originators,
                   'date__gte': oldest_shown}
         subscribed_events = self.event_model.objects.filter(**kwargs)

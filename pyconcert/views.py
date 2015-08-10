@@ -67,6 +67,10 @@ class EventsView(baseviews.EventsView):
     originator_model = Artist
     originator_name = 'artists'
 
+    def _filtered_and_sorted(self, name_filter, user):
+        pre_filtered = super(self.__class__, self)._filtered_and_sorted(name_filter, user)
+        return pre_filtered.filter(city__iexact=user.userprofile.city)
+
 def _unsubscribe_artist(artist, user):
     try:
         artist = Artist.objects.get(name=artist)

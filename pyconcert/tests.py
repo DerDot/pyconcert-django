@@ -10,6 +10,7 @@ from nose.tools import assert_equal, assert_list_equal
 import api_calls
 from pyconcert.models import Artist, Event
 from pyconcert.views import EventsView
+from eventowl.models import UserProfile
 
 
 ori_urlopen = api_calls.urllib.urlopen
@@ -71,29 +72,48 @@ class APITestCase(TestCase):
 
 
 class EventsViewTest(TestCase):
-    
+
     def setUp(self):
+        TOO_OLD = date.today() - timedelta(days=8)
+        NEW_ENOUGH = date.today() + timedelta(days=7)
+
+        USER_CITY = "UserCity"
+        OTHER_CITY = "OtherCity"
+
+
         self.user = User.objects.create()
+        user_profile = UserProfile.objects.create(user=self.user,
+                                                  city=USER_CITY,
+                                                  api_region='US')
+
         self.artist = Artist.objects.create(name="TestArtist",
                                             genre="TestGenre")
         self.artist.subscribers.add(self.user)
-        
+
         self.event1 = Event.objects.create(venue="TestVenue1",
-                                           city="TestCity1",
+                                           city=USER_CITY,
                                            country="TestCountry1",
-                                           date=date.today() - timedelta(days=8),
+                                           date=TOO_OLD,
                                            time=time(19),
                                            ticket_url="www.test1.url")
         self.event1.artists.add(self.artist)
-        
+
         self.event2 = Event.objects.create(venue="TestVenue2",
-                                           city="TestCity2",
+                                           city=USER_CITY,
                                            country="TestCountry2",
-                                           date=date.today() + timedelta(days=7),
+                                           date=NEW_ENOUGH,
                                            time=time(19),
                                            ticket_url="www.test2.url")
         self.event2.artists.add(self.artist)
-        
+
+        self.event3 = Event.objects.create(venue="TestVenue3",
+                                           city=OTHER_CITY,
+                                           country="TestCountry3",
+                                           date=NEW_ENOUGH,
+                                           time=time(19),
+                                           ticket_url="www.test3.url")
+        self.event3.artists.add(self.artist)
+
     def test_correct_events(self):
         target = EventsView()
         filtered_query_set = target._filtered_and_sorted(self.artist.name,
