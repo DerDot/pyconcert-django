@@ -2,7 +2,12 @@ from datetime import date, timedelta
 
 from django.views.generic import TemplateView
 from django.views.generic import ListView
+from django.views.generic import FormView
 from account.mixins import LoginRequiredMixin
+from account import views as account_views
+
+from eventowl.models import UserProfile
+from eventowl.forms import SignupForm, SettingsForm
 
 from pyconcertproject import settings
 
@@ -90,3 +95,51 @@ class ImpressumView(TemplateView):
 
 class AboutView(TemplateView):
     template_name = 'eventowl/about.html'
+
+
+class SignupView(account_views.SignupView):
+    form_class = SignupForm
+
+    def after_signup(self, form):
+        self.create_profile(form)
+        super(SignupView, self).after_signup(form)
+
+    def create_profile(self, form):
+        profile, created = UserProfile.objects.get_or_create(user=self.created_user,
+                                                             city=form.cleaned_data["city"])
+        if created:
+            profile.save()
+
+
+class SettingsView(FormView):
+    template_name = 'account/settings.html'
+    form_class = SettingsForm
+    success_url = '/account/settings'
+
+    def get_initial(self):
+        initial = super(SettingsView, self).get_initial()
+        initial['email'] = self.request.user.email
+        initial['city'] = self.request.user.userprofile.city
+        return initial
+
+    def form_valid(self, form):
+        user = self.request.user
+        user.email = form.cleaned_data['email']
+
+        old_city = user.userprofile.city
+        new_city = form.cleaned_data['city']
+        user.userprofile.city = new_city
+
+        user.save()
+        user.userprofile.save()
+
+        if old_city != new_city:
+            subscribed_artists = [artist.name for artist in user.artists.all()]
+            update_events(subscribed_artists, [new_city])  # TODO: do in subclass 
+
+        return super(SettingsView, self).form_valid(form)
+
+    def get_form_kwargs(self):
+        kwargs = super(SettingsView, self).get_form_kwargs()
+        kwargs.update({'user': self.request.user})
+        return kwargs
