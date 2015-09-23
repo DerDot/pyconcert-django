@@ -14,8 +14,7 @@ class APITestCase(TestCase):
 
     def test_book_releases(self):
         authors = ['terry pratchett', 'neil gaiman', 'ben aaronovitch']
-        region = ['US']
-        api_calls.book_releases(authors, region)
+        api_calls.book_releases(authors)
         
         
 class EventsViewTest(TestCase):

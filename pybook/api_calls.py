@@ -1,12 +1,14 @@
-from eventowl.common_utils import config, normalize
-
-import bottlenose
-from datetime import date, datetime
+from datetime import date
 from itertools import izip
+import urllib
 
 import xmltodict
-from pprint import pprint
+
+from eventowl.common_utils import config, normalize
 from eventowl.utils import as_list
+
+GOODREADS_URL = 'https://goodreads.com'
+
 
 class Release(object):
 
@@ -35,73 +37,87 @@ class Release(object):
     def __ne__(self, other):
         return not self.__eq__(other)
 
-def _parse_date(date_string, format_string="%Y-%m-%d"):
-    try:
-        return datetime.strptime(date_string, format_string).date()
-    except:
+
+def _publication_date(book):
+    day = book['publication_day']
+    month = book['publication_month']
+    year = book['publication_year']
+    if day is None or month is None or year is None:
         return None
+    else:
+        return date(int(year),
+                    int(month),
+                    int(day))
 
 
-def is_first_release(attributes):
-    edition = attributes.get('Edition')
-    binding = attributes.get('Binding')
+def _id_for_author_name(author_name):
+    print "    Getting ID..."
+    url_parameters = {'base_url': GOODREADS_URL,
+                      'author_name': author_name,
+                      'key': config['GOODREADS_KEY']}
 
-    return (edition != "Reprint" and
-            (binding is None or
-             binding == "Hardcover"))
+    url = '{base_url}/api/author_url/{author_name}?key={key}'.format(**url_parameters)
+    resp = urllib.urlopen(url).read()
+    print "    Got response"
+    result = xmltodict.parse(resp)
+    print "    Parsed Response"
+    return result['GoodreadsResponse']['author']['@id']
 
 
-def _book_release(author, api):
-    search_result = api.ItemSearch(Author=author,
-                                  Sort='-publication_date',
-                                  SearchIndex='Books',
-                                  ResponseGroup='ItemAttributes')
-    search_result_parsed = xmltodict.parse(search_result)
-    items_dict = search_result_parsed['ItemSearchResponse']['Items']
-    num_results = int(items_dict['TotalResults'])
+def _call_book_api(url_parameters):
+    print "    Reading page", url_parameters['page']
+    url = '{base_url}/author/list/{author_id}?key={key}&page={page}'.format(**url_parameters)
+    resp = urllib.urlopen(url).read()
+    print "    Got response"
+    parsed = xmltodict.parse(resp)
+    print "    Parsed response"
+    results = parsed['GoodreadsResponse']['author']['books']['book']
+    num_books_current = parsed['GoodreadsResponse']['author']['books']['@end']
+    num_books_total = parsed['GoodreadsResponse']['author']['books']['@total']
+    return results, num_books_current < num_books_total
 
-    if num_results == 0:
-        return []
 
-    api_releases = items_dict['Item']
-    if num_results == 1:
-        api_releases = [api_releases]
+def _books_by_author(author_id):
+    url_parameters = {'base_url': GOODREADS_URL,
+                      'author_id': author_id,
+                      'key': config['GOODREADS_KEY'],
+                      'page': 1}
 
-    num_releases = 0
+    all_results, more_pages = _call_book_api(url_parameters)
+    while more_pages:
+        url_parameters['page'] += 1
+        results, more_pages = _call_book_api(url_parameters)
+        all_results.extend(results)
+
+    return all_results
+
+
+def _book_release(author_name):
+    author_id = _id_for_author_name(author_name)
+    author_books = _books_by_author(author_id)
+
     releases = []
-    for api_release in api_releases:
-        attributes = api_release['ItemAttributes']
-        publication_date = _parse_date(attributes.get('PublicationDate'))
-
+    for book in author_books:
+        publication_date = _publication_date(book)
         if (publication_date is not None and
-            publication_date >= date.today() and
-            num_releases < 5):
-
-            if is_first_release(attributes):
-                authors = as_list(attributes['Author'])
-                normalized_authors = [normalize(author) for author in authors]
-                release = Release(attributes['Title'],
-                                  attributes['ISBN'],
-                                  publication_date,
-                                  api_release['DetailPageURL'],
-                                  normalized_authors)
-                releases.append(release)
-                num_releases += 1
-        else:
-            break
+            publication_date >= date.today()):
+            authors = as_list(book['authors']['author'])
+            normalized_authors = [normalize(author['name']) for author in authors]
+            release = Release(book['title'],
+                              book['isbn'],
+                              publication_date,
+                              book['link'],
+                              normalized_authors)
+            releases.append(release)
 
     return releases
 
-def book_releases(authors, region):
-    api = bottlenose.Amazon(str(config['AWS_ACCESS_KEY_ID']),
-                            str(config['AWS_SECRET_ACCESS_KEY']),
-                            str(config['AWS_ASSOCIATE_TAG']),
-                            MaxQPS=0.9)
 
+def book_releases(authors):
     releases = []
     for idx, author in enumerate(authors):
         print u"Working on author number {} of {} ({})".format(idx + 1, len(authors), author)
-        author_releases = _book_release(author, api)
+        author_releases = _book_release(author)
         releases += author_releases
 
     return releases

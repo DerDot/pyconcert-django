@@ -11,8 +11,8 @@ class ReleaseConnector(EventConnector):
     originator_model = Author
     location_name = 'api_region'
 
-    def _get_event(self, authors, region):
-        return book_releases(authors, region)
+    def _get_event(self, authors, *args, **kwargs):
+        return book_releases(authors)
 
     def _get_or_create_object(self, api_release):
         release, created = Book.objects.get_or_create(title=api_release.title,
