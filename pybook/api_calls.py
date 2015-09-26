@@ -1,3 +1,4 @@
+from collections import OrderedDict
 from datetime import date
 from itertools import izip
 import urllib
@@ -103,8 +104,10 @@ def _book_release(author_name):
             publication_date >= date.today()):
             authors = as_list(book['authors']['author'])
             normalized_authors = [normalize(author['name']) for author in authors]
+            api_isbn = book['isbn']
+            isbn = None if isinstance(api_isbn, OrderedDict) else api_isbn
             release = Release(book['title'],
-                              book['isbn'],
+                              isbn,
                               publication_date,
                               book['link'],
                               normalized_authors)

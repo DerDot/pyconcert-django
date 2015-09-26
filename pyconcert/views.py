@@ -8,7 +8,7 @@ from eventowl import views as baseviews
 from eventowl.common_utils import normalize, parse_json
 
 from pyconcert.forms import UploadFileForm
-from pyconcert.management.commands.update_events import update_events
+from pyconcert.management.commands.update_events import ConcertConnector
 from pyconcertproject import settings
 from pyconcert.api_calls import spotify_auth, spotify_token
 from pyconcert.tasks import spotify_artists, update_recommended_artists
@@ -23,7 +23,8 @@ def _update_artists(new_artists, user):
             added_artists.append(new_artist)
             artist.save()
         artist.subscribers.add(user)
-    update_events(added_artists, [user.userprofile.city])
+    con = ConcertConnector()
+    con.update_events(added_artists, cities=[user.userprofile.city])
 
 
 def _user_events(user):

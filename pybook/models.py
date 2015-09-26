@@ -1,9 +1,9 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+
 class Author(models.Model):
     name = models.CharField(max_length=200)
-    binding = models.CharField(max_length=200)
     subscribers = models.ManyToManyField(User, related_name='authors')
     recommendedtos = models.ManyToManyField(User, through='RecommendedAuthor')
     favoritedby = models.ManyToManyField(User, related_name='favorit_authors')
@@ -11,10 +11,12 @@ class Author(models.Model):
     def __unicode__(self):
         return unicode(self.name)
 
+
 class RecommendedAuthor(models.Model):
     artist = models.ForeignKey(Author, related_name="recommendation")
     user = models.ForeignKey(User)
     score = models.FloatField(null=True)
+
 
 class Book(models.Model):
     title = models.CharField(max_length=300)

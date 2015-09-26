@@ -29,7 +29,7 @@ def _update_authors(new_authors, user):
             added_authors.append(new_author)
             author.save()
         author.subscribers.add(user)
-    con = ReleaseConnector([user.userprofile.api_region])
+    con = ReleaseConnector()
     con.update_events(added_authors)
 
 class AddAuthorsView(baseviews.AddView):
