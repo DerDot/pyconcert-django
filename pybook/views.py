@@ -19,6 +19,7 @@ class EventsView(baseviews.EventsView):
     originator_model = Author
     originator_name = 'authors'
 
+
 def _update_authors(new_authors, user):
     added_authors = []
     for new_author in new_authors:
