@@ -1,12 +1,10 @@
-from models import Event, Artist
-
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.views.generic import TemplateView
 
+from models import Event, Artist
 from eventowl import views as baseviews
-from eventowl.common_utils import normalize, parse_json
-
+from eventowl.utils.string_helpers import normalize, parse_json
 from pyconcert.forms import UploadFileForm
 from pyconcert.management.commands.update_events import ConcertConnector
 from pyconcertproject import settings
@@ -74,41 +72,10 @@ class EventsView(baseviews.EventsView):
         return pre_filtered.filter(city__iexact=user.userprofile.city)
 
 
-def _unsubscribe_artist(artist, user):
-    try:
-        artist = Artist.objects.get(name=artist)
-        artist.subscribers.remove(user)
-        _unfavorite_artist(artist, user)
-    except Artist.DoesNotExist:
-        pass
-
-
-def _update_recommendations(user):
-    artists = [a.name for a in Artist.objects.filter(favoritedby=user)]
-    update_recommended_artists.delay(artists, user.username)
-
-
-def _unfavorite_artist(artist, user):
-    try:
-        artist = Artist.objects.get(name=artist)
-        artist.favoritedby.remove(user)
-        _update_recommendations(user)
-    except Artist.DoesNotExist:
-        pass
-
-
-def _favorite_artist(artist, user):
-    artist = Artist.objects.get(name=artist)
-    artist.favoritedby.add(user)
-    _update_recommendations(user)
-
-
 class ArtistsView(baseviews.OriginatorView):
     template_name = 'pyconcert/show_artists.html'
     context_object_name = 'artists'
-    unsubscribe_func = _unsubscribe_artist
-    favorite_func = _favorite_artist
-    unfavorite_func = _unfavorite_artist
+    update_recommendation_func = update_recommended_artists
     originator_model = Artist
 
 

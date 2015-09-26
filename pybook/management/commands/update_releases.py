@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 
-from eventowl.common_utils import EventConnector
+from eventowl.utils.common_functions import EventConnector
 
 from pybook.models import Book, Author
 from pybook.api_calls import book_releases

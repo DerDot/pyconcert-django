@@ -1,17 +1,16 @@
-from models import Book, Author
-
-from eventowl import views as baseviews
-from eventowl.common_utils import normalize
-
-from pybook.management.commands.update_releases import ReleaseConnector
-from pybook.forms import UploadFileForm
+from StringIO import StringIO
 
 from django.views.generic import FormView
 from django.core.urlresolvers import reverse
 from account.mixins import LoginRequiredMixin
-
-from StringIO import StringIO
 import pandas as pd
+
+from models import Book, Author
+from eventowl import views as baseviews
+from eventowl.utils.string_helpers import normalize
+from pybook.management.commands.update_releases import ReleaseConnector
+from pybook.forms import UploadFileForm
+from pybook.tasks import update_recommended_authors
 
 
 class EventsView(baseviews.EventsView):
@@ -32,17 +31,20 @@ def _update_authors(new_authors, user):
     con = ReleaseConnector()
     con.update_events(added_authors)
 
+
 class AddAuthorsView(baseviews.AddView):
     template_name = 'pybook/add_authors.html'
 
     def update_func(self, *args, **kwargs):
         return _update_authors(*args, **kwargs)
 
+
 def _parse_csv(request):
     author_stream = StringIO(request.FILES["authors"].read())
     df = pd.read_csv(author_stream,
                      encoding='utf-8-sig')
     return set(df['authors'])
+
 
 class UploadCsv(LoginRequiredMixin, FormView):
     template_name = 'pybook/upload_csv.html'
@@ -57,10 +59,9 @@ class UploadCsv(LoginRequiredMixin, FormView):
     def get_success_url(self):
         return reverse('pybook:calibre')
 
+
 class AuthorsView(baseviews.OriginatorView):
     template_name = 'pybook/show_authors.html'
     context_object_name = 'authors'
-    #unsubscribe_func = _unsubscribe_artist
-    #favorite_func = _favorite_artist
-    #unfavorite_func = _unfavorite_artist
+    update_recommendation_func = update_recommended_authors
     originator_model = Author

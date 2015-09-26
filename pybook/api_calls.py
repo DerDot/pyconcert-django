@@ -5,8 +5,9 @@ import urllib
 
 import xmltodict
 
-from eventowl.common_utils import config, normalize
-from eventowl.utils import as_list
+from eventowl.utils import config
+from eventowl.utils.string_helpers import normalize
+from eventowl.utils.collection_helpers import as_list
 
 GOODREADS_URL = 'https://goodreads.com'
 

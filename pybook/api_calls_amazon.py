@@ -1,12 +1,13 @@
-from eventowl.common_utils import config, normalize
-
-import bottlenose
 from datetime import date, datetime
 from itertools import izip
 
+import bottlenose
 import xmltodict
-from pprint import pprint
-from eventowl.utils import as_list
+
+from eventowl.utils import config
+from eventowl.utils.collection_helpers import as_list
+from eventowl.utils.string_helpers import  normalize
+
 
 class Release(object):
 

@@ -57,24 +57,21 @@ class AddView(LoginRequiredMixin, TemplateView):
 class OriginatorView(CustomListView):
     template_name = None
     context_object_name = None
-    unsubscribe_func = None
-    favorite_func = None
-    unfavorite_func = None
     originator_model = None
     order_by = 'name'
 
     def get(self, request):
         unsubscribe = request.GET.get("remove")
         if unsubscribe is not None:
-            self.unsubscribe_func(unsubscribe, request.user)
+            self._unsubscribe(unsubscribe, request.user)
 
         favorite = request.GET.get("favorite")
         if favorite is not None:
-            self.favorite_func(favorite, request.user)
+            self._favorite(favorite, request.user)
 
         unfavorite = request.GET.get("unfavorite")
         if unfavorite is not None:
-            self.unfavorite_func(unfavorite, request.user)
+            self._unfavorite(unfavorite, request.user)
 
         return CustomListView.get(self, request)
 
@@ -87,6 +84,31 @@ class OriginatorView(CustomListView):
         subscribed_originators = self.originator_model.objects.filter(subscribers=user,
                                                                       name__icontains=name_filter)
         return subscribed_originators.order_by(self.order_by)
+
+    def _update_recommendations(self, user):
+         objs = [o.name for o in self.originator_model.objects.filter(favoritedby=user)]
+         self.update_recommendation_func.delay(objs, user.username)
+
+    def _unfavorite(self, originator, user):
+        try:
+            obj = self.originator_model.objects.get(name=originator)
+            obj.favoritedby.remove(user)
+            self._update_recommendations(user)
+        except self.originator_model.DoesNotExist:
+            pass
+
+    def _unsubscribe(self, originator, user):
+        try:
+            obj = self.originator_model.objects.get(name=originator)
+            obj.subscribers.remove(user)
+            self._unfavorite(originator, user)
+        except self.originator_model.DoesNotExist:
+            pass
+
+    def _favorite(self, originator, user):
+        obj = self.originator_model.objects.get(name=originator)
+        obj.favoritedby.add(user)
+        self._update_recommendations(user)
 
 
 class ImpressumView(TemplateView):
@@ -135,7 +157,7 @@ class SettingsView(FormView):
 
         if old_city != new_city:
             subscribed_artists = [artist.name for artist in user.artists.all()]
-            update_events(subscribed_artists, [new_city])  # TODO: do in subclass 
+            #update_events(subscribed_artists, [new_city]) TODO: do in subclass
 
         return super(SettingsView, self).form_valid(form)
 

@@ -1,11 +1,15 @@
-from eventowl.common_utils import normalize, random_string, parse_json, config
-
-import urllib, urllib2
 from datetime import datetime
-import requests
-import math
 from itertools import izip
+import math
 import random
+import urllib
+import urllib2
+
+import requests
+
+from eventowl.utils import config
+from eventowl.utils.string_helpers import normalize, random_string, parse_json
+
 
 class Event(object):
     def __init__(self, artists, venue, city,

@@ -16,7 +16,7 @@
 	        <button type="submit" class="btn btn-xs pull-right" name="remove" value="{{ author.name }}">
 	            <span class="glyphicon glyphicon-remove"></span>
 	        </button>
-	        {% if artist in favorites %}
+	        {% if author in favorites %}
 		        <button type="submit" class="btn btn-xs pull-right" name="unfavorite" value="{{ author.name }}">
 	                 <font color="DarkOrange"><span class="glyphicon glyphicon-star"></span></font>
 	            </button>
