@@ -9,6 +9,8 @@
 		<script src="{% static 'jquery/jquery.min.js' %}"></script>
 		<script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
 		<script type="text/javascript" src="{% static 'jquery/jExpand.js' %}"></script>
+
+		<meta name="viewport" content="width=device-width, initial-scale=1">
 	</head>
 
 <body>
@@ -19,6 +21,12 @@
 		          <a href="/" class="pull-left"><img src="{% static 'icons/eventowl-white.png' %}"></a>
 		          <a style="padding:15 0 10 10; margin:0;" class="navbar-brand" href="/">EventOwl/</a>
 		          <a style="padding:15 10 10 0; margin:0;" class="navbar-brand" href="{% url 'pybook:show_events' %}">BookOwl</a>
+                  <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#collapse" aria-expanded="false" aria-controls="navbar">
+                      <span class="sr-only">Toggle navigation</span>
+                      <span class="icon-bar"></span>
+                      <span class="icon-bar"></span>
+                      <span class="icon-bar"></span>
+                  </button>
 		      </div>
 
 		      <div class="collapse navbar-collapse" id="collapse">
