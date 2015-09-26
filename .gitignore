@@ -59,5 +59,7 @@ target/
 config.json
 .project
 .pydevproject
+.settings
+.idea
 *.sqlite3
 *~
