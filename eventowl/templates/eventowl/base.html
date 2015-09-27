@@ -4,7 +4,7 @@
 		<link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
 		<link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap-theme.min.css' %}">
 		<link rel="stylesheet" href="{% static 'bootstrap/css/font-awesome.min.css' %}">
-		<link rel="stylesheet" href="{% static 'pyconcert.css' %}">
+		<link rel="stylesheet" href="{% static 'eventowl.css' %}">
 
 		<script src="{% static 'jquery/jquery.min.js' %}"></script>
 		<script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
@@ -14,38 +14,36 @@
 	</head>
 
 <body>
-    <div class="page-header">
-	    <nav class="navbar navbar-inverse" role="navigation">
-	      <div class="container-fluid">
-		      <div class="navbar-header">
-		          <a href="/" class="pull-left"><img src="{% static 'icons/eventowl-white.png' %}"></a>
-		          <a class="navbar-brand" href="/">EventOwl</a>
-				  <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#collapse" aria-expanded="false" aria-controls="navbar">
-                      <span class="sr-only">Toggle navigation</span>
-                      <span class="icon-bar"></span>
-                      <span class="icon-bar"></span>
-                      <span class="icon-bar"></span>
-                  </button>
-		      </div>
-	
-		      <div class="collapse navbar-collapse" id="collapse">
-		          <ul class="nav navbar-nav navbar-right">
-		            <li> <a href="{% url 'eventowl:impressum' %}">Impressum</a></li>
-		            <li> <a href="{% url 'eventowl:about' %}">About</a></li>
-		          	{% if user.is_authenticated %}
-		          	   <li class="dropdown">
-			          	   <a href="#" class="dropdown-toggle" data-toggle="dropdown"> {{ user.username }} <b class="caret"></b></a>
-			          	   <ul class="dropdown-menu" role="menu">
-				                <li><a href="{% url 'account_settings' %}">Settings</a></li>
-				                <li><a href="{% url 'django.contrib.auth.views.logout' %}">Log out</a></li>
-			              </ul>
-			           </li>
-		          	{%endif%}
-		          </ul>
-		        </div>
-	       </div>
-	    </nav>
-    </div>
+	<nav class="navbar navbar-inverse" role="navigation">
+	  <div class="container-fluid">
+		  <div class="navbar-header">
+			  <a href="/" class="pull-left"><img src="{% static 'icons/eventowl-white.png' %}"></a>
+			  <a class="navbar-brand" href="/">EventOwl</a>
+			  <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#collapse" aria-expanded="false" aria-controls="navbar">
+				  <span class="sr-only">Toggle navigation</span>
+				  <span class="icon-bar"></span>
+				  <span class="icon-bar"></span>
+				  <span class="icon-bar"></span>
+			  </button>
+		  </div>
+
+		  <div class="collapse navbar-collapse" id="collapse">
+			  <ul class="nav navbar-nav navbar-right">
+				<li> <a id="test" href="{% url 'eventowl:impressum' %}">Impressum</a></li>
+				<li> <a href="{% url 'eventowl:about' %}">About</a></li>
+				{% if user.is_authenticated %}
+				   <li class="dropdown">
+					   <a href="#" class="dropdown-toggle" data-toggle="dropdown"> {{ user.username }} <b class="caret"></b></a>
+					   <ul class="dropdown-menu" role="menu">
+							<li><a href="{% url 'account_settings' %}">Settings</a></li>
+							<li><a href="{% url 'django.contrib.auth.views.logout' %}">Log out</a></li>
+					  </ul>
+				   </li>
+				{%endif%}
+			  </ul>
+			</div>
+	   </div>
+	</nav>
     
     <div class="content container">
         <div class="row">
