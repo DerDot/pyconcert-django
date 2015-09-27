@@ -1,76 +1,35 @@
+{% extends 'eventowl/common_base.html' %}
 {% load staticfiles %}
-<html>
-	<head> <title>EventOwl</title>
-		<link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
-		<link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap-concert-theme.css' %}">
-		<link rel="stylesheet" href="{% static 'bootstrap/css/font-awesome.min.css' %}">
-		<link rel="stylesheet" href="{% static 'pyconcert.css' %}">
 
-		<script src="{% static 'jquery/jquery.min.js' %}"></script>
-		<script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
-		<script type="text/javascript" src="{% static 'jquery/jExpand.js' %}"></script>
 
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-	</head>
+{% block extra_header %}
+    <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap-concert-theme.css' %}">
+    <link rel="stylesheet" href="{% static 'pyconcert.css' %}">
+{% endblock extra_header %}
 
-<body>
-	<nav class="navbar navbar-default" role="navigation">
-	  <div class="container-fluid">
-		  <div class="navbar-header">
-			  <a href="/" class="pull-left"><img src="{% static 'icons/eventowl-white.png' %}"></a>
-			  <a style="padding:15 0 10 10; margin:0;" class="navbar-brand" href="/">EventOwl/</a>
-			  <a style="padding:15 10 10 0; margin:0;" class="navbar-brand" href="{% url 'pyconcert:show_events' %}">ConcertOwl</a>
-			  <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#collapse" aria-expanded="false" aria-controls="navbar">
-				  <span class="sr-only">Toggle navigation</span>
-				  <span class="icon-bar"></span>
-				  <span class="icon-bar"></span>
-				  <span class="icon-bar"></span>
-			  </button>
-		  </div>
 
-		  <div class="collapse navbar-collapse" id="collapse">
-			  <ul class="nav navbar-nav">
-				{% if user.is_authenticated %}
-				<li class="dropdown">
-				  <a href="#" class="dropdown-toggle" data-toggle="dropdown"> Add artists <b class="caret"></b></a>
-				  <ul class="dropdown-menu" role="menu">
-					<li><a href="{% url 'pyconcert:spotify' %}">Spotify</a></li>
-					<li><a href="{% url 'pyconcert:upload_json' %}">Local library</a></li>
-					<li><a href="{% url 'pyconcert:add_artists' %}">Manually</a></li>
-					<li><a href="{% url 'pyconcert:recommendations' %}">Recommendations</a></li>
-				  </ul>
-				</li>
-				<li><a href="{% url 'pyconcert:show_artists' %}">Show Artists</a></li>
-				<li><a href="{% url 'pyconcert:show_events' %}">Show Events</a></li>
-				{%endif%}
-			  </ul>
-			  <ul class="nav navbar-nav navbar-right">
-				<li> <a href="{% url 'eventowl:impressum' %}">Impressum</a></li>
-				<li> <a href="{% url 'eventowl:about' %}">About</a></li>
-				<li class="nav-divider"></li>
-				{% if user.is_authenticated %}
-				   <li class="dropdown" id='user-menu'>
-					   <a href="#" class="dropdown-toggle" data-toggle="dropdown"> {{ user.username }} <b class="caret"></b></a>
-					   <ul class="dropdown-menu" role="menu">
-							<li><a href="{% url 'account_settings' %}">Settings</a></li>
-							<li><a href="{% url 'django.contrib.auth.views.logout' %}">Log out</a></li>
-					  </ul>
-				   </li>
-				{%endif%}
-			  </ul>
-			</div>
-	   </div>
-	</nav>
+{% block navbar_style %}
+    navbar-default
+{% endblock navbar_style%}
 
-    <div class="content container">
-        <div class="row">
-            <div class="col-md-8">
-            {% block content %}
-            {% endblock %}
-            </div>
-        </div>
-    </div>
 
-</body>
+{% block navbar_title %}
+    <a href="/" class="pull-left"><img src="{% static 'icons/eventowl-white.png' %}"></a>
+    <a style="padding:15 0 10 10; margin:0;" class="navbar-brand" href="/">EventOwl/</a>
+    <a style="padding:15 10 10 0; margin:0;" class="navbar-brand" href="{% url 'pyconcert:show_events' %}">ConcertOwl</a>
+{% endblock navbar_title %}
 
-</html>
+
+{% block navbar %}
+    <li class="dropdown">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown"> Add artists <b class="caret"></b></a>
+        <ul class="dropdown-menu" role="menu">
+            <li><a href="{% url 'pyconcert:spotify' %}">Spotify</a></li>
+            <li><a href="{% url 'pyconcert:upload_json' %}">Local library</a></li>
+            <li><a href="{% url 'pyconcert:add_artists' %}">Manually</a></li>
+            <li><a href="{% url 'pyconcert:recommendations' %}">Recommendations</a></li>
+        </ul>
+    </li>
+    <li><a href="{% url 'pyconcert:show_artists' %}">Show Artists</a></li>
+    <li><a href="{% url 'pyconcert:show_events' %}">Show Events</a></li>
+{% endblock navbar %}

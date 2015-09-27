@@ -1,0 +1,64 @@
+{% load staticfiles %}
+<html>
+	<head> <title>EventOwl</title>
+		<link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
+        <link rel="stylesheet" href="{% static 'bootstrap/css/font-awesome.min.css' %}">
+
+        <script src="{% static 'jquery/jquery.min.js' %}"></script>
+        <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+        <script type="text/javascript" src="{% static 'jquery/jExpand.js' %}"></script>
+
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+		{% block extra_header %}
+        {% endblock %}
+	</head>
+
+<body>
+	<nav class="navbar {% block navbar_style %}{% endblock %}" role="navigation">
+	  <div class="container-fluid">
+		  <div class="navbar-header">
+			  {% block navbar_title %}
+              {% endblock %}
+			  <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#collapse" aria-expanded="false" aria-controls="navbar">
+				  <span class="sr-only">Toggle navigation</span>
+				  <span class="icon-bar"></span>
+				  <span class="icon-bar"></span>
+				  <span class="icon-bar"></span>
+			  </button>
+		  </div>
+
+		  <div class="collapse navbar-collapse" id="collapse">
+              <ul class="nav navbar-nav">
+                  {% block navbar %}
+                  {% endblock %}
+              </ul>
+
+			  <ul class="nav navbar-nav navbar-right">
+				<li> <a href="{% url 'eventowl:impressum' %}">Impressum</a></li>
+				<li> <a href="{% url 'eventowl:about' %}">About</a></li>
+				{% if user.is_authenticated %}
+				   <li class="dropdown">
+					   <a href="#" class="dropdown-toggle" data-toggle="dropdown"> {{ user.username }} <b class="caret"></b></a>
+					   <ul class="dropdown-menu" role="menu">
+							<li><a href="{% url 'account_settings' %}">Settings</a></li>
+							<li><a href="{% url 'django.contrib.auth.views.logout' %}">Log out</a></li>
+					  </ul>
+				   </li>
+				{%endif%}
+			  </ul>
+			</div>
+	   </div>
+	</nav>
+
+    <div class="content container">
+        <div class="row">
+            <div class="col-md-8">
+            {% block content %}
+            {% endblock %}
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>
