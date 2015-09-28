@@ -18,7 +18,7 @@ def update_recommended_artists(artists, username):
 
 def _add_recommendations(recommended, username):
     for artist, genre, score in recommended:
-        artist = api_calls.normalize_artist(artist)
+        artist = api_calls.normalize(artist)
         artist, created = Artist.objects.get_or_create(name=artist)
         if created:
             artist.genre = genre

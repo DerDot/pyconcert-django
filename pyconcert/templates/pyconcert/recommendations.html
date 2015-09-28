@@ -3,7 +3,7 @@
 
 <legend>Based on what you favorited (yes, we are watching) you might like these artists too.</legend>
 <form action="{% url 'pyconcert:recommendations' %}" method="get">
-    {% include "pyconcert/filter.html"%}
+    {% include "eventowl/filter.html"%}
 </form>
 
 {% if artists %}
@@ -20,7 +20,7 @@
         </li>
     {% endfor %}
     </ul>
-    </form>    
+    </form>
 {% include "pyconcert/pagination.html"%}
 
 {% else %}
