@@ -1,4 +1,4 @@
-from celery import shared_task
+from celery import shared_task, current_task, task
 
 from models import Artist, RecommendedArtist
 from django.contrib.auth.models import User
