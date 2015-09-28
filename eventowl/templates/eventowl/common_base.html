@@ -14,7 +14,7 @@
         {% endblock %}
 	</head>
 
-<body>
+<body onLoad="addWhitespace();">
 	<nav class="navbar {% block navbar_style %}{% endblock %} navbar-fixed-top" role="navigation">
 	  <div class="container-fluid">
 		  <div class="navbar-header">
@@ -51,7 +51,7 @@
 	   </div>
 	</nav>
 
-    <div class="content container">
+    <div class="content container" id="content_div">
         <div class="row">
             <div class="col-md-8">
             {% block content %}
@@ -61,5 +61,33 @@
     </div>
 
 </body>
+
+<script>
+    function desiredHeight() {
+        var windowHeight = window.innerHeight || document.documentElement.clientHeight|| document.body.clientHeight;
+        return windowHeight + 50;
+    }
+    
+    function currentHeight() {
+        var body = document.body;
+        var html = document.documentElement;
+        var height = Math.max(body.scrollHeight, body.offsetHeight,
+                              html.clientHeight, html.scrollHeight,
+                              html.offsetHeight);
+        return height;
+    }
+    
+    function addWhitespace() {
+        var desired = desiredHeight();
+        var current = currentHeight();
+        console.log(desired);
+        console.log(current);
+        if (desired > current) {
+	        var content_div = document.getElementById('content_div')
+	        content_div.setAttribute("style","height:" + desired + "px");
+	        content_div.style.height = desired + "px";
+	    }
+    }
+</script>
 
 </html>
