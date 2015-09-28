@@ -6,6 +6,7 @@ import urllib
 import urllib2
 
 import requests
+from retrying import retry
 
 from eventowl.utils import config
 from eventowl.utils.string_helpers import normalize, random_string, parse_json
@@ -40,13 +41,16 @@ class Event(object):
     def __ne__(self, other):
         return not self.__eq__(other)
 
+
 def _chunks(l, n):
     for i in xrange(0, len(l), n):
         yield l[i:i + n]
 
+
 def _split_datetime(date_time):
     proper_datetime = datetime.strptime(date_time, "%Y-%m-%dT%H:%M:%S")
     return proper_datetime.date(), proper_datetime.time()
+
 
 def _get_bandsintown_events(artists, location):
     api_call = "http://api.bandsintown.com/events/search"
@@ -76,6 +80,7 @@ def _get_bandsintown_events(artists, location):
             ret.append(result_event)
     return ret
 
+
 def _normalize_inputs(artists, location):
     normalized_artists = []
     for artist in artists:
@@ -87,10 +92,12 @@ def _normalize_inputs(artists, location):
         location = location.encode("utf8")
     return normalized_artists, location
 
+
 def _random_subset(collection, size=20):
     if len(collection) > size:
         return random.sample(collection, size)
     return collection
+
 
 def recommended_artists(artists):
     api_call = 'http://api.seatgeek.com/2/recommendations/performers'
@@ -113,6 +120,7 @@ def recommended_artists(artists):
         ret.append((name, genre, score))
     return ret
 
+
 def _seatgeek_performer_id(artist):
     api_call = 'http://api.seatgeek.com/2/performers'
     args = [('q', artist)]
@@ -124,6 +132,7 @@ def _seatgeek_performer_id(artist):
     else:
         return None
 
+
 def events_for_artists_bandsintown(artists, location):
     artists, location = _normalize_inputs(artists, location)
     all_events = []
@@ -133,6 +142,7 @@ def events_for_artists_bandsintown(artists, location):
         for event in events:
             all_events.append(event)
     return all_events
+
 
 def spotify_auth():
     state = random_string()
@@ -145,6 +155,7 @@ def spotify_auth():
     api_call = "%s?%s" % (api_call, urllib.urlencode(args))
     return api_call, state
 
+
 def spotify_token(code):
     api_call = "https://accounts.spotify.com/api/token"
     response = requests.post(api_call, data={'code': code,
@@ -155,19 +166,29 @@ def spotify_token(code):
     token_info = parse_json(response.text)
     return token_info
 
+
+
+@retry(wait_exponential_multiplier=500,
+       wait_exponential_max=5000,
+       stop_max_delay=20000)
+def _call_spotify_api(limit, iteration, token):
+    base_api_call = "https://api.spotify.com/v1/me/tracks"
+    args = [("limit", limit),
+            ("offset", limit * iteration)]
+    api_call = "%s?%s" % (base_api_call, urllib.urlencode(args))
+    request = urllib2.Request(api_call)
+    request.add_header("Authorization", 'Bearer ' + token)
+    response = parse_json(urllib2.urlopen(request).read())
+    return response
+
+
 def spotify_artists(token, limit=50):
     all_artists = set()
-    base_api_call = "https://api.spotify.com/v1/me/tracks"
     iteration = 0
     while True:
-        args = [("limit", limit),
-                ("offset", limit * iteration)]
-        api_call = "%s?%s" % (base_api_call, urllib.urlencode(args))
-        request = urllib2.Request(api_call)
-        request.add_header("Authorization", 'Bearer ' + token)
-        response = parse_json(urllib2.urlopen(request).read())
+        response = _call_spotify_api(limit, iteration, token)
         print "Iteration {} of {}".format(iteration + 1,
-                                          int(math.ceil(response["total"] / 50.)) + 1)
+                                          int(math.ceil(1. * response["total"] / limit)) + 1)
         if not response["items"]:
             break
         for track in response["items"]:
