@@ -25,6 +25,13 @@
     <a href="{% url "account_password_reset" %}" class="btn btn-link">Forgot your password?</a>
 </form>
 
+Or log in using one of your social accounts: </br>
+ <a href="{% url 'social:begin' 'google-oauth2' %}" class="btn btn-default btn-large" role="button">
+    <span style="font-size:1.5em;" class="fa fa-google"></span>
+ </a>
+
+<p></p>
+
 {% if form.errors %}
      <p><i>Sorry, couldn't log you in: {{ form.errors.values.0|striptags}}</i></p>
 {% endif %}

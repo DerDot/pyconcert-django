@@ -1,15 +1,16 @@
 from datetime import date, timedelta
 
-from django.views.generic import TemplateView
-from django.views.generic import ListView
-from django.views.generic import FormView
+from django.core.urlresolvers import reverse_lazy, reverse
+from django.views.generic import TemplateView, ListView, FormView
 from account.mixins import LoginRequiredMixin
 from account import views as account_views
 
 from eventowl.models import UserProfile
-from eventowl.forms import SignupForm, SettingsForm
+from eventowl.forms import SignupForm, SettingsForm, SocialForm
 
 from pyconcertproject import settings
+from django.views.generic.base import View
+from django.shortcuts import redirect
 
 class ChoiceView(TemplateView):
     template_name = 'eventowl/choice.html'
@@ -86,8 +87,8 @@ class OriginatorView(CustomListView):
         return subscribed_originators.order_by(self.order_by)
 
     def _update_recommendations(self, user):
-         objs = [o.name for o in self.originator_model.objects.filter(favoritedby=user)]
-         self.update_recommendation_func.delay(objs, user.username)
+        objs = [o.name for o in self.originator_model.objects.filter(favoritedby=user)]
+        self.update_recommendation_func.delay(objs, user.username)
 
     def _unfavorite(self, originator, user):
         try:
@@ -117,6 +118,20 @@ class ImpressumView(TemplateView):
 
 class AboutView(TemplateView):
     template_name = 'eventowl/about.html'
+    
+    
+class SocialLoginView(FormView):
+    form_class = SocialForm
+    template_name = 'eventowl/social_login.html'
+
+    def form_valid(self, form):
+        platform = form.cleaned_data['platform']
+        social_login = redirect('social:begin', platform)
+
+        city = form.cleaned_data['city']
+        social_login['Location'] += '?city={}'.format(city)
+        
+        return social_login
 
 
 class SignupView(account_views.SignupView):
