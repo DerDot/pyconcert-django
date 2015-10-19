@@ -1,9 +1,10 @@
 from django.core.management.base import BaseCommand
 
 from eventowl.utils.common_functions import EventConnector
-
+from eventowl.utils.django_helpers import set_if_different
 from pybook.models import Book, Author
 from pybook.api_calls import book_releases
+
 
 
 class ReleaseConnector(EventConnector):
@@ -14,11 +15,11 @@ class ReleaseConnector(EventConnector):
         return book_releases(authors)
 
     def _get_or_create_object(self, api_release):
-        release, created = Book.objects.get_or_create(title=api_release.title,
-                                                      isbn=api_release.isbn,
-                                                      date=api_release.date,
-                                                      buy_url=api_release.buy_url)
-        return release, created
+        release, should_save = Book.objects.get_or_create(title=api_release.title,
+                                                          isbn=api_release.isbn)
+        should_save |= set_if_different(release, 'date', api_release.date)
+        should_save |= set_if_different(release, 'buy_url', api_release.buy_url)
+        return release, should_save
 
 
 class Command(BaseCommand):

@@ -5,6 +5,7 @@ from eventowl.models import UserProfile
 
 from pyconcert.models import Artist, Event
 from pyconcert.api_calls import events_for_artists_bandsintown
+from eventowl.utils.django_helpers import set_if_different
 
 
 def _all_cities():
@@ -31,13 +32,14 @@ class ConcertConnector(EventConnector):
         return all_api_events
 
     def _get_or_create_object(self, api_event):
-        release, created = Event.objects.get_or_create(venue=api_event.venue,
-                                                       city=api_event.city,
-                                                       country=api_event.country,
-                                                       date=api_event.date,
-                                                       time=api_event.time,
-                                                       ticket_url=api_event.ticket_url)
-        return release, created
+        event, should_save = Event.objects.get_or_create(city=api_event.city,
+                                                         country=api_event.country,
+                                                         date=api_event.date,
+                                                         ticket_url=api_event.ticket_url)
+        should_save |= set_if_different(event, 'venue', api_event.venue)
+        should_save |= set_if_different(event, 'time', api_event.time)
+        
+        return event, should_save
 
 
 class Command(BaseCommand):

@@ -9,8 +9,8 @@ class EventConnector(object):
     def update_events(self, originators, **kwargs):
         api_events = self._get_events(originators, **kwargs)
         for api_event in api_events:
-            event, created = self._get_or_create_object(api_event)
-            if created:
+            event, should_save = self._get_or_create_object(api_event)
+            if should_save:
                 event.save()
             for db_originator in self._db_originators(api_event):
                 getattr(event, self.originator_name).add(db_originator)
