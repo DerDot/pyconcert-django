@@ -129,8 +129,8 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTOCOL', 'https')
 AUTHENTICATION_BACKENDS = ('social.backends.google.GoogleOAuth2',
                            'django.contrib.auth.backends.ModelBackend')
 
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '644485068854-0vs9f43f16oe344lgi24qkbnobolhbgp.apps.googleusercontent.com'
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'qNo10y7MGqtxOvUOmBerICCP'
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = 'GOOGLEOAUTHKEY'
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'GOOGLEOAUTHSECRET'
 
 SOCIAL_AUTH_PIPELINE = (
     'social.pipeline.social_auth.social_details',
