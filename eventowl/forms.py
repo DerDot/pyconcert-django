@@ -35,11 +35,10 @@ class RestrictedFileField(forms.FileField):
 class SignupForm(account_forms.SignupForm):
     city = forms.CharField(max_length=200)
     
-    
-class SocialForm(forms.Form):
-    city = forms.CharField(max_length=200, required=True)
-    platform = forms.ChoiceField(choices=[(name, name) for name in settings.SOCIAL_PLATFORMS.keys()])
 
+class AddProfileForm(forms.Form):
+    city = forms.CharField(max_length=200, required=True)
+    
 
 class SettingsForm(forms.Form):
     city = forms.CharField(max_length=200)

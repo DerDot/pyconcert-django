@@ -126,15 +126,11 @@ DAYS_BACK = 3
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTOCOL', 'https')
 
-SOCIAL_PLATFORMS = {'google-oauth2': 'social.backends.google.GoogleOAuth2'}
-
-AUTHENTICATION_BACKENDS = [backend for backend in SOCIAL_PLATFORMS.values()]
-AUTHENTICATION_BACKENDS.append('django.contrib.auth.backends.ModelBackend')
+AUTHENTICATION_BACKENDS = ('social.backends.google.GoogleOAuth2',
+                           'django.contrib.auth.backends.ModelBackend')
 
 SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '644485068854-0vs9f43f16oe344lgi24qkbnobolhbgp.apps.googleusercontent.com'
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'qNo10y7MGqtxOvUOmBerICCP'
-
-SOCIAL_AUTH_NEW_USER_REDIRECT_URL = '/test_new'
 
 SOCIAL_AUTH_PIPELINE = (
     'social.pipeline.social_auth.social_details',
@@ -143,9 +139,9 @@ SOCIAL_AUTH_PIPELINE = (
     'social.pipeline.social_auth.social_user',
     'social.pipeline.user.get_username',
     'social.pipeline.user.create_user',
-    'eventowl.social_auth_pipeline.create_user_profile',
+    'eventowl.social_auth_pipeline.collect_city',
     'social.pipeline.social_auth.associate_user',
     'social.pipeline.social_auth.load_extra_data',
 )
 
-FIELDS_STORED_IN_SESSION = ['city']
+SOCIAL_AUTH_FIELDS_STORED_IN_SESSION = ('city', )

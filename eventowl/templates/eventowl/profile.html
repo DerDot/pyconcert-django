@@ -1,0 +1,24 @@
+{% extends 'eventowl/base.html' %}
+
+{% load widget_tweaks %}
+
+{% block content %}
+<legend>We need some more information about you (nothing indiscreet, we promise).</legend>
+<form id="social_form" method="post">
+    {% csrf_token %}
+    <div class="form-group">
+        <div class="input-group">
+            <span class="input-group-addon"><i class="glyphicon glyphicon-home"></i></span>
+            {{ form.city|add_class:"form-control"|attr:"placeholder:Event city" }}
+        </div>
+    </div>
+    <button type="submit" class="btn btn-primary">Log in</button>
+</form>
+    
+{% if form.errors %}
+    {% for field_name, error in form.errors.items %}
+        <p><i>Sorry, but we have a problem with the field {{ field_name }}: {{ error|striptags }} </i></p>
+    {% endfor %}   
+{% endif %}
+
+{% endblock %}

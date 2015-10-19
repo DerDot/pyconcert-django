@@ -1,19 +1,19 @@
 from datetime import date, timedelta
 
-from django.core.urlresolvers import reverse_lazy, reverse
+from django.core.urlresolvers import reverse
+from django.shortcuts import redirect
 from django.views.generic import TemplateView, ListView, FormView
 from account.mixins import LoginRequiredMixin
 from account import views as account_views
 
 from eventowl.models import UserProfile
-from eventowl.forms import SignupForm, SettingsForm, SocialForm
-
+from eventowl.forms import SignupForm, SettingsForm, AddProfileForm
 from pyconcertproject import settings
-from django.views.generic.base import View
-from django.shortcuts import redirect
+
 
 class ChoiceView(TemplateView):
     template_name = 'eventowl/choice.html'
+
 
 class CustomListView(LoginRequiredMixin, ListView):
     paginate_by = settings.PAGINATION_SIZE
@@ -120,18 +120,19 @@ class AboutView(TemplateView):
     template_name = 'eventowl/about.html'
     
     
-class SocialLoginView(FormView):
-    form_class = SocialForm
-    template_name = 'eventowl/social_login.html'
+class AddProfileView(FormView):
+    form_class = AddProfileForm
+    template_name = 'eventowl/profile.html'
 
     def form_valid(self, form):
-        platform = form.cleaned_data['platform']
-        social_login = redirect('social:begin', platform)
+        backend = self.request.session['backend']
+        self.request.session['city'] = form.cleaned_data['city']
+        return redirect(reverse('social:complete', args=(backend, )))
+    
+    def get(self, request):
+        self.request.session['backend'] = self.request.GET.get('backend')
+        return super(AddProfileView, self).get(request)
 
-        city = form.cleaned_data['city']
-        social_login['Location'] += '?city={}'.format(city)
-        
-        return social_login
 
 
 class SignupView(account_views.SignupView):
