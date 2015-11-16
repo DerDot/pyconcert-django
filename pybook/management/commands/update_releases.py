@@ -15,10 +15,20 @@ class ReleaseConnector(EventConnector):
         return book_releases(authors)
 
     def _get_or_create_object(self, api_release):
-        release, should_save = Book.objects.get_or_create(title=api_release.title,
-                                                          isbn=api_release.isbn)
-        should_save |= set_if_different(release, 'date', api_release.date)
-        should_save |= set_if_different(release, 'buy_url', api_release.buy_url)
+        exists = Book.objects.filter(title=api_release.title,
+                                     isbn=api_release.isbn).exists()
+        if exists:
+            release = Book.objects.get(title=api_release.title,
+                                       isbn=api_release.isbn)
+            should_save = set_if_different(release, 'date', api_release.date)
+            should_save |= set_if_different(release, 'buy_url', api_release.buy_url)
+        else:
+            release = Book.objects.create(title=api_release.title,
+                                          isbn=api_release.isbn,
+                                          date=api_release.date,
+                                          buy_url=api_release.buy_url)
+            should_save = True
+
         return release, should_save
 
 

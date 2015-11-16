@@ -32,12 +32,26 @@ class ConcertConnector(EventConnector):
         return all_api_events
 
     def _get_or_create_object(self, api_event):
-        event, should_save = Event.objects.get_or_create(city=api_event.city,
-                                                         country=api_event.country,
-                                                         date=api_event.date,
-                                                         ticket_url=api_event.ticket_url)
-        should_save |= set_if_different(event, 'venue', api_event.venue)
-        should_save |= set_if_different(event, 'time', api_event.time)
+        exists = Event.objects.filter(city=api_event.city,
+                                      country=api_event.country,
+                                      date=api_event.date,
+                                      ticket_url=api_event.ticket_url)
+
+        if exists:
+            event = Event.objects.get(city=api_event.city,
+                                      country=api_event.country,
+                                      date=api_event.date,
+                                      ticket_url=api_event.ticket_url)
+            should_save = set_if_different(event, 'venue', api_event.venue)
+            should_save |= set_if_different(event, 'time', api_event.time)
+        else:
+            event = Event.objects.create(city=api_event.city,
+                                         country=api_event.country,
+                                         date=api_event.date,
+                                         ticket_url=api_event.ticket_url,
+                                         venue=api_event.venue,
+                                         time=api_event.time)
+            should_save = True
         
         return event, should_save
 
