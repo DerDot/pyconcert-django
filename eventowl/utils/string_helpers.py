@@ -11,7 +11,7 @@ except ImportError:
 def normalize(name):
     if isinstance(name, unicode):
         name = name.encode("utf8")
-    return name.lower()
+    return name.lower().strip()
 
 
 def random_string(size=10, chars=string.ascii_uppercase + string.digits):
