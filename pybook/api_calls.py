@@ -72,10 +72,10 @@ def _call_book_api(url_parameters):
     resp = urllib.urlopen(url).read()
     print "    Got response"
     parsed = xmltodict.parse(resp)
-    print "    Parsed response"
     results = parsed['GoodreadsResponse']['author']['books']['book']
     num_books_current = parsed['GoodreadsResponse']['author']['books']['@end']
     num_books_total = parsed['GoodreadsResponse']['author']['books']['@total']
+    print "    Parsed {} of {} books".format(num_books_current, num_books_total)
     return results, num_books_current < num_books_total
 
 
