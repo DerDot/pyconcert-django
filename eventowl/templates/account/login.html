@@ -2,7 +2,9 @@
 {% load widget_tweaks %}
 
 {% block content %}
-<legend>Log in below. All shows of your favorite artists are waiting.</legend>
+<legend>
+Log in below. All shows of your favorite artists are waiting.
+</legend>
 <form method="POST" action="{% url "account_login" %}" autocapitalize="off" {% if form.is_multipart %} enctype="multipart/form-data"{% endif %}>
     {% csrf_token %}
     <div class="form-group">

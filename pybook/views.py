@@ -2,7 +2,6 @@ from StringIO import StringIO
 
 from django.views.generic import FormView
 from django.core.urlresolvers import reverse
-from account.mixins import LoginRequiredMixin
 import pandas as pd
 
 from models import Book, Author
@@ -47,7 +46,7 @@ def _parse_csv(request):
     return set(df['authors'])
 
 
-class UploadCsv(LoginRequiredMixin, FormView):
+class UploadCsv(FormView):
     template_name = 'pybook/upload_csv.html'
     form_class = UploadFileForm
 

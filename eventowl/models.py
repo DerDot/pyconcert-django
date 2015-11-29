@@ -7,3 +7,13 @@ class UserProfile(models.Model):
 
     def __unicode__(self):
         return self.user.username
+    
+    
+class Preview(models.Model):
+    image = models.URLField(max_length=200)
+    description = models.TextField()
+    link = models.URLField(max_length=200)
+    alttext = models.CharField(max_length=200)
+        
+    class Meta:
+        abstract = True

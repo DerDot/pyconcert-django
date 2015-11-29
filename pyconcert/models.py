@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from eventowl import models as base_models
 
 class Artist(models.Model):
     name = models.CharField(max_length=200)
@@ -32,3 +33,6 @@ class Event(models.Model):
                                         unicode(self.venue),
                                         unicode(self.date.strftime("%Y-%m-%d")))
         return name
+
+class Preview(base_models.Preview):
+    pass

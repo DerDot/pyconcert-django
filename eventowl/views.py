@@ -3,19 +3,19 @@ from datetime import date, timedelta
 from django.core.urlresolvers import reverse
 from django.shortcuts import redirect
 from django.views.generic import TemplateView, ListView, FormView
-from account.mixins import LoginRequiredMixin
 from account import views as account_views
 
 from eventowl.models import UserProfile
 from eventowl.forms import SignupForm, SettingsForm, AddProfileForm
 from pyconcertproject import settings
+from eventowl import app_previews
 
 
 class ChoiceView(TemplateView):
     template_name = 'eventowl/choice.html'
 
 
-class CustomListView(LoginRequiredMixin, ListView):
+class CustomListView(ListView):
     paginate_by = settings.PAGINATION_SIZE
 
     def _filtered_and_sorted(self, name_filter, user):
@@ -45,7 +45,7 @@ class EventsView(CustomListView):
         return subscribed_events.order_by("date")
 
 
-class AddView(LoginRequiredMixin, TemplateView):
+class AddView(TemplateView):
     template_name = None
 
     def get(self, request):
@@ -134,9 +134,12 @@ class AddProfileView(FormView):
         return super(AddProfileView, self).get(request)
 
 
-
 class SignupView(account_views.SignupView):
     form_class = SignupForm
+    
+    def get_context_data(self, **kwargs):
+        kwargs['previews'] = app_previews.get_all_objects({})
+        return super(SignupView, self).get_context_data(**kwargs)
 
     def after_signup(self, form):
         self.create_profile(form)

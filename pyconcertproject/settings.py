@@ -42,9 +42,15 @@ INSTALLED_APPS = (
     'account',
     'widget_tweaks',
     'social.apps.django_app.default',
+    'debug_toolbar',
     'eventowl',
     'pyconcert',
     'pybook'
+)
+
+APPS_WITH_PREVIEW = (
+    'pyconcert',
+    'pybook',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -55,14 +61,14 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    "account.middleware.LocaleMiddleware",
-    "account.middleware.TimezoneMiddleware",
+    'account.middleware.LocaleMiddleware',
+    'account.middleware.TimezoneMiddleware',
+    'pyconcertproject.middleware.LoginRequiredMiddleware'
 )
 
 ROOT_URLCONF = 'pyconcertproject.urls'
 
 WSGI_APPLICATION = 'pyconcertproject.wsgi.application'
-
 
 # Database
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases
@@ -104,9 +110,6 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, "provided_static"),
 )
 
-# Should be in application specific settings
-LOGIN_REDIRECT_URL = '/'
-LOGIN_URL = '/account/login'
 ACCOUNT_EMAIL_CONFIRMATION_REQUIRED = True
 
 PAGINATION_SIZE = 25
@@ -129,8 +132,8 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTOCOL', 'https')
 AUTHENTICATION_BACKENDS = ('social.backends.google.GoogleOAuth2',
                            'django.contrib.auth.backends.ModelBackend')
 
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = 'GOOGLEOAUTHKEY'
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'GOOGLEOAUTHSECRET'
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '644485068854-o865p7v8kb55o1u9sbskl2908tggljlp.apps.googleusercontent.com'
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '61fdhJA17NI2yTRmETinqEf3'
 
 SOCIAL_AUTH_PIPELINE = (
     'social.pipeline.social_auth.social_details',
@@ -145,3 +148,10 @@ SOCIAL_AUTH_PIPELINE = (
 )
 
 SOCIAL_AUTH_FIELDS_STORED_IN_SESSION = ('city', )
+
+LOGIN_URL = '/account/signup'
+
+LOGIN_EXEMPT_URLS = (
+     r'about/$',
+     r'impressum/$',
+) 

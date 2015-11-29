@@ -2,24 +2,25 @@
 {% load widget_tweaks %}
 
 {% block content %}
-
-<legend>
-Sign up to get personalized notifications and suggestions for all the fun stuff that happens around you
-</legend>
+<legend>Sign up below. It's worth it.</legend>
 <form id="signup_form" method="post" action="{% url "account_signup" %}" autocapitalize="off" {% if form.is_multipart %} enctype="multipart/form-data"{% endif %}>
     {% csrf_token %}
     <div class="form-group">
 	    <div class="input-group">
 		    <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
 		    {{ form.username|add_class:"form-control"|attr:"placeholder:Username" }}
-		    <span class="input-group-addon"><i class="glyphicon glyphicon-envelope"></i></span>
-	        {{ form.email|add_class:"form-control"|attr:"placeholder:E-Mail" }}
 		</div>
 		<div class="input-group">
 		    <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
 		    {{ form.password|add_class:"form-control"|attr:"placeholder:Password" }}
+		</div>
+		<div class="input-group">
 	        <span class="input-group-addon"><i class="glyphicon glyphicon-repeat"></i></span>
 	        {{ form.password_confirm|add_class:"form-control"|attr:"placeholder:Password (repeat)" }}
+	    </div>
+	    <div class="input-group">
+	        <span class="input-group-addon"><i class="glyphicon glyphicon-envelope"></i></span>
+	        {{ form.email|add_class:"form-control"|attr:"placeholder:E-Mail" }}
 	    </div>
 	    <div class="input-group">
             <span class="input-group-addon"><i class="glyphicon glyphicon-home"></i></span>
@@ -30,26 +31,15 @@ Sign up to get personalized notifications and suggestions for all the fun stuff 
 	    {% endif %}
 	</div>
     <button type="submit" class="btn btn-primary">Sign up</button>
-    &nbsp; or &nbsp;
-    <a href="{% url 'social:begin' 'google-oauth2' %}" class="btn btn-default btn-large" role="button">
-    	<span style="font-size:1.5em;" class="fa fa-google"></span>
- 	</a>
 </form>
+<p class="login-signup">
+    <small>
+        Already have an account?  <strong><a href="{% url 'account_login' %}">Log in</a></strong>
+    </small>
+</p>
+    
+{% if form.errors %}
+     <p><i>Account could not be created: {{ form.errors.values.0|striptags}}</i></p>
+{% endif %}
 
-<h3> What to have small taste what we can do for you? Look at our examples below! </h3>
-{% for name, preview in previews.items %}
-	<p class="lead"> {{name|title}} shows you {{preview.0}} </p>
-	<div class="container">
-		<div class="row">
-			{% for obj in preview.1 %}
-				<div class="col-md-2">
-					<a href={{ obj.link }}>
-						<img src="{{ obj.image }}" alt="{{ obj.alttext }}" title="{{ obj.alttext }}" class="img-responsive">
-					</a>
-					<p>{{ obj.description }}</p>
-				</div>
-			{% endfor %}
-		</div>
-	</div>
-{% endfor %}
 {% endblock %}

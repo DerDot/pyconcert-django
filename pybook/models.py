@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from eventowl import models as base_models
 
 
 class Author(models.Model):
@@ -32,3 +33,7 @@ class Book(models.Model):
                                                  u", ".join(author_names),
                                                  unicode(self.date.strftime("%Y-%m-%d")))
         return name
+
+
+class Preview(base_models.Preview):
+    pass
