@@ -54,9 +54,9 @@ def is_first_release(attributes):
 
 def _book_release(author, api):
     search_result = api.ItemSearch(Author=author,
-                                  Sort='-publication_date',
-                                  SearchIndex='Books',
-                                  ResponseGroup='ItemAttributes')
+                                   Sort='-publication_date',
+                                   SearchIndex='Books',
+                                   ResponseGroup='ItemAttributes')
     search_result_parsed = xmltodict.parse(search_result)
     items_dict = search_result_parsed['ItemSearchResponse']['Items']
     num_results = int(items_dict['TotalResults'])

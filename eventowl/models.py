@@ -14,6 +14,8 @@ class Preview(models.Model):
     description = models.TextField()
     link = models.URLField(max_length=200)
     alttext = models.CharField(max_length=200)
+    updated_at = models.DateTimeField(auto_now=True)
         
     class Meta:
         abstract = True
+        get_latest_by = 'updated_at'

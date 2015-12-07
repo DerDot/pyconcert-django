@@ -51,12 +51,10 @@
 	   </div>
 	</nav>
 
-    <div class="content container main-container" id="content_div">
-        <div class="row">
-            <div class="col-md-12">
-            {% block content %}
-            {% endblock %}
-            </div>
+    <div class="content container" id="content_div">
+        <div class="jumbotron">
+	        {% block content %}
+	        {% endblock %}
         </div>
     </div>
 
