@@ -4,7 +4,7 @@
 
 {% block extra_header %}
     <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap-book-theme.css' %}">
-    <link rel="stylesheet" href="{% static 'pybook.css' %}">
+    <link rel="stylesheet" href="{% static 'bookowl.css' %}">
 {% endblock extra_header %}
 
 
@@ -16,7 +16,7 @@
 {% block navbar_title %}
     <a href="/" class="pull-left"><img src="{% static 'icons/eventowl-white.png' %}"></a>
     <a style="padding:15 0 10 10; margin:0;" class="navbar-brand" href="/">EventOwl/</a>
-    <a style="padding:15 10 10 0; margin:0;" class="navbar-brand" href="{% url 'pybook:show_events' %}">BookOwl</a>
+    <a style="padding:15 10 10 0; margin:0;" class="navbar-brand" href="{% url 'bookowl:show_events' %}">BookOwl</a>
 {% endblock navbar_title %}
 
 
@@ -24,12 +24,12 @@
     <li class="dropdown">
         <a href="#" class="dropdown-toggle" data-toggle="dropdown"> Add authors <b class="caret"></b></a>
         <ul class="dropdown-menu" role="menu">
-            <li><a href="{% url 'pybook:add_authors' %}">Manually</a></li>
-            <li><a href="{% url 'pybook:calibre' %}">Calibre</a></li>
-            <li><a href="{% url 'pybook:recommendations' %}">Recommendations</a></li>
+            <li><a href="{% url 'bookowl:add_authors' %}">Manually</a></li>
+            <li><a href="{% url 'bookowl:calibre' %}">Calibre</a></li>
+            <li><a href="{% url 'bookowl:recommendations' %}">Recommendations</a></li>
         </ul>
     </li>
-    <li><a href="{% url 'pybook:show_authors' %}">Show Authors</a></li>
-    <li><a href="{% url 'pybook:show_events' %}">Show Releases</a></li>
+    <li><a href="{% url 'bookowl:show_authors' %}">Show Authors</a></li>
+    <li><a href="{% url 'bookowl:show_events' %}">Show Releases</a></li>
 {% endblock navbar %}
 

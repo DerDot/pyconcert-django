@@ -1,13 +1,13 @@
-{% extends 'pyconcert/base.html' %}
+{% extends 'concertowl/base.html' %}
 {% block content %}
 
 <legend>Based on what you favorited (yes, we are watching) you might like these artists too.</legend>
-<form action="{% url 'pyconcert:recommendations' %}" method="get">
+<form action="{% url 'concertowl:recommendations' %}" method="get">
     {% include "eventowl/filter.html"%}
 </form>
 
 {% if artists %}
-    <form action="{% url 'pyconcert:recommendations' %}" method="get">
+    <form action="{% url 'concertowl:recommendations' %}" method="get">
     <ul class="list-group">
     <button type="submit" style="display:none;"></button>
     {% for artist in artists %}
@@ -21,7 +21,7 @@
     {% endfor %}
     </ul>
     </form>
-{% include "pyconcert/pagination.html"%}
+{% include "concertowl/pagination.html"%}
 
 {% else %}
     {% if request.GET.filter%}

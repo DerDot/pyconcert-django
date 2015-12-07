@@ -31,11 +31,11 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = (
-    'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.sites',
+    'django.contrib.admin',
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'djcelery',
@@ -153,6 +153,10 @@ SOCIAL_AUTH_FIELDS_STORED_IN_SESSION = ('city', )
 LOGIN_URL = '/account/signup'
 
 LOGIN_EXEMPT_URLS = (
-     r'about/$',
-     r'impressum/$',
+     r'admin/+',
+     r'account/(login|signup|password/reset)/+',
+     r'about/+$',
+     r'impressum/+$',
 ) 
+
+SITE_ID=1

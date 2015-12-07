@@ -4,9 +4,9 @@
 {% block content %}
 <legend>About EventOwl.<img src="{% static 'icons/eventowl.png' %}"></legend>
 <b>EventOwl</b> aims to be your one stop solution to find everything that is fun around you.
-You can find concerts of your <a href="{% url 'pyconcert:show_artists' %}">favorite artists</a> around where you live.
-And as we know better than you what kind of music you like, we of course also offer a <a href="{% url 'pyconcert:recommendations' %}">artists recommendation</a>.<br/>
-As life would pretty boring without books (or is it pretty boring with books in it?) we also tell you when your <a href="{% url 'pybook:show_authors' %}">favorite authors</a> publish a new book.
+You can find concerts of your <a href="{% url 'concertowl:show_artists' %}">favorite artists</a> around where you live.
+And as we know better than you what kind of music you like, we of course also offer a <a href="{% url 'concertowl:recommendations' %}">artists recommendation</a>.<br/>
+As life would pretty boring without books (or is it pretty boring with books in it?) we also tell you when your <a href="{% url 'bookowl:show_authors' %}">favorite authors</a> publish a new book.
 Pretty nifty, huh?<br/>
 So, please enjoy your stay here and have as much fun as possible!
 {%endblock content %}

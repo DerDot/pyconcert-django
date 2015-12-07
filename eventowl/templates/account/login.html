@@ -3,7 +3,7 @@
 
 {% block content %}
 <legend>
-Log in below. All shows of your favorite artists are waiting.
+Log in below. All the cool stuff around you is already waiting.
 </legend>
 <form method="POST" action="{% url "account_login" %}" autocapitalize="off" {% if form.is_multipart %} enctype="multipart/form-data"{% endif %}>
     {% csrf_token %}
@@ -24,13 +24,11 @@ Log in below. All shows of your favorite artists are waiting.
 	    {% endif %}
 	</div>
     <button type="submit" class="btn btn-primary">Log in</button>
-    <a href="{% url "account_password_reset" %}" class="btn btn-link">Forgot your password?</a>
+    &nbsp; or &nbsp; 
+    <a href="{% url 'social:begin' 'google-oauth2' %}" class="btn btn-default btn-large" role="button">
+    	<span style="font-size:1.5em;" class="fa fa-google"></span>
+ 	</a>
 </form>
-
-Or log in using one of your social accounts: </br>
- <a href="{% url 'social:begin' 'google-oauth2' %}" class="btn btn-default btn-large" role="button">
-    <span style="font-size:1.5em;" class="fa fa-google"></span>
- </a>
 
 <p></p>
 
@@ -38,11 +36,12 @@ Or log in using one of your social accounts: </br>
      <p><i>Sorry, couldn't log you in: {{ form.errors.values.0|striptags}}</i></p>
 {% endif %}
 
-{% if ACCOUNT_OPEN_SIGNUP %}
-    <p class="login-signup">
-        <small>
-            Don't have an account? <strong><a href="{% url 'account_signup' %}">Sign up</a></strong>
-        </small>
-    </p>
-{% endif %}
+<p class="login-signup">
+    <small>
+    	Other options:
+        <a href="{% url "account_password_reset" %}">Reset your password</a>
+        or 
+        <a href="{% url 'account_signup' %}">Sign up</a>
+    </small>
+</p>
 {% endblock %}

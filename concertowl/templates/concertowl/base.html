@@ -4,7 +4,7 @@
 
 {% block extra_header %}
     <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap-concert-theme.css' %}">
-    <link rel="stylesheet" href="{% static 'pyconcert.css' %}">
+    <link rel="stylesheet" href="{% static 'concertowl.css' %}">
 {% endblock extra_header %}
 
 
@@ -16,7 +16,7 @@
 {% block navbar_title %}
     <a href="/" class="pull-left"><img src="{% static 'icons/eventowl-white.png' %}"></a>
     <a style="padding:15 0 10 10; margin:0;" class="navbar-brand" href="/">EventOwl/</a>
-    <a style="padding:15 10 10 0; margin:0;" class="navbar-brand" href="{% url 'pyconcert:show_events' %}">ConcertOwl</a>
+    <a style="padding:15 10 10 0; margin:0;" class="navbar-brand" href="{% url 'concertowl:show_events' %}">ConcertOwl</a>
 {% endblock navbar_title %}
 
 
@@ -24,12 +24,12 @@
     <li class="dropdown">
         <a href="#" class="dropdown-toggle" data-toggle="dropdown"> Add artists <b class="caret"></b></a>
         <ul class="dropdown-menu" role="menu">
-            <li><a href="{% url 'pyconcert:spotify' %}">Spotify</a></li>
-            <li><a href="{% url 'pyconcert:upload_json' %}">Local library</a></li>
-            <li><a href="{% url 'pyconcert:add_artists' %}">Manually</a></li>
-            <li><a href="{% url 'pyconcert:recommendations' %}">Recommendations</a></li>
+            <li><a href="{% url 'concertowl:spotify' %}">Spotify</a></li>
+            <li><a href="{% url 'concertowl:upload_json' %}">Local library</a></li>
+            <li><a href="{% url 'concertowl:add_artists' %}">Manually</a></li>
+            <li><a href="{% url 'concertowl:recommendations' %}">Recommendations</a></li>
         </ul>
     </li>
-    <li><a href="{% url 'pyconcert:show_artists' %}">Show Artists</a></li>
-    <li><a href="{% url 'pyconcert:show_events' %}">Show Events</a></li>
+    <li><a href="{% url 'concertowl:show_artists' %}">Show Artists</a></li>
+    <li><a href="{% url 'concertowl:show_events' %}">Show Events</a></li>
 {% endblock navbar %}

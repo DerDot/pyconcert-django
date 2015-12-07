@@ -1,4 +1,4 @@
-{% extends 'pybook/base.html' %}
+{% extends 'bookowl/base.html' %}
 {% load widget_tweaks %}
 {% load staticfiles%}
 
@@ -14,7 +14,7 @@
     <li>Click OK and voila. Wasn't that hard, was it?</li>
 </ol>
 </p>
-<form class="form-inline" enctype="multipart/form-data" method="post" action="{% url 'pybook:calibre' %}">
+<form class="form-inline" enctype="multipart/form-data" method="post" action="{% url 'bookowl:calibre' %}">
 {% csrf_token %}
 <div class="form-group">
 <script src="{% static 'jquery/bootstrap-filestyle.min.js' %}"></script>

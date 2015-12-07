@@ -1,8 +1,8 @@
-{% extends 'pyconcert/base.html' %}
+{% extends 'concertowl/base.html' %}
 {% block content %}
 
 <legend>Add new artists manually. How very old school.</legend>
-<form action="{% url 'pyconcert:add_artists' %}" method="get">
+<form action="{% url 'concertowl:add_artists' %}" method="get">
     <div class="input-group">
       <span class="input-group-addon"><i class="glyphicon glyphicon-music"></i></span>
       <input id="id_filter"
@@ -17,7 +17,7 @@
 </form>
 
 {% if request.GET.add %}
-Sucesfully added {{ request.GET.add|title }}. Maybe they have an <a href="{% url 'pyconcert:show_events' %}">event</a> soon?
+Sucesfully added {{ request.GET.add|title }}. Maybe they have an <a href="{% url 'concertowl:show_events' %}">event</a> soon?
 {% endif %}
 
 {% endblock content %}

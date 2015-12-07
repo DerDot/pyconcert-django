@@ -31,12 +31,14 @@ Sign up to get personalized notifications and suggestions for all the fun stuff 
 	</div>
     <button type="submit" class="btn btn-primary">Sign up</button>
     &nbsp; or &nbsp;
+    <a href="{% url 'account_login' %}" class="btn btn-default btn-large" role="button">
+    	Login
+ 	</a>
     <a href="{% url 'social:begin' 'google-oauth2' %}" class="btn btn-default btn-large" role="button">
     	<span style="font-size:1.5em;" class="fa fa-google"></span>
  	</a>
 </form>
 
-<h3> What to have small taste what we can do for you? Look at our examples below! </h3>
 {% for name, preview in previews.items %}
 	<p class="lead"> {{name|title}} shows you {{preview.0}} </p>
 	<div class="container">

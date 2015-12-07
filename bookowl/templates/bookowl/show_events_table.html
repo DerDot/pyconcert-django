@@ -1,8 +1,8 @@
-{% extends 'pybook/base.html' %}
+{% extends 'bookowl/base.html' %}
 {% block content %}
 <legend>All new book releases. We hope you find something nice.</legend>
 
-<form action="{% url 'pybook:show_events' %}" method="get">
+<form action="{% url 'bookowl:show_events' %}" method="get">
     {% include "eventowl/filter.html"%}
 </form>
 

@@ -2,15 +2,15 @@
 {% load staticfiles%}
 
 {% block content %}
-<legend>Welcome to StarOwl</legend>
+<legend>Welcome to EventOwl</legend>
 We provide several services to track all the fun aspects of your life.<br>
 <div class="container">
     <div class="row row-centered">
         <div class="col-md-3 col-centered">
-            <a href="{% url 'pybook:show_events' %}"><font size="12"><i class="fa fa-leanpub"></i> Books</font></a>
+            <a href="{% url 'bookowl:show_events' %}"><font size="12"><i class="fa fa-leanpub"></i> Books</font></a>
         </div>
         <div class="col-md-3 col-centered">
-            <a href="{% url 'pyconcert:show_events' %}"><font size="12"><i class="fa fa-music"></i> Concerts</font></a>
+            <a href="{% url 'concertowl:show_events' %}"><font size="12"><i class="fa fa-music"></i> Concerts</font></a>
         </div>
     </div>
 </div>

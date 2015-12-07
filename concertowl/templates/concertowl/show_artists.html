@@ -1,13 +1,13 @@
-{% extends 'pyconcert/base.html' %}
+{% extends 'concertowl/base.html' %}
 {% block content %}
 
 <legend>Have a look at all your subscribed artists.</legend>
-<form action="{% url 'pyconcert:show_artists' %}" method="get">
+<form action="{% url 'concertowl:show_artists' %}" method="get">
     {% include "eventowl/filter.html"%}
 </form>
 
 {% if artists %}
-    <form action="{% url 'pyconcert:show_artists' %}" method="get">
+    <form action="{% url 'concertowl:show_artists' %}" method="get">
     <ul class="list-group">
     <button type="submit" style="display:none;"></button>
     {% for artist in artists %}
@@ -29,7 +29,7 @@
     {% endfor %}
     </ul>
     </form>
-{% include "pyconcert/pagination.html"%}
+{% include "concertowl/pagination.html"%}
 
 {% else %}
     {% if request.GET.filter%}

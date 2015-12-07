@@ -1,13 +1,13 @@
-{% extends 'pybook/base.html' %}
+{% extends 'bookowl/base.html' %}
 {% block content %}
 
 <legend>Have a look at all your subscribed authors.</legend>
-<form action="{% url 'pybook:show_authors' %}" method="get">
+<form action="{% url 'bookowl:show_authors' %}" method="get">
     {% include "eventowl/filter.html"%}
 </form>
 
 {% if authors %}
-    <form action="{% url 'pybook:show_authors' %}" method="get">
+    <form action="{% url 'bookowl:show_authors' %}" method="get">
     <ul class="list-group">
     <button type="submit" style="display:none;"></button>
     {% for author in authors %}
@@ -29,7 +29,7 @@
     {% endfor %}
     </ul>
     </form>
-{% include "pyconcert/pagination.html"%}
+{% include "concertowl/pagination.html"%}
 
 {% else %}
     {% if request.GET.filter%}

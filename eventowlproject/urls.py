@@ -8,5 +8,5 @@ urlpatterns = patterns('',
                        url(r'^admin/', include(admin.site.urls)),
                        url(r'^account/logout/$', 'django.contrib.auth.views.logout', {'next_page': '/'}),
                        url(r'^account/', include('account.urls')),
-                       url('', include('social.apps.django_app.urls', namespace='social')),
+                       url('', include('social.apps.django_app.urls', 'social')),
 )

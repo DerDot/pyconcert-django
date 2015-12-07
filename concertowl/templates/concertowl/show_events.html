@@ -1,8 +1,8 @@
-{% extends 'pyconcert/base.html' %}
+{% extends 'concertowl/base.html' %}
 {% block content %}
 
-<form action="{% url 'pyconcert:show_events' %}" method="get">
-    {% include "pyconcert/filter.html"%}
+<form action="{% url 'concertowl:show_events' %}" method="get">
+    {% include "concertowl/filter.html"%}
 </form>
 
 {% if events %}
@@ -37,7 +37,7 @@
     {% endfor %}
     </div>
     
-{% include "pyconcert/pagination.html"%}
+{% include "concertowl/pagination.html"%}
     
 {% else %}
     {% if request.GET.filter%}
