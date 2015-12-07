@@ -1,7 +1,7 @@
 from django.test import TestCase
 from mixer.backend.django import mixer
 
-from pyconcert.models import Artist
+from concertowl.models import Artist
 from eventowl.utils import django_helpers
 
 

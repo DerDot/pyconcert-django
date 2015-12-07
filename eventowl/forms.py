@@ -4,7 +4,7 @@ from django import forms
 from django.contrib.auth.models import User
 from account import forms as account_forms
 
-from pyconcertproject import settings
+from eventowlproject import settings
 
 
 class RestrictedFileField(forms.FileField):

@@ -1,4 +1,4 @@
-from pyconcertproject.settings import APPS_WITH_PREVIEW
+from eventowlproject.settings import APPS_WITH_PREVIEW
 
 from importlib import import_module
 from abc import ABCMeta, abstractmethod

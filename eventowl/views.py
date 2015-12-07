@@ -7,7 +7,7 @@ from account import views as account_views
 
 from eventowl.models import UserProfile
 from eventowl.forms import SignupForm, SettingsForm, AddProfileForm
-from pyconcertproject import settings
+from eventowlproject import settings
 from eventowl import app_previews
 
 

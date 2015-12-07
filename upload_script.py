@@ -48,7 +48,7 @@ def existing_dir(path):
 if __name__ == "__main__":
     import argparse
     
-    parser = argparse.ArgumentParser(description='Upload local artists to pyconcert')
+    parser = argparse.ArgumentParser(description='Upload local artists to concertowl')
     parser.add_argument('musicdirs', metavar='musicdirs', type=existing_dir, nargs="+",
                         help='Directories to search.')
             

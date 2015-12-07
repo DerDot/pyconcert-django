@@ -1,0 +1,35 @@
+{% extends 'pyconcert/base.html' %}
+{% block content %}
+
+<legend>Based on what you favorited (yes, we are watching) you might like these artists too.</legend>
+<form action="{% url 'pyconcert:recommendations' %}" method="get">
+    {% include "eventowl/filter.html"%}
+</form>
+
+{% if artists %}
+    <form action="{% url 'pyconcert:recommendations' %}" method="get">
+    <ul class="list-group">
+    <button type="submit" style="display:none;"></button>
+    {% for artist in artists %}
+        <li class="list-group-item">
+        {{ artist.name|title }}
+        {% if artist.genre %}({{artist.genre|title}}) {% endif %}
+        <button type="submit" class="btn btn-xs pull-right" name="new_artist" value="{{ artist.name }}">
+            <span class="glyphicon glyphicon-plus"></span>
+        </button>
+        </li>
+    {% endfor %}
+    </ul>
+    </form>
+{% include "pyconcert/pagination.html"%}
+
+{% else %}
+    {% if request.GET.filter%}
+        <p>No artists matching {{ request.GET.filter }}.</p>
+    {% else %}
+        <p>There are no new recommendations for you. Sorry...<br>
+        Maybe you want to favorite some more artists (it's the little star besides the artist name).</p>
+    {% endif %}
+{% endif %}
+
+{% endblock content %}
