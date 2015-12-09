@@ -12,10 +12,12 @@ class Artist(models.Model):
     def __unicode__(self):
         return unicode(self.name)
 
+
 class RecommendedArtist(models.Model):
     artist = models.ForeignKey(Artist, related_name="recommendation")
     user = models.ForeignKey(User)
     score = models.FloatField(null=True)
+
 
 class Event(models.Model):
     venue = models.CharField(max_length=200)
@@ -35,4 +37,5 @@ class Event(models.Model):
         return name
 
 class Preview(base_models.Preview):
-    pass
+    city = models.CharField(max_length=200)
+    country = models.CharField(max_length=200)

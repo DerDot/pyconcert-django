@@ -11,10 +11,13 @@ from retrying import retry
 from eventowl.utils import config
 from eventowl.utils.string_helpers import normalize, random_string, parse_json
 
+EMPTY_IMAGE = 'https://s3.amazonaws.com/bit-photos/artistLarge.jpg'
+
 
 class Event(object):
     def __init__(self, artists, venue, city,
-                 country, date, time, ticket_url):
+                 country, date, time, ticket_url,
+                 image=None):
         self.artists = artists
         self.venue = venue
         self.city = city
@@ -22,6 +25,7 @@ class Event(object):
         self.date = date
         self.time = time
         self.ticket_url = ticket_url
+        self.image = image
 
     def __str__(self):
         return "Event by {artists} in {venue} ({city}, {country}).".format(artists=", ".join(self.artists),
@@ -52,22 +56,43 @@ def _split_datetime(date_time):
     return proper_datetime.date(), proper_datetime.time()
 
 
-def _get_bandsintown_events(artists, location):
-    api_call = "http://api.bandsintown.com/events/search"
-    args = [("location", location),
-            ("format", "json"),
-            ("app_id", "eventowl")]
+def _call(url, args, append_args=tuple()):
+    args = args + [("format", "json"),
+                   ("app_id", "eventowl")]
+    
+    for arg in append_args:
+        url_arg = urllib.quote(arg)
+        url += '/{}'.format(url_arg)
+        
+    api_call = "%s?%s" % (url, urllib.urlencode(args))
+    resp = urllib.urlopen(api_call).read()
+    return parse_json(resp)
+
+
+def _bandsintown_artist(name):
+    url = "http://api.bandsintown.com/artists"
+    args = [('api_version', '2.0')]
+    append_args = [name]
+    return _call(url, args, append_args)
+
+
+def _get_bandsintown_events(city, country, artists=tuple(), image=False):
+    location = '{},{}'.format(city, country)
+    url = "http://api.bandsintown.com/events/search"
+    args = [("location", location)]
     for artist in artists:
         args.append(("artists[]", artist))
-    api_call = "%s?%s" % (api_call, urllib.urlencode(args))
-    resp = parse_json(urllib.urlopen(api_call).read())
+    resp = _call(url, args)
     ret = []
     if resp and not isinstance(resp, dict):
         for event in resp:
             artists = [normalize(artist["name"]) for artist in event["artists"]]
-            venue = event["venue"]["name"]
-            city = event["venue"]["city"]
-            country = event["venue"]["country"]
+            image_url = None
+            if image:
+                image_url = _bandsintown_artist(artists[0])['image_url']
+            venue = normalize(event["venue"]["name"])
+            city = normalize(event["venue"]["city"])
+            country = normalize(event["venue"]["country"])
             date, time = _split_datetime(event["datetime"])
             url = event["url"]
             result_event = Event(artists,
@@ -76,7 +101,8 @@ def _get_bandsintown_events(artists, location):
                                  country,
                                  date,
                                  time,
-                                 url)
+                                 url,
+                                 image_url)
             ret.append(result_event)
     return ret
 
@@ -138,7 +164,7 @@ def events_for_artists_bandsintown(artists, location):
     all_events = []
     for idx, artists_chunk in enumerate(_chunks(list(artists), 50)):
         print "Working on artists number {} to {}".format(idx * 50, (idx + 1) * 50)
-        events = _get_bandsintown_events(artists_chunk, location)
+        events = _get_bandsintown_events(location, artists_chunk)
         for event in events:
             all_events.append(event)
     return all_events
@@ -198,3 +224,15 @@ def spotify_artists(token, limit=50):
                 all_artists.add(normalized_artist)
         iteration += 1
     return all_artists
+
+
+def previews(city, country):
+    previews = []
+    print "Getting events near {} ({})".format(city, country)
+    events = _get_bandsintown_events(city, country, image=True)
+    for event in events:
+        if event.image != EMPTY_IMAGE:
+            previews.append(event)
+    print "Done"
+    return previews
+    

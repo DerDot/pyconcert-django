@@ -138,7 +138,8 @@ class SignupView(account_views.SignupView):
     form_class = SignupForm
     
     def get_context_data(self, **kwargs):
-        kwargs['previews'] = app_previews.get_all_objects({})
+        kwargs['previews'] = app_previews.get_all_objects({'city':'berlin',
+                                                           'country':'germany'})
         return super(SignupView, self).get_context_data(**kwargs)
 
     def after_signup(self, form):
