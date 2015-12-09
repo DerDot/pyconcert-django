@@ -4,6 +4,22 @@ from concertowl.models import Preview
 from concertowl.api_calls import previews
 
 
+def update_concert_preview(city, country):
+    for preview in previews(city, country):
+        artist = [a.title() for a in preview.artists][0]
+        description = '{} at {} ({})'.format(artist,
+                                             preview.venue.title(),
+                                             preview.date)
+        preview_object, created = Preview.objects.get_or_create(image=preview.image,
+                                                                description=description,
+                                                                link=preview.ticket_url,
+                                                                alttext=description,
+                                                                city=city,
+                                                                country=country)
+        if created:
+            preview_object.save()
+
+
 class Command(BaseCommand):
     help = 'Update previews for concertowl. Used by cron.'
     
@@ -21,16 +37,4 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         city = options['city']
         country = options['country']
-        for preview in previews(city, country):
-            artist = [a.title() for a in preview.artists][0]
-            description = '{} at {} ({})'.format(artist,
-                                                 preview.venue.title(),
-                                                 preview.date)
-            preview_object, created = Preview.objects.get_or_create(image=preview.image,
-                                                                    description=description,
-                                                                    link=preview.ticket_url,
-                                                                    alttext=description,
-                                                                    city=city,
-                                                                    country=country)
-            if created:
-                preview_object.save()
+        update_concert_preview(city, country)

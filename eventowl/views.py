@@ -9,6 +9,7 @@ from eventowl.models import UserProfile
 from eventowl.forms import SignupForm, SettingsForm, AddProfileForm
 from eventowlproject import settings
 from eventowl import app_previews
+from eventowl.utils.location import current_position
 
 
 class ChoiceView(TemplateView):
@@ -138,8 +139,12 @@ class SignupView(account_views.SignupView):
     form_class = SignupForm
     
     def get_context_data(self, **kwargs):
-        kwargs['previews'] = app_previews.get_all_objects({'city':'berlin',
-                                                           'country':'germany'})
+        city, country = current_position(self.request)
+        if city is None or country is None:
+            city = 'new york'
+            country = 'new york'
+        kwargs['previews'] = app_previews.get_all_objects({'city':city,
+                                                           'country':country})
         return super(SignupView, self).get_context_data(**kwargs)
 
     def after_signup(self, form):
