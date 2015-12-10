@@ -1,0 +1,2 @@
+Run celery:
+celery multi start eventowlworker1 -A eventowlproject --pidfile=/tmp/eventowlcelery1.pid --logfile=/home/ubuntu/eventowlcelery1.log
