@@ -80,8 +80,11 @@ def _bandsintown_artist(name):
     return _call(url, args, append_args)
 
 
-def _get_bandsintown_events(city, country, artists=tuple(), image=False):
-    location = '{},{}'.format(city, country)
+def _get_bandsintown_events(city, country=None, artists=tuple(), image=False):
+    if country is None:
+        location = city
+    else:
+        location = '{},{}'.format(city, country)
     url = "http://api.bandsintown.com/events/search"
     args = [("location", location)]
     for artist in artists:
@@ -165,12 +168,12 @@ def _seatgeek_performer_id(artist):
         return None
 
 
-def events_for_artists_bandsintown(artists, location):
-    artists, location = _normalize_inputs(artists, location)
+def events_for_artists_bandsintown(artists, city):
+    artists, city = _normalize_inputs(artists, city)
     all_events = []
     for idx, artists_chunk in enumerate(_chunks(list(artists), 50)):
         print "Working on artists number {} to {}".format(idx * 50, (idx + 1) * 50)
-        events = _get_bandsintown_events(location, artists_chunk)
+        events = _get_bandsintown_events(city, artists=artists_chunk)
         for event in events:
             all_events.append(event)
     return all_events
