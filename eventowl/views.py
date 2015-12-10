@@ -5,7 +5,7 @@ from django.shortcuts import redirect
 from django.views.generic import TemplateView, ListView, FormView
 from account import views as account_views
 
-from eventowl.models import UserProfile
+from eventowl.models import UserProfile, VisitorLocation
 from eventowl.forms import SignupForm, SettingsForm, AddProfileForm
 from eventowlproject import settings
 from eventowl import app_previews
@@ -143,6 +143,9 @@ class SignupView(account_views.SignupView):
         if city is None or country is None:
             city = 'new york'
             country = 'new york'
+        VisitorLocation.objects.update_or_create(city=city,
+                                                 country=country)
+            
         kwargs['previews'] = app_previews.get_all_objects({'city':city,
                                                            'country':country})
         return super(SignupView, self).get_context_data(**kwargs)
@@ -152,10 +155,8 @@ class SignupView(account_views.SignupView):
         super(SignupView, self).after_signup(form)
 
     def create_profile(self, form):
-        profile, created = UserProfile.objects.get_or_create(user=self.created_user,
-                                                             city=form.cleaned_data["city"])
-        if created:
-            profile.save()
+        UserProfile.objects.update_or_create(user=self.created_user,
+                                             city=form.cleaned_data["city"])
 
 
 class SettingsView(FormView):

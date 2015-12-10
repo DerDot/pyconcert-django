@@ -12,6 +12,7 @@ from eventowl.utils import config
 from eventowl.utils.string_helpers import normalize, random_string, parse_json
 
 EMPTY_IMAGE = 'https://s3.amazonaws.com/bit-photos/artistLarge.jpg'
+EMPTY_THUMB = 'https://s3.amazonaws.com/bit-photos/artistThumb.jpg'
 
 
 class Event(object):
@@ -57,16 +58,19 @@ def _split_datetime(date_time):
 
 
 def _call(url, args, append_args=tuple()):
-    args = args + [("format", "json"),
-                   ("app_id", "eventowl")]
-    
-    for arg in append_args:
-        url_arg = urllib.quote(arg)
-        url += '/{}'.format(url_arg)
+    try:
+        args = args + [("format", "json"),
+                       ("app_id", "eventowl")]
         
-    api_call = "%s?%s" % (url, urllib.urlencode(args))
-    resp = urllib.urlopen(api_call).read()
-    return parse_json(resp)
+        for arg in append_args:
+            url_arg = urllib.quote(arg)
+            url += '/{}'.format(url_arg)
+            
+        api_call = "%s?%s" % (url, urllib.urlencode(args))
+        resp = urllib.urlopen(api_call).read()
+        return parse_json(resp)
+    except:
+        return None
 
 
 def _bandsintown_artist(name):
@@ -89,7 +93,9 @@ def _get_bandsintown_events(city, country, artists=tuple(), image=False):
             artists = [normalize(artist["name"]) for artist in event["artists"]]
             image_url = None
             if image:
-                image_url = _bandsintown_artist(artists[0])['image_url']
+                artist = _bandsintown_artist(artists[0])
+                if artist is not None:
+                    image_url = artist.get('thumb_url')
             venue = normalize(event["venue"]["name"])
             city = normalize(event["venue"]["city"])
             country = normalize(event["venue"]["country"])
@@ -231,7 +237,7 @@ def previews(city, country):
     print "Getting events near {} ({})".format(city, country)
     events = _get_bandsintown_events(city, country, image=True)
     for event in events:
-        if event.image != EMPTY_IMAGE:
+        if event.image and event.image not in [EMPTY_IMAGE, EMPTY_THUMB]:
             previews.append(event)
     print "Done"
     return previews

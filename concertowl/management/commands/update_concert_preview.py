@@ -2,6 +2,7 @@ from django.core.management.base import BaseCommand
 
 from concertowl.models import Preview
 from concertowl.api_calls import previews
+from eventowl.models import VisitorLocation
 
 
 def update_concert_preview(city, country):
@@ -26,15 +27,20 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument('--city',
                             dest='city',
-                            required=True,
                             help='City for events')
         
         parser.add_argument('--country',
                             dest='country',
-                            required=True,
                             help='Country for events')
 
     def handle(self, *args, **options):
-        city = options['city']
-        country = options['country']
-        update_concert_preview(city, country)
+        city = options.get('city')
+        country = options.get('country')
+        if city is None or country is None:
+            locations = [(o['city'], o['country'])
+                         for o in VisitorLocation.objects.values('city', 'country')]
+        else:
+            locations = [(city, country)]
+            
+        for city, country in locations:
+            update_concert_preview(city, country)

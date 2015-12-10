@@ -130,5 +130,6 @@ def upload_json(request):
                   {'form': form,
                    'max_size_mb': settings.MAX_UPLOAD_SIZE / 1024 ** 2})
 
+
 class ToolView(TemplateView):
     template_name = 'concertowl/tool.html'

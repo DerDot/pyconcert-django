@@ -19,3 +19,14 @@ class Preview(models.Model):
     class Meta:
         abstract = True
         get_latest_by = 'updated_at'
+        
+    def __unicode__(self):
+        return self.description
+        
+        
+class VisitorLocation(models.Model):
+    country = models.CharField(max_length=200)
+    city = models.CharField(max_length=200)
+    
+    def __unicode__(self):
+        return u'{} - {}'.format(self.city, self.country)

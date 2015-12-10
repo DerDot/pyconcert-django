@@ -46,7 +46,8 @@ Sign up to get personalized notifications and suggestions for all the fun stuff 
 			{% for obj in preview.1 %}
 				<div class="col-md-2">
 					<a href={{ obj.link }}>
-						<img src="{{ obj.image }}" alt="{{ obj.alttext }}" title="{{ obj.alttext }}" class="img-responsive">
+						<img src="{{ obj.image }}" width="180"
+						     alt="{{ obj.alttext }}" title="{{ obj.alttext }}" class="img-responsive">
 					</a>
 					<p><font size="3">{{ obj.description }}</font></p>
 				</div>
