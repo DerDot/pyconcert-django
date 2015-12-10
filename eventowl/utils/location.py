@@ -5,7 +5,6 @@ from eventowl.utils.string_helpers import normalize
 
 def current_position(request):
     ip = get_ip(request)
-    ip = "85.180.38.9"
     reader = Reader('GeoLite2-City.mmdb')
     try:
         response = reader.city(ip)
