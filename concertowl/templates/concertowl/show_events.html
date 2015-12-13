@@ -14,8 +14,7 @@
                     <a data-toggle="collapse" data-parent="#accordion" href="#collapse{{forloop.counter}}">
                     {{event.date|date}}: 
                     {% for artist in event.artists.all %}
-                       {{ artist|title }}
-                       {% if not forloop.last %}, {% endif %}
+                       {{ artist|title }}{% if not forloop.last %}, {% endif %}
                     {% endfor %}
                     </a>
                 </h4>
@@ -24,8 +23,7 @@
 	            <div class="panel-body">
 	               This event by
 	               {% for artist in event.artists.all %}
-                      {{ artist|title }}
-                      {% if not forloop.last %}, {% endif %}
+                      {{ artist|title }}{% if not forloop.last %}, {% endif %}
                    {% endfor %}
                    is going to take place at <b>{{event.venue}}</b> in <b>{{event.city}}</b> ({{event.country}}).<br>
                    Be there at <b>{{event.time}}</b> on <b>{{event.date}}</b>.<br>

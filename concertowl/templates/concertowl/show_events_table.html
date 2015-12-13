@@ -20,8 +20,7 @@
             <td>{{event.date|date}}</td>
             <td>
              {% for artist in event.artists.all %}
-               {{ artist|title }}
-               {% if not forloop.last %}, {% endif %}
+               {{ artist|title }}{% if not forloop.last %}, {% endif %}
              {% endfor %}
              </td>
            </tr>
@@ -29,8 +28,7 @@
              <td colspan="2">
                 This event by
                {% for artist in event.artists.all %}
-                  {{ artist|title }}
-                  {% if not forloop.last %}, {% endif %}
+                  {{ artist|title }}{% if not forloop.last %}, {% endif %}
                {% endfor %}
                is going to take place at <b>{{event.venue}}</b> in <b>{{event.city}}</b> ({{event.country}}).<br>
                Be there at <b>{{event.time}}</b> on <b>{{event.date}}</b>.<br>
