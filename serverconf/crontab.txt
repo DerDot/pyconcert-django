@@ -1,5 +1,5 @@
-15 3 * * * cd /home/ubuntu/pyconcert-django/ && python /home/ubuntu/pyconcert-django/manage.py update_events > /home/ubuntu/logs/events.log 2>&1
-45 3 * * * cd /home/ubuntu/pyconcert-django/ && python /home/ubuntu/pyconcert-django/manage.py update_releases > /home/ubuntu/logs/releases.log 2>&1
-0 * * * * cd /home/ubuntu/pyconcert-django/ && python /home/ubuntu/pyconcert-django/manage.py update_concert_preview > /home/ubuntu/logs/concert_preview.log 2>&1
-30 * * * * cd /home/ubuntu/pyconcert-django/ && python /home/ubuntu/pyconcert-django/manage.py update_book_preview > /home/ubuntu/logs/book_preview.log 2>&1
+15 3 * * * cd /home/ubuntu/pyconcert-django/ && /home/ubuntu/.virtualenvs/eventowl/bin/python /home/ubuntu/pyconcert-django/manage.py update_events > /home/ubuntu/logs/events.log 2>&1
+45 3 * * * cd /home/ubuntu/pyconcert-django/ && /home/ubuntu/.virtualenvs/eventowl/bin/python /home/ubuntu/pyconcert-django/manage.py update_releases > /home/ubuntu/logs/releases.log 2>&1
+0 * * * * cd /home/ubuntu/pyconcert-django/ && /home/ubuntu/.virtualenvs/eventowl/bin/python /home/ubuntu/pyconcert-django/manage.py update_concert_preview > /home/ubuntu/logs/concert_preview.log 2>&1
+30 * * * * cd /home/ubuntu/pyconcert-django/ && /home/ubuntu/.virtualenvs/eventowl/bin/python /home/ubuntu/pyconcert-django/manage.py update_book_preview > /home/ubuntu/logs/book_preview.log 2>&1
 20 2 * * 3 [ $(date +\%d) -le 07 ] && wget http://geolite.maxmind.com/download/geoip/database/GeoLite2-City.mmdb.gz -P /home/ubuntu/pyconcert-django/ && gunzip /home/ubuntu/pyconcert-django/GeoLite2-City.mmdb.gz
