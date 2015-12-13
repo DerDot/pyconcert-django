@@ -151,10 +151,14 @@ SOCIAL_AUTH_PIPELINE = (
 SOCIAL_AUTH_FIELDS_STORED_IN_SESSION = ('city', )
 
 LOGIN_URL = '/account/signup'
+LOGIN_REDIRECT_URL = '/'
 
 LOGIN_EXEMPT_URLS = (
      r'admin/+',
      r'account/(login|signup|password/reset)/+',
+     r'account/add_profile/.*',
+     r'login.*',
+     r'complete.*',
      r'about/+$',
      r'impressum/+$',
 ) 
