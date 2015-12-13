@@ -42,7 +42,7 @@ class EventsView(CustomListView):
 
         kwargs = {self.originator_name + '__in': subscribed_originators,
                   'date__gte': oldest_shown}
-        subscribed_events = self.event_model.objects.filter(**kwargs)
+        subscribed_events = self.event_model.objects.filter(**kwargs).distinct()
         return subscribed_events.order_by("date")
 
 
