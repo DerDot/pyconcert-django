@@ -76,7 +76,7 @@ def _call(url, args, append_args=tuple()):
         parsed = None
     
     if isinstance(parsed, dict) and parsed.has_key('errors'):
-        raise IOError('; '.join(dict['errors']))
+        raise IOError('; '.join(parsed['errors']))
     
     return parsed
         
