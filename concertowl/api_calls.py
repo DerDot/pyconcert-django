@@ -243,6 +243,6 @@ def previews(city, country):
     for event in events:
         if event.image and event.image not in [EMPTY_IMAGE, EMPTY_THUMB]:
             previews.append(event)
-    print "Done"
+    print "Got {}".format(len(previews))
     return previews
     
