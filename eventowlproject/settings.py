@@ -197,5 +197,13 @@ LOGGING = {
             'handlers': ['file'],
             'level': 'DEBUG',
         },
+        'bookowl': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+        },
+        'concertowl': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+        },
     }
 }
