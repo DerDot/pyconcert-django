@@ -169,7 +169,7 @@ def _new_releases():
         item = xmltodict.parse(lookup_result)
         author = item['ItemLookupResponse']['Items']['Item']['ItemAttributes']['Author']
         title = item['ItemLookupResponse']['Items']['Item']['ItemAttributes']['Title']
-        yield author, title
+        yield normalize(author), normalize(title)
 
 
 def previews():
