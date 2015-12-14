@@ -72,7 +72,7 @@ def _call(url, args, append_args=tuple()):
     resp = urllib.urlopen(api_call).read()
     parsed = parse_json(resp)
     
-    if isinstance(parsed, dict) and dict.has_key('errors'):
+    if isinstance(parsed, dict) and parsed.has_key('errors'):
         raise IOError('; '.join(dict['errors']))
     
     return parsed
