@@ -44,9 +44,11 @@ INSTALLED_APPS = (
     'widget_tweaks',
     'social.apps.django_app.default',
     'debug_toolbar',
+    'django_js_reverse',
     'eventowl',
     'concertowl',
-    'bookowl'
+    'bookowl',
+    'notifications',
 )
 
 APPS_WITH_PREVIEW = (

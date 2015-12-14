@@ -1,4 +1,6 @@
 {% load staticfiles %}
+{% load notifications_tags %}
+
 <html>
 	<head> <title>EventOwl</title>
 		<link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
@@ -8,6 +10,11 @@
         <script src="{% static 'jquery/jquery.min.js' %}"></script>
         <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
         <script type="text/javascript" src="{% static 'jquery/jExpand.js' %}"></script>
+        <script src="{% static 'django_js_reverse/js/reverse.js' %}"></script>
+        <script src="{% static 'utils.js' %}" type="text/javascript"></script>
+        <script src="{% static 'custom_notifcations.js' %}" type="text/javascript"></script>
+        <script src="{% static 'notifications/notify.js' %}" type="text/javascript"></script>
+        {% register_notify_callbacks callbacks='fill_notification_list_with_link,fill_notification_badge'%}
 
         <meta name="viewport" content="width=device-width, initial-scale=1">
 		{% block extra_header %}
@@ -39,6 +46,13 @@
 				<li> <a href="{% url 'eventowl:about' %}">About</a></li>
 				{% if user.is_authenticated %}
 				   <li class="dropdown">
+				   	   <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+				   	   		Notifications {% live_notify_badge classes="badge" %}
+				   	   </a>
+					   <ul class="dropdown-menu" role="menu" id="notification-menu">
+					   </ul>
+				   </li>
+				   <li class="dropdown">
 					   <a href="#" class="dropdown-toggle" data-toggle="dropdown"> {{ user.username }} <b class="caret"></b></a>
 					   <ul class="dropdown-menu" role="menu">
 							<li><a href="{% url 'account_settings' %}">Settings</a></li>
@@ -59,33 +73,5 @@
     </div>
 
 </body>
-
-<script>
-    function desiredHeight() {
-        var windowHeight = window.innerHeight || document.documentElement.clientHeight|| document.body.clientHeight;
-        return windowHeight + 50;
-    }
-    
-    function currentHeight() {
-        var body = document.body;
-        var html = document.documentElement;
-        var height = Math.max(body.scrollHeight, body.offsetHeight,
-                              html.clientHeight, html.scrollHeight,
-                              html.offsetHeight);
-        return height;
-    }
-    
-    function addWhitespace() {
-        var desired = desiredHeight();
-        var current = currentHeight();
-        console.log(desired);
-        console.log(current);
-        if (desired > current) {
-	        var content_div = document.getElementById('content_div')
-	        content_div.setAttribute("style","height:" + desired + "px");
-	        content_div.style.height = desired + "px";
-	    }
-    }
-</script>
 
 </html>

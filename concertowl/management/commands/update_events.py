@@ -54,6 +54,9 @@ class ConcertConnector(EventConnector):
             should_save = True
         
         return event, should_save
+    
+    def _message_for_originator(self, artist):
+        return "New concert by {}".format(artist.name.title()) 
 
 
 class Command(BaseCommand):

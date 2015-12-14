@@ -1,0 +1,32 @@
+{% extends 'eventowl/base.html' %}
+{% block content %}
+<legend>News for you</legend>
+<ul class="list-group">
+{% for notice in notifications %}
+	<li class="list-group-item">
+	    {% if notice.unread %}
+	    	<b>{{ notice.verb }}</b>
+		    <a href="{% url 'notifications:mark_as_read' notice.slug %}" class="btn btn-xs pull-right" name="read">
+		    	<span class="fa fa-envelope"></span>
+		    </a>
+		{% else %}
+			{{ notice.verb }}
+			<a href="{% url 'notifications:mark_as_unread' notice.slug %}" class="btn btn-xs pull-right" name="unread">
+		    	<span class="fa fa-envelope-o"></span>
+		    </a>
+		{% endif %}
+		<a href="{% url 'notifications:delete' notice.slug %}" class="btn btn-xs pull-right" name="delete">
+	    	<span class="fa fa-trash"></span>
+	    </a>
+		<br/>
+		<font size=2pt>Sent {{ notice.timesince }} ago.</font>
+	</li>
+{% endfor %}
+</ul>
+{% include "eventowl/pagination.html"%}
+
+<a href="{% url 'notifications:mark_all_as_read' %}" class="btn btn-primary btn-large" role="button">
+	Mark all read
+</a>
+
+{% endblock content %}

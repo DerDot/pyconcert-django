@@ -30,6 +30,9 @@ class ReleaseConnector(EventConnector):
             should_save = True
 
         return release, should_save
+    
+    def _message_for_originator(self, author):
+        return "New book by {}".format(author.name.title()) 
 
 
 class Command(BaseCommand):
