@@ -58,8 +58,8 @@ def _split_datetime(date_time):
 
 
 @retry(wait_exponential_multiplier=500,
-       wait_exponential_max=5000,
-       stop_max_delay=30000)
+       wait_exponential_max=8000,
+       stop_max_delay=50000)
 def _call(url, args, append_args=tuple()):
     args = args + [("format", "json"),
                    ("app_id", "eventowl")]
