@@ -70,7 +70,10 @@ def _call(url, args, append_args=tuple()):
         
     api_call = "%s?%s" % (url, urllib.urlencode(args))
     resp = urllib.urlopen(api_call).read()
-    parsed = parse_json(resp)
+    try:
+        parsed = parse_json(resp)
+    except ValueError:
+        parsed = None
     
     if isinstance(parsed, dict) and parsed.has_key('errors'):
         raise IOError('; '.join(dict['errors']))
