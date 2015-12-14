@@ -57,20 +57,26 @@ def _split_datetime(date_time):
     return proper_datetime.date(), proper_datetime.time()
 
 
+@retry(wait_exponential_multiplier=500,
+       wait_exponential_max=5000,
+       stop_max_delay=30000)
 def _call(url, args, append_args=tuple()):
-    try:
-        args = args + [("format", "json"),
-                       ("app_id", "eventowl")]
+    args = args + [("format", "json"),
+                   ("app_id", "eventowl")]
+    
+    for arg in append_args:
+        url_arg = urllib.quote(arg)
+        url += '/{}'.format(url_arg)
         
-        for arg in append_args:
-            url_arg = urllib.quote(arg)
-            url += '/{}'.format(url_arg)
-            
-        api_call = "%s?%s" % (url, urllib.urlencode(args))
-        resp = urllib.urlopen(api_call).read()
-        return parse_json(resp)
-    except:
-        return None
+    api_call = "%s?%s" % (url, urllib.urlencode(args))
+    resp = urllib.urlopen(api_call).read()
+    parsed = parse_json(resp)
+    
+    if isinstance(parsed, dict) and dict.has_key('errors'):
+        raise IOError('; '.join(dict['errors']))
+    
+    return parsed
+        
 
 
 def _bandsintown_artist(name):
@@ -91,7 +97,7 @@ def _get_bandsintown_events(city, country=None, artists=tuple(), image=False):
         args.append(("artists[]", artist))
     resp = _call(url, args)
     ret = []
-    if resp and not isinstance(resp, dict):
+    if resp:
         for event in resp:
             artists = [normalize(artist["name"]) for artist in event["artists"]]
             image_url = None
