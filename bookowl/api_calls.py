@@ -169,7 +169,7 @@ def _new_releases():
         item = xmltodict.parse(lookup_result)
         author = item['ItemLookupResponse']['Items']['Item']['ItemAttributes']['Author']
         title = item['ItemLookupResponse']['Items']['Item']['ItemAttributes']['Title']
-        yield normalize(author), normalize(title)
+        yield author, title
 
 
 def previews():
@@ -177,7 +177,7 @@ def previews():
     print "Getting new releases..."
     new_releases = _new_releases()
     for author_name, title in new_releases:
-        print u"Getting info for {} by {}...".format(title, author_name)
+        print "Getting info for {} by {}...".format(normalize(title), normalize(author_name))
         preview = _book_by_title_and_author(author_name, title)
         if 'nophoto' in preview.image:
             print "No photo. Skip..."
