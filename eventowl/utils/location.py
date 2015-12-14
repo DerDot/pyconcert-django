@@ -10,7 +10,7 @@ def current_position(request):
         response = reader.city(ip)
         city = normalize(response.city.name)
         country = normalize(response.country.name)
-    except (ValueError, AddressNotFoundError):
+    except (ValueError, AddressNotFoundError, AttributeError):
         city = country = None
         
     return city, country
