@@ -23,12 +23,12 @@ def update_concert_preview(city, country):
 
 class Command(BaseCommand):
     help = 'Update previews for concertowl. Used by cron.'
-    
+
     def add_arguments(self, parser):
         parser.add_argument('--city',
                             dest='city',
                             help='City for events')
-        
+
         parser.add_argument('--country',
                             dest='country',
                             help='Country for events')
@@ -36,11 +36,11 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         city = options.get('city')
         country = options.get('country')
-        if city is None or country is None:
+        if city is None and country is None:
             locations = [(o['city'], o['country'])
                          for o in VisitorLocation.objects.values('city', 'country')]
         else:
             locations = [(city, country)]
-            
+
         for city, country in locations:
             update_concert_preview(city, country)

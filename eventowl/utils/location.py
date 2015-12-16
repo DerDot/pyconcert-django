@@ -10,7 +10,6 @@ READER = Reader('GeoLite2-City.mmdb')
 
 def current_position(request):
     ip = get_ip(request)
-
     try:
         response = READER.city(ip)
         city = response.city.name

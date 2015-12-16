@@ -63,27 +63,27 @@ def _split_datetime(date_time):
 def _call(url, args, append_args=tuple()):
     args = args + [("format", "json"),
                    ("app_id", "eventowl")]
-    
+
     for arg in append_args:
         url_arg = urllib.quote(arg)
         url += '/{}'.format(url_arg)
-        
+
     api_call = "%s?%s" % (url, urllib.urlencode(args))
     resp = urllib.urlopen(api_call).read()
     try:
         parsed = parse_json(resp)
     except ValueError:
         parsed = None
-    
+
     if isinstance(parsed, dict) and parsed.has_key('errors'):
         message = '; '.join(parsed['errors'])
         if 'exceeded' in message:
             raise IOError(message)
         else:
             parsed = None
-    
+
     return parsed
-        
+
 
 
 def _bandsintown_artist(name):
@@ -96,6 +96,8 @@ def _bandsintown_artist(name):
 def _get_bandsintown_events(city, country=None, artists=tuple(), image=False):
     if country is None:
         location = city
+    elif city is None:
+        location = country
     else:
         location = '{},{}'.format(city, country)
     url = "http://api.bandsintown.com/events/search"
@@ -258,4 +260,4 @@ def previews(city, country):
             previews.append(event)
     print "Got {}".format(len(previews))
     return previews
-    
+
