@@ -120,7 +120,7 @@ def _release_from_api_book(book):
     normalized_authors = [normalize(author['name']) for author in authors]
     api_isbn = book['isbn']
     isbn = None if isinstance(api_isbn, OrderedDict) else api_isbn
-    release = Release(book['title'],
+    release = Release(normalize(book['title']),
                       isbn,
                       _publication_date(book),
                       book['link'],
