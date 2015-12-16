@@ -10,7 +10,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         for preview in previews():
             author = [a.title() for a in preview.authors][0]
-            description = '{} by {}'.format(preview.title,
+            description = '{} by {}'.format(preview.title.title(),
                                             author)
             preview_object, created = Preview.objects.get_or_create(image=preview.image,
                                                                     description=description,
