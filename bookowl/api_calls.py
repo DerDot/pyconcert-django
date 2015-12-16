@@ -111,7 +111,7 @@ def _book_by_title_and_author(author_name, title):
                       'author': author_name,
                       'title': title,
                       'key': config['GOODREADS_KEY']}
-    
+
     return _call_title_api(url_parameters)
 
 
@@ -161,13 +161,15 @@ def _new_releases():
                             MaxQPS=0.9)
     lookup_result = api.BrowseNodeLookup(BrowseNodeId=283155,
                                          ResponseGroup='NewReleases')
-    new_releases =  xmltodict.parse(lookup_result)
+    new_releases = xmltodict.parse(lookup_result)
     actual_releases = new_releases['BrowseNodeLookupResponse']['BrowseNodes']['BrowseNode']['NewReleases']['NewRelease']
     for release in actual_releases:
         asin = release['ASIN']
         lookup_result = api.ItemLookup(ItemId=asin)
         item = xmltodict.parse(lookup_result)
         author = item['ItemLookupResponse']['Items']['Item']['ItemAttributes']['Author']
+        if isinstance(author, list):
+            author = author[0]
         title = item['ItemLookupResponse']['Items']['Item']['ItemAttributes']['Title']
         yield author, title
 
