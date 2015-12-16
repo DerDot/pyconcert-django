@@ -1,5 +1,8 @@
+import logging
+logger = logging.getLogger(__name__)
+
 from ipware.ip import get_ip
-from geoip2.database import Reader 
+from geoip2.database import Reader
 from geoip2.errors import AddressNotFoundError
 from eventowl.utils.string_helpers import normalize
 
@@ -10,7 +13,8 @@ def current_position(request):
         response = reader.city(ip)
         city = normalize(response.city.name)
         country = normalize(response.country.name)
-    except (ValueError, AddressNotFoundError, AttributeError):
+    except (ValueError, AddressNotFoundError, AttributeError) as e:
+        logger.warn(str(e))
         city = country = None
-        
+
     return city, country
