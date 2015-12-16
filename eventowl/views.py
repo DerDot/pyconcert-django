@@ -119,8 +119,8 @@ class ImpressumView(TemplateView):
 
 class AboutView(TemplateView):
     template_name = 'eventowl/about.html'
-    
-    
+
+
 class AddProfileView(FormView):
     form_class = AddProfileForm
     template_name = 'eventowl/profile.html'
@@ -128,8 +128,8 @@ class AddProfileView(FormView):
     def form_valid(self, form):
         backend = self.request.session['backend']
         self.request.session['city'] = form.cleaned_data['city']
-        return redirect(reverse('social:complete', args=(backend, )))
-    
+        return redirect(reverse('social:complete', args=(backend,)))
+
     def get(self, request):
         self.request.session['backend'] = self.request.GET.get('backend')
         return super(AddProfileView, self).get(request)
@@ -137,15 +137,15 @@ class AddProfileView(FormView):
 
 class SignupView(account_views.SignupView):
     form_class = SignupForm
-    
+
     def get_context_data(self, **kwargs):
         city, country = current_position(self.request)
-        if city is None or country is None:
+        if city is None and country is None:
             city = 'new york'
             country = 'new york'
         VisitorLocation.objects.update_or_create(city=city,
                                                  country=country)
-            
+
         kwargs['previews'] = app_previews.get_all_objects({'city':city,
                                                            'country':country})
         return super(SignupView, self).get_context_data(**kwargs)
