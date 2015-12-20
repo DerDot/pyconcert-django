@@ -9,8 +9,8 @@ class Artist(models.Model):
     recommendedtos = models.ManyToManyField(User, through='RecommendedArtist')
     favoritedby = models.ManyToManyField(User, related_name='favorit_artists')
 
-    def __unicode__(self):
-        return unicode(self.name)
+    def __str__(self):
+        return self.name
 
 
 class RecommendedArtist(models.Model):
@@ -28,12 +28,12 @@ class Event(models.Model):
     ticket_url = models.URLField()
     artists = models.ManyToManyField(Artist, related_name='events')
 
-    def __unicode__(self):
+    def __str__(self):
         artist_names = [artist.name.title() for artist in
                         self.artists.all()]
-        name = u"{} at {} on {}".format(u", ".join(artist_names),
-                                        unicode(self.venue),
-                                        unicode(self.date.strftime("%Y-%m-%d")))
+        name = "{} at {} on {}".format(", ".join(artist_names),
+                                        str(self.venue),
+                                        str(self.date.strftime("%Y-%m-%d")))
         return name
 
 class Preview(base_models.Preview):

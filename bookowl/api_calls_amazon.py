@@ -1,5 +1,5 @@
 from datetime import date, datetime
-from itertools import izip
+
 
 import bottlenose
 import xmltodict
@@ -28,7 +28,7 @@ class Release(object):
         return self.__str__()
 
     def __eq__(self, other):
-        for self_var, other_var in izip(vars(self), vars(other)):
+        for self_var, other_var in zip(vars(self), vars(other)):
             if self_var != other_var:
                 return False
         return True
@@ -101,7 +101,7 @@ def book_releases(authors, region):
 
     releases = []
     for idx, author in enumerate(authors):
-        print u"Working on author number {} of {} ({})".format(idx + 1, len(authors), author)
+        print(("Working on author number {} of {} ({})".format(idx + 1, len(authors), author)))
         author_releases = _book_release(author, api)
         releases += author_releases
 

@@ -9,9 +9,7 @@ PREVIEW_MODULE_NAME = 'preview'
 PREVIEW_CLASS_NAME = 'Preview'
 
 
-class AbstractPreview(object):
-    __metaclass__ = ABCMeta
-    
+class AbstractPreview(object, metaclass=ABCMeta):
     @abstractstaticmethod
     def description():
         pass

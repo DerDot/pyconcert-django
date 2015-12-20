@@ -5,7 +5,7 @@ from django.test import TestCase
 from django.contrib.auth.models import User
 from nose.tools import assert_list_equal
 
-import api_calls
+from . import api_calls
 from bookowl.models import Author, Book
 from bookowl.views import EventsView
 

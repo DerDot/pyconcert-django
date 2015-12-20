@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.views.generic import TemplateView
 
-from models import Event, Artist
+from .models import Event, Artist
 from eventowl import views as baseviews
 from eventowl.utils.string_helpers import normalize, parse_json
 from concertowl.forms import UploadFileForm
@@ -37,7 +37,7 @@ def spotify(request):
         code = request.GET.get('code')
         state = request.GET.get('state')
         if request.session.get("state") != state:
-            print "Oh noes..."
+            print("Oh noes...")
         token_info = spotify_token(code)
         request.session["token"] = token_info["access_token"]
         request.session["refresh_token"] = token_info["refresh_token"]

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from StringIO import StringIO
+from io import StringIO
 from datetime import date, time, timedelta
 import json
 
@@ -7,7 +7,7 @@ from django.test import TestCase
 from django.contrib.auth.models import User
 from nose.tools import assert_equal, assert_list_equal
 
-import api_calls
+from . import api_calls
 from concertowl.models import Artist, Event
 from concertowl.views import EventsView
 from eventowl.models import UserProfile
@@ -17,23 +17,23 @@ ori_urlopen = api_calls.urllib.urlopen
 
 
 def urlopen_bit_mock(*args, **kwargs):
-    response = [{u'url': u'test.com',
-                 u'venue': {u'city': u'New York',
-                            u'name': u'Webster Hall',
-                            u'url': u'test.com',
-                            u'country': u'United States',
-                            u'region': u'NY',
-                            u'longitude':-73.989643,
-                            u'latitude': 40.731907,
-                            u'id': 1356611},
-                 u'ticket_url': u'test.com?app_id=concertowl',
-                 u'on_sale_datetime': None,
-                 u'datetime': u'2015-05-13T19:00:00',
-                 u'artists': [{u'url': u'test.com/banda',
-                               u'mbid': u'b20ebd71-a252-417d-9e1c-3e1763da68f8',
-                               u'name': u'ümlautbänd'}],
-                 u'ticket_status': u'available',
-                 u'id': 1234567}]
+    response = [{'url': 'test.com',
+                 'venue': {'city': 'New York',
+                            'name': 'Webster Hall',
+                            'url': 'test.com',
+                            'country': 'United States',
+                            'region': 'NY',
+                            'longitude':-73.989643,
+                            'latitude': 40.731907,
+                            'id': 1356611},
+                 'ticket_url': 'test.com?app_id=concertowl',
+                 'on_sale_datetime': None,
+                 'datetime': '2015-05-13T19:00:00',
+                 'artists': [{'url': 'test.com/banda',
+                               'mbid': 'b20ebd71-a252-417d-9e1c-3e1763da68f8',
+                               'name': 'ümlautbänd'}],
+                 'ticket_status': 'available',
+                 'id': 1234567}]
     file_like = StringIO(json.dumps(response))
     return file_like
 
@@ -56,8 +56,8 @@ class APITestCase(TestCase):
 
     def test_events_for_artists_bandsintown_unicode(self):
         """Test events_for_artists_bandsintown with unicode"""
-        artists = [u"ümlautbänd"]
-        location = u"nüw york"
+        artists = ["ümlautbänd"]
+        location = "nüw york"
         result = api_calls.events_for_artists_bandsintown(artists, location)
         expected = api_calls.Event(["ümlautbänd"], "Webster Hall", "New York", "United States",
                                    date(2015, 5, 13), time(19), 'test.com?app_id=concertowl')

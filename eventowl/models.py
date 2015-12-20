@@ -5,7 +5,7 @@ class UserProfile(models.Model):
     user = models.OneToOneField(User, unique=True)
     city = models.CharField(max_length=200)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.user.username
 
 
@@ -20,7 +20,7 @@ class Preview(models.Model):
         abstract = True
         get_latest_by = 'updated_at'
 
-    def __unicode__(self):
+    def __str__(self):
         return self.description
 
 
@@ -28,5 +28,5 @@ class VisitorLocation(models.Model):
     country = models.CharField(max_length=200, null=True)
     city = models.CharField(max_length=200, null=True)
 
-    def __unicode__(self):
-        return u'{} - {}'.format(self.city, self.country)
+    def __str__(self):
+        return '{} - {}'.format(self.city, self.country)

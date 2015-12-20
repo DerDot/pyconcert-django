@@ -3,9 +3,7 @@ from abc import ABCMeta, abstractmethod
 from notifications import notify
 
 
-class EventConnector(object):
-    __metaclass__ = ABCMeta
-
+class EventConnector(object, metaclass=ABCMeta):
     @abstractmethod
     def _get_events(self, originators):
         pass

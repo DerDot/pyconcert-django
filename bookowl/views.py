@@ -1,10 +1,10 @@
-from StringIO import StringIO
+from io import StringIO
 
 from django.views.generic import FormView
 from django.core.urlresolvers import reverse
 import pandas as pd
 
-from models import Book, Author
+from .models import Book, Author
 from eventowl import views as baseviews
 from eventowl.utils.string_helpers import normalize
 from bookowl.management.commands.update_releases import ReleaseConnector

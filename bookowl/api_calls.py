@@ -1,7 +1,7 @@
 from collections import OrderedDict
 from datetime import date
-from itertools import izip
-import urllib
+
+import requests
 
 import bottlenose
 import xmltodict
@@ -33,7 +33,7 @@ class Release(object):
         return self.__str__()
 
     def __eq__(self, other):
-        for self_var, other_var in izip(vars(self), vars(other)):
+        for self_var, other_var in zip(vars(self), vars(other)):
             if self_var != other_var:
                 return False
         return True
@@ -55,38 +55,36 @@ def _publication_date(book):
 
 
 def _id_for_author_name(author_name):
-    print "    Getting ID..."
+    print("    Getting ID...")
     url_parameters = {'base_url': GOODREADS_URL,
                       'author_name': author_name,
                       'key': config['GOODREADS_KEY']}
 
     url = '{base_url}/api/author_url/{author_name}?key={key}'.format(**url_parameters)
-    resp = urllib.urlopen(url).read()
-    print "    Got response"
-    result = xmltodict.parse(resp)
-    print "    Parsed Response"
+    resp = requests.get(url)
+    print("    Got response")
+    result = xmltodict.parse(resp.text)
+    print("    Parsed Response")
     return result['GoodreadsResponse']['author']['@id']
 
 
 def _call_book_api(url_parameters):
-    print "    Reading page", url_parameters['page']
-    url = u'{base_url}/author/list/{author_id}?key={key}&page={page}'.format(**url_parameters)
-    url = url.encode('utf8')
-    resp = urllib.urlopen(url).read()
-    print "    Got response"
-    parsed = xmltodict.parse(resp)
+    print("    Reading page {}".format(url_parameters['page']))
+    url = '{base_url}/author/list/{author_id}?key={key}&page={page}'.format(**url_parameters)
+    resp = requests.get(url)
+    print("    Got response")
+    parsed = xmltodict.parse(resp.text)
     results = parsed['GoodreadsResponse']['author']['books']['book']
     num_books_current = parsed['GoodreadsResponse']['author']['books']['@end']
     num_books_total = parsed['GoodreadsResponse']['author']['books']['@total']
-    print "    Parsed {} of {} books".format(num_books_current, num_books_total)
+    print(("    Parsed {} of {} books".format(num_books_current, num_books_total)))
     return results, num_books_current < num_books_total
 
 
 def _call_title_api(url_parameters):
-    url = u'{base_url}/book/title/{title}?key={key}&author={author}'.format(**url_parameters)
-    url = url.encode('utf8')
-    resp = urllib.urlopen(url).read()
-    parsed = xmltodict.parse(resp)
+    url = '{base_url}/book/title/{title}?key={key}&author={author}'.format(**url_parameters)
+    resp = requests.get(url)
+    parsed = xmltodict.parse(resp.text)
     api_book = parsed['GoodreadsResponse']['book']
     return _release_from_api_book(api_book)
 
@@ -111,7 +109,6 @@ def _book_by_title_and_author(author_name, title):
                       'author': author_name,
                       'title': title,
                       'key': config['GOODREADS_KEY']}
-
     return _call_title_api(url_parameters)
 
 
@@ -147,7 +144,7 @@ def _book_release(author_name):
 def book_releases(authors):
     releases = []
     for idx, author in enumerate(authors):
-        print u"Working on author number {} of {} ({})".format(idx + 1, len(authors), author)
+        print(("Working on author number {} of {} ({})".format(idx + 1, len(authors), author)))
         author_releases = _book_release(author)
         releases += author_releases
 
@@ -176,14 +173,14 @@ def _new_releases():
 
 def previews():
     previews = []
-    print "Getting new releases..."
+    print("Getting new releases...")
     new_releases = _new_releases()
     for author_name, title in new_releases:
-        print "Getting info for {} by {}...".format(normalize(title), normalize(author_name))
+        print(("Getting info for {} by {}...".format(normalize(title), normalize(author_name))))
         preview = _book_by_title_and_author(author_name, title)
         if 'nophoto' in preview.image:
-            print "No photo. Skip..."
+            print("No photo. Skip...")
             continue
-        print "Done"
+        print("Done")
         previews.append(preview)
     return previews

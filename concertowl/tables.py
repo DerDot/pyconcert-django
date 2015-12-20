@@ -1,5 +1,5 @@
 import django_tables2 as tables
-from models import Event
+from .models import Event
 
 class EventTable(tables.Table):
 

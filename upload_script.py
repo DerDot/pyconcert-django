@@ -19,21 +19,21 @@ def get_first_level(top, current):
 def print_first_level(top, current):
     first_level = get_first_level(top, current)
     if print_first_level.last != first_level:
-        print "Searching in '{}'...".format(first_level)
+        print(("Searching in '{}'...".format(first_level)))
         print_first_level.last = first_level
 print_first_level.last = None
 
 def collect_artists(musicdirs):
     all_artists = set()
     for musicdir in musicdirs:
-        print "Reading {}...".format(musicdir)
+        print(("Reading {}...".format(musicdir)))
         for root, _, files in os.walk(musicdir):
             print_first_level(musicdir, root)
             for audiopath in files:
                 audiopath = os.path.join(root, audiopath)
                 artists = get_artists(audiopath)
                 all_artists.update(artists)
-        print "Done."
+        print("Done.")
     return all_artists
 
 def upload_artists():
@@ -54,7 +54,7 @@ if __name__ == "__main__":
             
     args = parser.parse_args()
     artists = collect_artists(args.musicdirs)
-    print "Found {} artists.".format(len(artists))
+    print(("Found {} artists.".format(len(artists))))
     artists = list(artists)
     with open("local_artists.json", "w") as json_file: 
         json.dump(artists, json_file)

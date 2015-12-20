@@ -25,7 +25,7 @@ class ConcertConnector(EventConnector):
 
         all_api_events = []
         for city in cities:
-            print "Updating events for", city
+            print(("Updating events for", city))
             api_events = events_for_artists_bandsintown(artists, city)
             all_api_events.extend(api_events)
 

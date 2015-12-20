@@ -1,9 +1,8 @@
 from datetime import datetime
-from itertools import izip
+
 import math
 import random
-import urllib
-import urllib2
+import urllib.parse
 
 import requests
 from retrying import retry
@@ -38,7 +37,7 @@ class Event(object):
         return self.__str__()
 
     def __eq__(self, other):
-        for self_var, other_var in izip(vars(self), vars(other)):
+        for self_var, other_var in zip(vars(self), vars(other)):
             if self_var != other_var:
                 return False
         return True
@@ -48,7 +47,7 @@ class Event(object):
 
 
 def _chunks(l, n):
-    for i in xrange(0, len(l), n):
+    for i in range(0, len(l), n):
         yield l[i:i + n]
 
 
@@ -65,17 +64,17 @@ def _call(url, args, append_args=tuple()):
                    ("app_id", "eventowl")]
 
     for arg in append_args:
-        url_arg = urllib.quote(arg)
+        url_arg = urllib.parse.quote(arg)
         url += '/{}'.format(url_arg)
 
-    api_call = "%s?%s" % (url, urllib.urlencode(args))
-    resp = urllib.urlopen(api_call).read()
+    api_call = "%s?%s" % (url, urllib.parse.urlencode(args))
+    resp = requests.get(api_call)
     try:
-        parsed = parse_json(resp)
+        parsed = parse_json(resp.text)
     except ValueError:
         parsed = None
 
-    if isinstance(parsed, dict) and parsed.has_key('errors'):
+    if isinstance(parsed, dict) and 'errors' in parsed:
         message = '; '.join(parsed['errors'])
         if 'exceeded' in message:
             raise IOError(message)
@@ -134,11 +133,11 @@ def _get_bandsintown_events(city, country=None, artists=tuple(), image=False):
 def _normalize_inputs(artists, location):
     normalized_artists = []
     for artist in artists:
-        if isinstance(artist, unicode):
+        if isinstance(artist, str):
             artist = artist.encode("utf8")
         normalized_artists.append(artist)
 
-    if isinstance(location, unicode):
+    if isinstance(location, str):
         location = location.encode("utf8")
     return normalized_artists, location
 
@@ -159,8 +158,8 @@ def recommended_artists(artists):
         if performer_id is None:
             continue
         args.append(("performers.id", performer_id))
-    api_call = "%s?%s" % (api_call, urllib.urlencode(args))
-    resp = parse_json(urllib.urlopen(api_call).read())
+    api_call = "%s?%s" % (api_call, urllib.parse.urlencode(args))
+    resp = parse_json(requests.get(api_call).text)
     ret = []
     for recommendation in resp['recommendations']:
         name = recommendation['performer']['name']
@@ -174,8 +173,8 @@ def recommended_artists(artists):
 def _seatgeek_performer_id(artist):
     api_call = 'http://api.seatgeek.com/2/performers'
     args = [('q', artist)]
-    api_call = "%s?%s" % (api_call, urllib.urlencode(args))
-    resp = parse_json(urllib.urlopen(api_call).read())
+    api_call = "%s?%s" % (api_call, urllib.parse.urlencode(args))
+    resp = parse_json(requests.get(api_call).text)
     performers = resp['performers']
     if performers:
         return performers[0]['id']
@@ -187,9 +186,9 @@ def events_for_artists_bandsintown(artists, city):
     artists, city = _normalize_inputs(artists, city)
     all_events = []
     for idx, artists_chunk in enumerate(_chunks(list(artists), 50)):
-        print "Working on artists number {} to {}".format(idx * 50, (idx + 1) * 50)
+        print(("Working on artists number {} to {}".format(idx * 50, (idx + 1) * 50)))
         events = _get_bandsintown_events(city, artists=artists_chunk)
-        print "Got {} events".format(len(events))
+        print(("Got {} events".format(len(events))))
         for event in events:
             all_events.append(event)
     return all_events
@@ -203,7 +202,7 @@ def spotify_auth():
             ("redirect_uri", config["URL"]),
             ("scope", "user-library-read"),
             ("state", state)]
-    api_call = "%s?%s" % (api_call, urllib.urlencode(args))
+    api_call = "%s?%s" % (api_call, urllib.parse.urlencode(args))
     return api_call, state
 
 
@@ -226,10 +225,11 @@ def _call_spotify_api(limit, iteration, token):
     base_api_call = "https://api.spotify.com/v1/me/tracks"
     args = [("limit", limit),
             ("offset", limit * iteration)]
-    api_call = "%s?%s" % (base_api_call, urllib.urlencode(args))
-    request = urllib2.Request(api_call)
-    request.add_header("Authorization", 'Bearer ' + token)
-    response = parse_json(urllib2.urlopen(request).read())
+    api_call = "%s?%s" % (base_api_call, urllib.parse.urlencode(args))    
+    headers = {'Authorization': 'Bearer ' + token}
+    resp = requests.get(api_call, headers=headers)
+    response = parse_json(resp.text)
+    assert 'error' not in response
     return response
 
 
@@ -238,8 +238,8 @@ def spotify_artists(token, limit=50):
     iteration = 0
     while True:
         response = _call_spotify_api(limit, iteration, token)
-        print "Iteration {} of {}".format(iteration + 1,
-                                          int(math.ceil(1. * response["total"] / limit)) + 1)
+        print(("Iteration {} of {}".format(iteration + 1,
+                                          int(math.ceil(1. * response["total"] / limit)) + 1)))
         if not response["items"]:
             break
         for track in response["items"]:
@@ -253,11 +253,11 @@ def spotify_artists(token, limit=50):
 
 def previews(city, country):
     previews = []
-    print "Getting events near {} ({})".format(city, country)
+    print(("Getting events near {} ({})".format(city, country)))
     events = _get_bandsintown_events(city, country, image=True)
     for event in events:
         if event.image and event.image not in [EMPTY_IMAGE, EMPTY_THUMB]:
             previews.append(event)
-    print "Got {}".format(len(previews))
+    print(("Got {}".format(len(previews))))
     return previews
 

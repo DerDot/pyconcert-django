@@ -9,8 +9,6 @@ except ImportError:
     parse_json = json.loads
 
 def normalize(name):
-    if isinstance(name, unicode):
-        name = name.encode("utf8")
     return name.lower().strip()
 
 
