@@ -33,6 +33,10 @@ class ReleaseConnector(EventConnector):
     
     def _message_for_originator(self, author):
         return "New book by {}".format(author.name.title()) 
+    
+    @staticmethod
+    def _url_name():
+        return 'bookowl:show_events'
 
 
 class Command(BaseCommand):

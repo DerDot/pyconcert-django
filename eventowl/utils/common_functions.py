@@ -1,9 +1,10 @@
-from abc import ABCMeta, abstractmethod
+from abc import ABC, abstractmethod, abstractstaticmethod
 
 from notifications import notify
 
 
-class EventConnector(object, metaclass=ABCMeta):
+class EventConnector(ABC):
+    
     @abstractmethod
     def _get_events(self, originators):
         pass
@@ -14,6 +15,10 @@ class EventConnector(object, metaclass=ABCMeta):
     
     @abstractmethod
     def _message_for_originator(self, db_originator):
+        pass
+    
+    @abstractstaticmethod
+    def _url_name():
         pass
 
     def update_events(self, originators, **kwargs):
@@ -26,7 +31,7 @@ class EventConnector(object, metaclass=ABCMeta):
             for db_originator in self._db_originators(api_event):
                 getattr(event, self.originator_name).add(db_originator)
                 if should_save:
-                    self._notify_subscribers(db_originator)
+                    self._notify_subscribers(db_originator, event)
 
     def _db_originators(self, api_event):
         originators = []
@@ -37,8 +42,9 @@ class EventConnector(object, metaclass=ABCMeta):
             originators.append(originator)
         return originators
     
-    def _notify_subscribers(self, db_originator):
+    def _notify_subscribers(self, db_originator, event):
         for user in db_originator.subscribers.all():
             message = self._message_for_originator(db_originator)
+            url_name = self._url_name()
             notify.send(user, recipient=user,
-                        verb=message)
+                        verb=message, url_name=url_name)

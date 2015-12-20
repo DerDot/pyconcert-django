@@ -10,8 +10,13 @@ function fill_notification_list_with_link(data) {
             if (message.length > MAX_LENGTH) {
             	message = message.substring(0, MAX_LENGTH) + "...";
             }
-            url = Urls['notifications:all']()
+            var item_data = JSON.parse(item.data);
+            var url_name = item_data['url_name']
+            url = Urls[url_name]()
             menu.innerHTML = menu.innerHTML + "<li><a href='" + url +  "'>"+ message + "</a></li>";
         }
+        menu.innerHTML = menu.innerHTML + "<li class=\"divider\"></li>";
+        url = Urls['notifications:all']()
+        menu.innerHTML = menu.innerHTML + "<li><a href='" + url +  "'>Notification center</a></li>";
     }
 }

@@ -57,6 +57,10 @@ class ConcertConnector(EventConnector):
     
     def _message_for_originator(self, artist):
         return "New concert by {}".format(artist.name.title()) 
+    
+    @staticmethod
+    def _url_name():
+        return 'concertowl:show_events'
 
 
 class Command(BaseCommand):

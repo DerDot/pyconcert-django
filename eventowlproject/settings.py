@@ -150,7 +150,7 @@ SOCIAL_AUTH_PIPELINE = (
     'social.pipeline.social_auth.load_extra_data',
 )
 
-SOCIAL_AUTH_FIELDS_STORED_IN_SESSION = ('city', )
+SOCIAL_AUTH_FIELDS_STORED_IN_SESSION = ('city',)
 
 LOGIN_URL = '/account/signup'
 LOGIN_REDIRECT_URL = '/'
@@ -165,9 +165,11 @@ LOGIN_EXEMPT_URLS = (
      r'impressum/+$',
 ) 
 
-SITE_ID=1
+SITE_ID = 1
 
 NUMBER_OF_PREVIEW_OBJECTS = 6
+
+NOTIFICATIONS_USE_JSONFIELD = True
 
 LOGGING = {
     'version': 1,
