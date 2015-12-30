@@ -100,6 +100,12 @@ TIME_ZONE = 'Europe/Berlin'
 USE_TZ = False
 
 
+nodename = os.uname()[1]
+IS_LOCAL = nodename != 'ip-172-31-1-209'
+
+TEMPLATE_SETTINGS = ['IS_LOCAL']
+
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.7/howto/static-files/
 
