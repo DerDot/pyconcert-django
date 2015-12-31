@@ -10,6 +10,7 @@ from eventowl.forms import SignupForm, SettingsForm, AddProfileForm
 from eventowlproject import settings
 from eventowl import app_previews
 from eventowl.utils.location import current_position
+from eventowl.utils.user_agents import is_robot
 
 
 class ChoiceView(TemplateView):
@@ -133,18 +134,28 @@ class AddProfileView(FormView):
     def get(self, request):
         self.request.session['backend'] = self.request.GET.get('backend')
         return super(AddProfileView, self).get(request)
+    
+    
+def _get_location(request):
+    city, country = current_position(request)
+    if city is None and country is None:
+        city = 'new york'
+        country = 'new york'
+    
+    return city, country
 
+
+def _save_location(city, country, request):
+    if not is_robot(request):
+        VisitorLocation.objects.update_or_create(city=city,
+                                                 country=country)
 
 class SignupView(account_views.SignupView):
     form_class = SignupForm
 
     def get_context_data(self, **kwargs):
-        city, country = current_position(self.request)
-        if city is None and country is None:
-            city = 'new york'
-            country = 'new york'
-        VisitorLocation.objects.update_or_create(city=city,
-                                                 country=country)
+        city, country = _get_location(self.request)
+        _save_location(city, country, self.request)
 
         kwargs['previews'] = app_previews.get_all_objects({'city':city,
                                                            'country':country})
