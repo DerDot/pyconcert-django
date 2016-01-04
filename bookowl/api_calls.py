@@ -181,11 +181,12 @@ def previews():
     for author_name, title in new_releases:
         print(("Getting info for {} by {}...".format(normalize(title), normalize(author_name))))
         preview = _book_by_title_and_author(author_name, title)
+        if preview is None:
+            print("Couldn't get information. Skip...")
+            continue
         if 'nophoto' in preview.image:
             print("No photo. Skip...")
             continue
-        if preview is None:
-            print("Couldn't get information. Skip...")
         print("Done")
         previews.append(preview)
     return previews
