@@ -85,8 +85,11 @@ def _call_title_api(url_parameters):
     url = '{base_url}/book/title/{title}?key={key}&author={author}'.format(**url_parameters)
     resp = requests.get(url)
     parsed = xmltodict.parse(resp.text)
-    api_book = parsed['GoodreadsResponse']['book']
-    return _release_from_api_book(api_book)
+    try:
+        api_book = parsed['GoodreadsResponse']['book']
+        return _release_from_api_book(api_book)
+    except KeyError:
+        return None
 
 
 def _books_by_author(author_id):
@@ -181,6 +184,8 @@ def previews():
         if 'nophoto' in preview.image:
             print("No photo. Skip...")
             continue
+        if preview is None:
+            print("Couldn't get information. Skip...")
         print("Done")
         previews.append(preview)
     return previews
