@@ -84,7 +84,10 @@ def _call_book_api(url_parameters):
 def _call_title_api(url_parameters):
     url = '{base_url}/book/title/{title}?key={key}&author={author}'.format(**url_parameters)
     resp = requests.get(url)
-    parsed = xmltodict.parse(resp.text)
+    try:
+        parsed = xmltodict.parse(resp.text)
+    except:
+        return None
     try:
         api_book = parsed['GoodreadsResponse']['book']
         return _release_from_api_book(api_book)
