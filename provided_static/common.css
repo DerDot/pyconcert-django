@@ -9,3 +9,7 @@ body { padding-top: 70px; }
   line-height: 1.42;
   border-radius: 15px;
 }
+
+.wrap-whitespace {
+	white-space: pre-wrap;
+}

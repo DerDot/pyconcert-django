@@ -10,7 +10,9 @@ https://docs.djangoproject.com/en/1.7/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
+import platform
 from django.conf import global_settings
+
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
 
@@ -100,7 +102,7 @@ TIME_ZONE = 'Europe/Berlin'
 USE_TZ = False
 
 
-nodename = os.uname()[1]
+nodename = platform.uname()[1]
 IS_LOCAL = nodename != 'ip-172-31-1-209'
 
 TEMPLATE_SETTINGS = ['IS_LOCAL']
@@ -166,13 +168,15 @@ LOGIN_EXEMPT_URLS = (
      r'complete.*',
      r'about/+$',
      r'impressum/+$',
-) 
+)
 
 SITE_ID = 1
 
 NUMBER_OF_PREVIEW_OBJECTS = 6
 
 NOTIFICATIONS_USE_JSONFIELD = True
+
+LOG_LOCATIONS = {'main': '/var/log/eventowl/eventowl.log'}
 
 if not IS_LOCAL:
     LOGGING = {

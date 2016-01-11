@@ -11,6 +11,7 @@ from eventowlproject import settings
 from eventowl import app_previews
 from eventowl.utils.location import current_position
 from eventowl.utils.user_agents import is_robot
+from eventowl.utils.logging import get_log
 
 
 class ChoiceView(TemplateView):
@@ -134,14 +135,14 @@ class AddProfileView(FormView):
     def get(self, request):
         self.request.session['backend'] = self.request.GET.get('backend')
         return super(AddProfileView, self).get(request)
-    
-    
+
+
 def _get_location(request):
     city, country = current_position(request)
     if city is None and country is None:
         city = 'new york'
         country = 'new york'
-    
+
     return city, country
 
 
@@ -202,3 +203,13 @@ class SettingsView(FormView):
         kwargs = super(SettingsView, self).get_form_kwargs()
         kwargs.update({'user': self.request.user})
         return kwargs
+
+
+class LogView(TemplateView):
+    template_name = 'eventowl/log_viewer.html'
+
+    def get_context_data(self, **kwargs):
+        log_name = self.request.GET.get('log_name', 'main')
+        log = get_log(log_name)
+        kwargs['log'] = log
+        return super(LogView, self).get_context_data(**kwargs)
