@@ -24,7 +24,7 @@ Log in below. All the cool stuff around you is already waiting.
 	    {% endif %}
 	</div>
     <button type="submit" class="btn btn-primary">Log in</button>
-    &nbsp; or &nbsp; 
+    &nbsp; or &nbsp;
     <a href="{% url 'social:begin' 'google-oauth2' %}" class="btn btn-default btn-large" role="button">
     	<span style="font-size:1.5em;" class="fa fa-google"></span>
  	</a>
@@ -33,14 +33,18 @@ Log in below. All the cool stuff around you is already waiting.
 <p></p>
 
 {% if form.errors %}
-     <p><i>Sorry, couldn't log you in: {{ form.errors.values.0|striptags}}</i></p>
+    <p><i>Sorry, couldn't log you in:
+        {% for err in form.errors.values %}
+            {{ err|striptags}}{% if not forloop.last %}, {% endif %}
+        {% endfor %}
+    </i></p>
 {% endif %}
 
 <p class="login-signup">
     <small>
-    	You can also 
+    	You can also
         <a href="{% url "account_password_reset" %}">reset your password</a>
-        or 
+        or
         <a href="{% url 'account_signup' %}">sign up</a>
     </small>
 </p>
