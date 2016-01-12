@@ -7,40 +7,44 @@
 </form>
 
 {% if events %}
-      <table class="table table-hover table-striped" id=events-table>
+    <table class="table table-hover table-striped" id=events-table>
         <thead>
-          <tr>
-            <th>Date</th>
-            <th>Title</th>
-            <th>Authors</th>
-          </tr>
+            <tr>
+                <th>Date</th>
+                <th>Title</th>
+                <th>Authors</th>
+                <th></th>
+            </tr>
         </thead>
         <tbody>
-          {% for event in events %}
-          <tr>
-            <td>{{event.date|date}}</td>
-            <td>{{event.title|title}}</td>
-            <td>
-             {% for author in event.authors.all %}
-               {{ author|title }}
-               {% if not forloop.last %}, {% endif %}
-             {% endfor %}
-             </td>
-           </tr>
-           <tr>
-             <td colspan="3">
-               {% for author in event.authors.all %}
-                  {{ author|title }}
-                  {% if not forloop.last %}, {% endif %}
-               {% endfor %}
-               will release a new book on {{event.date|date}}.<br>
-               It's going to be called '{{event.title|title}}'.<br>
-               You can buy it <a href={{event.buy_url}} target="_blank">here</a>. Enjoy!
-            </td>
-          </tr>
-        {% endfor %}
+            {% for event in events %}
+                <tr>
+                    <td>{{event.date|date}}</td>
+                    <td>{{event.title|title}}</td>
+                    <td>
+                        {% for author in event.authors.all %}
+                            {{ author|title }}{% if not forloop.last %}, {% endif %}
+                        {% endfor %}
+                    </td>
+                    <td>
+                        <a href="{% url 'bookowl:show_events' %}" class="btn btn-xs pull-right" name="ical">
+		    	            <span class="fa fa-calendar"></span>
+                        </a>
+		            </td>
+                </tr>
+                <tr>
+                    <td colspan="4">
+                        {% for author in event.authors.all %}
+                            {{ author|title }}{% if not forloop.last %}, {% endif %}
+                        {% endfor %}
+                        will release a new book on {{event.date|date}}.<br>
+                        It's going to be called '{{event.title|title}}'.<br>
+                        You can buy it <a href={{event.buy_url}} target="_blank">here</a>. Enjoy!
+                    </td>
+                </tr>
+            {% endfor %}
         </tbody>
-      </table>
+    </table>
 
 
 <script type="text/javascript">

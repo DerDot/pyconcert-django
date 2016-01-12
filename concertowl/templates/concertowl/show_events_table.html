@@ -12,6 +12,7 @@
           <tr>
             <th>Date</th>
             <th>Artists</th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
@@ -23,9 +24,14 @@
                {{ artist|title }}{% if not forloop.last %}, {% endif %}
              {% endfor %}
              </td>
+             <td>
+                <a href="{% url 'concertowl:show_events' %}" class="btn btn-xs pull-right" name="ical">
+                    <span class="fa fa-calendar"></span>
+                </a>
+            </td>
            </tr>
            <tr>
-             <td colspan="2">
+             <td colspan="3">
                 This event by
                {% for artist in event.artists.all %}
                   {{ artist|title }}{% if not forloop.last %}, {% endif %}
