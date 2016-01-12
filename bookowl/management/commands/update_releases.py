@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand
 
 from eventowl.utils.common_functions import EventConnector
-from eventowl.utils.django_helpers import set_if_different
+from eventowl.utils.django_helpers import set_if_different, set_if_smaller
 from bookowl.models import Book, Author
 from bookowl.api_calls import book_releases
 
@@ -15,13 +15,15 @@ class ReleaseConnector(EventConnector):
         return book_releases(authors)
 
     def _get_or_create_object(self, api_release):
-        exists = Book.objects.filter(title=api_release.title,
-                                     isbn=api_release.isbn).exists()
+        exists = Book.objects.filter(title=api_release.title).exists()
         if exists:
-            release = Book.objects.get(title=api_release.title,
-                                       isbn=api_release.isbn)
-            should_save = set_if_different(release, 'date', api_release.date)
-            should_save |= set_if_different(release, 'buy_url', api_release.buy_url)
+            release = Book.objects.get(title=api_release.title)
+            newer = set_if_smaller(release, 'date', api_release.date)
+            if newer:
+                set_if_different(release, 'buy_url', api_release.buy_url)
+                set_if_different(release, 'isbn', api_release.isbn)
+            should_save = newer
+
         else:
             release = Book.objects.create(title=api_release.title,
                                           isbn=api_release.isbn,
