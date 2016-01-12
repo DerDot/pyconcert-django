@@ -1,5 +1,6 @@
 from datetime import date, timedelta
 
+import os
 from django.core.urlresolvers import reverse
 from django.shortcuts import redirect
 from django.views.generic import TemplateView, ListView, FormView
@@ -12,6 +13,7 @@ from eventowl import app_previews
 from eventowl.utils.location import current_position
 from eventowl.utils.user_agents import is_robot
 from eventowl.utils.logging import get_log
+from eventowlproject.settings import LOG_DIRECTORY
 
 
 class ChoiceView(TemplateView):
@@ -205,11 +207,20 @@ class SettingsView(FormView):
         return kwargs
 
 
+class LogDirectoryView(TemplateView):
+    template_name = 'eventowl/log_directory.html'
+
+    def get_context_data(self, **kwargs):
+        log_names = os.listdir(LOG_DIRECTORY)
+        kwargs['log_paths'] = [os.path.join(LOG_DIRECTORY, log_name) for log_name in log_names]
+        return super().get_context_data(**kwargs)
+
+
 class LogView(TemplateView):
     template_name = 'eventowl/log_viewer.html'
 
     def get_context_data(self, **kwargs):
-        log_name = self.request.GET.get('log_name', 'main')
-        log = get_log(log_name)
+        log_path = self.request.GET['log_path']
+        log = get_log(log_path)
         kwargs['log'] = log
-        return super(LogView, self).get_context_data(**kwargs)
+        return super().get_context_data(**kwargs)

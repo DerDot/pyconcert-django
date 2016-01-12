@@ -176,7 +176,7 @@ NUMBER_OF_PREVIEW_OBJECTS = 6
 
 NOTIFICATIONS_USE_JSONFIELD = True
 
-LOG_LOCATIONS = {'main': '/var/log/eventowl/eventowl.log'}
+LOG_DIRECTORY = '/var/log/eventowl/'
 
 if not IS_LOCAL:
     LOGGING = {
@@ -195,7 +195,7 @@ if not IS_LOCAL:
             'file': {
                 'level': 'DEBUG',
                 'class': 'logging.FileHandler',
-                'filename': '/var/log/eventowl/eventowl.log',
+                'filename': os.path.join(LOG_DIRECTORY, 'eventowl.log'),
                 'formatter': 'verbose'
             },
         },

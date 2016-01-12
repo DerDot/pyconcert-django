@@ -1,7 +1,16 @@
 {% extends 'eventowl/base.html' %}
+{% load staticfiles %}
+
+{% block extra_header %}
+    <link rel="stylesheet" href="{% static 'highlightjs/styles/tomorrow.css' %}">
+    <script src="{% static 'highlightjs/highlight.pack.js' %}"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+{% endblock extra_header %}
 
 {% block content %}
-<div class=wrap-whitespace>
-{{ log }}
-</div>
+<pre>
+    <code>{{ log }}</code>
+</pre>
+
+
 {%endblock content %}
