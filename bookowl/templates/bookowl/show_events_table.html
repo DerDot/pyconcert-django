@@ -27,7 +27,8 @@
                         {% endfor %}
                     </td>
                     <td>
-                        <a href="{% url 'bookowl:show_events' %}" class="btn btn-xs pull-right" name="ical">
+                        <a href="{% url 'eventowl:ical' %}?start_date={{ event.date|date:'U' }}&summary={{ event.title|title }}&whole_day=1"
+                           class="btn btn-xs pull-right" name="ical">
 		    	            <span class="fa fa-calendar"></span>
                         </a>
 		            </td>

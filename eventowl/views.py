@@ -2,12 +2,15 @@ from datetime import date, timedelta
 
 import os
 from django.core.urlresolvers import reverse
+from django.http import HttpResponse
 from django.shortcuts import redirect
-from django.views.generic import TemplateView, ListView, FormView
+from django.views.generic import TemplateView, ListView, FormView, View
 from account import views as account_views
 
 from eventowl.models import UserProfile, VisitorLocation
 from eventowl.forms import SignupForm, SettingsForm, AddProfileForm
+from eventowl.utils.dates_and_times import ical_string
+from eventowl.utils.string_helpers import as_filename
 from eventowlproject import settings
 from eventowl import app_previews
 from eventowl.utils.location import current_position
@@ -224,3 +227,24 @@ class LogView(TemplateView):
         log = get_log(log_path)
         kwargs['log'] = log
         return super().get_context_data(**kwargs)
+
+
+class ICalView(View):
+
+    def get(self, request):
+        get_params = request.GET
+        start_time = get_params.get('start_time')
+        start_date = get_params.get('start_date')
+        duration = get_params.get('duration')
+        location = get_params.get('location')
+        summary = get_params.get('summary')
+        description = get_params.get('description')
+        filename = as_filename(summary) + '.ics' if summary else 'cal.ics'
+
+        istring = ical_string(start_date, start_time, duration,
+                              location, summary, description)
+
+        response = HttpResponse(istring, content_type='text/calendar')
+        response['Filename'] = filename
+        response['Content-Disposition'] = 'attachment; filename={}'.format(filename)
+        return response

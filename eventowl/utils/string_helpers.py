@@ -14,3 +14,7 @@ def normalize(name):
 
 def random_string(size=10, chars=string.ascii_uppercase + string.digits):
     return ''.join(random.choice(chars) for _ in range(size))
+
+
+def as_filename(s):
+    return s.lower().replace(' ', '_')

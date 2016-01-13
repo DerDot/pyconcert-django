@@ -1,4 +1,6 @@
 {% extends 'concertowl/base.html' %}
+{% load common_tags %}
+
 {% block content %}
 <legend>All your events. We hope you find something nice.</legend>
 
@@ -17,32 +19,29 @@
         </thead>
         <tbody>
           {% for event in events %}
-          <tr>
-            <td>{{event.date|date}}</td>
-            <td>
-             {% for artist in event.artists.all %}
-               {{ artist|title }}{% if not forloop.last %}, {% endif %}
-             {% endfor %}
-             </td>
-             <td>
-                <a href="{% url 'concertowl:show_events' %}" class="btn btn-xs pull-right" name="ical">
-                    <span class="fa fa-calendar"></span>
-                </a>
-            </td>
+          {% with artists=event.artists.all|concat:", " %}
+            <tr>
+                <td>{{event.date|date}}</td>
+                <td>
+                 {{ artists }}
+                 </td>
+                 <td>
+                    <a href="{% url 'eventowl:ical' %}?start_date={{ event.date|date:'U' }}&start_time={{ event.time }}&duration=120&summary={{ artists }}&location={{ event.venue|title }}, {{ event.city|title }}"
+                       class="btn btn-xs pull-right" name="ical">
+                        <span class="fa fa-calendar"></span>
+                    </a>
+                </td>
            </tr>
            <tr>
              <td colspan="3">
-                This event by
-               {% for artist in event.artists.all %}
-                  {{ artist|title }}{% if not forloop.last %}, {% endif %}
-               {% endfor %}
-               is going to take place at <b>{{event.venue}}</b> in <b>{{event.city}}</b> ({{event.country}}).<br>
+               This event by {{ artists }} is going to take place at <b>{{event.venue}}</b> in <b>{{event.city}}</b> ({{event.country}}).<br>
                Be there at <b>{{event.time}}</b> on <b>{{event.date}}</b>.<br>
                You can book your tickets <a href={{event.ticket_url}} target="_blank">here</a>.<br>
                <i>Enjoy :)</i>
-            </td>
+          </td>
           </tr>
-        {% endfor %}
+          {% endwith %}
+         {% endfor %}
         </tbody>
       </table>
 
