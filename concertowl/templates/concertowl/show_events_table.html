@@ -26,7 +26,7 @@
                  {{ artists }}
                  </td>
                  <td>
-                    <a href="{% url 'eventowl:ical' %}?start_date={{ event.date|date:'U' }}&start_time={{ event.time }}&duration=120&summary={{ artists }}&location={{ event.venue|title }}, {{ event.city|title }}"
+                    <a href="{% url 'eventowl:ical' %}?start_date={{ event.date|date:'U' }}&start_time={{ event.time|time:'H:i' }}&duration=120&summary={{ artists }}&location={{ event.venue|title }}, {{ event.city|title }}"
                        class="btn btn-xs pull-right" name="ical">
                         <span class="fa fa-calendar"></span>
                     </a>
