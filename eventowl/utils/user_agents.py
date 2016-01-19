@@ -11,4 +11,7 @@ def parse_user_agent(request):
 
 def is_robot(request):
     parsed = parse_user_agent(request)
-    return parsed is not None or parsed.is_bot
+    if parsed is None:
+        return False
+    else:
+        return parsed.is_bot
