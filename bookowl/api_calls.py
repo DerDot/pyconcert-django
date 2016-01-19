@@ -75,6 +75,8 @@ def _call_book_api(url_parameters):
     print("    Got response")
     parsed = xmltodict.parse(resp.text)
     results = parsed['GoodreadsResponse']['author']['books']['book']
+    if not isinstance(results, list):
+        results = [results]
     num_books_current = parsed['GoodreadsResponse']['author']['books']['@end']
     num_books_total = parsed['GoodreadsResponse']['author']['books']['@total']
     print(("    Parsed {} of {} books".format(num_books_current, num_books_total)))
