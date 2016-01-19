@@ -253,7 +253,7 @@ def spotify_artists(token, limit=50):
 
 def previews(city, country):
     previews = []
-    print(("Getting events near {} ({})".format(city, country)))
+    print("Getting events near {} ({})".format(city, country))
     events = _get_bandsintown_events(city, country, image=True)
     for event in events:
         if event.image and event.image not in [EMPTY_IMAGE, EMPTY_THUMB]:
