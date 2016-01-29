@@ -1,4 +1,5 @@
 from django.core.management.base import BaseCommand
+from django.db import IntegrityError
 
 from concertowl.models import Preview
 from concertowl.api_calls import previews
@@ -11,14 +12,17 @@ def update_concert_preview(city, country):
         description = '{} at {} ({})'.format(artist,
                                              preview.venue.title(),
                                              preview.date)
-        preview_object, created = Preview.objects.get_or_create(image=preview.image,
-                                                                description=description,
-                                                                link=preview.ticket_url,
-                                                                alttext=description,
-                                                                city=city,
-                                                                country=country)
-        if created:
-            preview_object.save()
+        try:
+            preview_object, created = Preview.objects.get_or_create(image=preview.image,
+                                                                    description=description,
+                                                                    link=preview.ticket_url,
+                                                                    alttext=description,
+                                                                    city=city,
+                                                                    country=country)
+            if created:
+                preview_object.save()
+        except IntegrityError:
+            print("Image already present.")
 
 
 class Command(BaseCommand):

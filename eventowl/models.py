@@ -10,7 +10,7 @@ class UserProfile(models.Model):
 
 
 class Preview(models.Model):
-    image = models.URLField(max_length=200)
+    image = models.URLField(max_length=200, unique=True)
     description = models.TextField()
     link = models.URLField(max_length=200)
     alttext = models.CharField(max_length=200)

@@ -1,15 +1,16 @@
 from eventowlproject.settings import APPS_WITH_PREVIEW
 
 from importlib import import_module
-from abc import ABCMeta, abstractmethod
-abstractstaticmethod = abstractmethod
+from abc import ABC, abstractstaticmethod
+
 
 
 PREVIEW_MODULE_NAME = 'preview'
 PREVIEW_CLASS_NAME = 'Preview'
 
 
-class AbstractPreview(object, metaclass=ABCMeta):
+class AbstractPreview(ABC):
+
     @abstractstaticmethod
     def description():
         pass
