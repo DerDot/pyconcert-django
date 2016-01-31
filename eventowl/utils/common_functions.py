@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod, abstractstaticmethod
 
-from notifications import notify
+from notifications.signals import notify
 
 
 class EventConnector(ABC):

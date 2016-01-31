@@ -15,7 +15,16 @@
         <script src="{% static 'utils.js' %}" type="text/javascript"></script>
         <script src="{% static 'custom_notifcations.js' %}" type="text/javascript"></script>
         <script src="{% static 'notifications/notify.js' %}" type="text/javascript"></script>
-        {% register_notify_callbacks callbacks='fill_notification_list_with_link,fill_notification_badge' fetch="10"%}
+        <script>
+            notify_badge_id='live_notify_badge';
+            notify_menu_id='live_notify_list';
+            notify_api_url='/inbox/notifications/api/unread_list/';
+            notify_fetch_count='50';
+            notify_unread_url='/inbox/notifications/unread/';
+            notify_mark_all_unread_url='/inbox/notifications/mark-all-as-read/';
+            notify_refresh_period=5000;
+            register_notifier(fill_notification_list_with_link);register_notifier(fill_notification_badge);
+        </script>
 
         <meta name="viewport" content="width=device-width, initial-scale=1">
 		{% block extra_header %}
@@ -48,7 +57,7 @@
 				{% if user.is_authenticated %}
 				   <li class="dropdown">
 				   	   <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-				   	   		Notifications {% live_notify_badge classes="badge" %}
+				   	   		Notifications <span id="live_notify_badge" class="badge">{% notifications_unread %}</span>
 				   	   </a>
 					   <ul class="dropdown-menu" role="menu" id="notification-menu">
 					   </ul>

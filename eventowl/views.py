@@ -156,6 +156,7 @@ def _save_location(city, country, request):
         VisitorLocation.objects.update_or_create(city=city,
                                                  country=country)
 
+
 class SignupView(account_views.SignupView):
     form_class = SignupForm
 
@@ -163,8 +164,8 @@ class SignupView(account_views.SignupView):
         city, country = _get_location(self.request)
         _save_location(city, country, self.request)
 
-        kwargs['previews'] = app_previews.get_all_objects({'city':city,
-                                                           'country':country})
+        kwargs['previews'] = app_previews.get_all_objects({'city': city,
+                                                           'country': country})
         return super(SignupView, self).get_context_data(**kwargs)
 
     def after_signup(self, form):
@@ -200,7 +201,7 @@ class SettingsView(FormView):
 
         if old_city != new_city:
             subscribed_artists = [artist.name for artist in user.artists.all()]
-            #update_events(subscribed_artists, [new_city]) TODO: do in subclass
+            # update_events(subscribed_artists, [new_city]) TODO: do in subclass
 
         return super(SettingsView, self).form_valid(form)
 
@@ -230,7 +231,6 @@ class LogView(TemplateView):
 
 
 class ICalView(View):
-
     def get(self, request):
         get_params = request.GET
         start_time = get_params.get('start_time')
