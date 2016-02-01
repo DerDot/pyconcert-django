@@ -2,7 +2,6 @@
 {% load widget_tweaks %}
 
 {% block content %}
-
 <legend>
 Sign up to get personalized notifications and suggestions for all the fun stuff that happens around you
 </legend>
@@ -38,6 +37,17 @@ Sign up to get personalized notifications and suggestions for all the fun stuff 
     	<span style="font-size:1.5em;" class="fa fa-google"></span>
  	</a>
 </form>
+
+{% if form.errors %}
+    <p><i>Sorry, couldn't log you in:
+        <ul>
+            {% for err in form.errors.items %}
+                <li>{{ err.0|striptags}}: {{ err.1|striptags}}</li>
+            {% endfor %}
+        </ul>
+
+    </i></p>
+{% endif %}
 
 {% for name, preview in previews.items %}
 	<p class="lead"> {{name|title}} shows you {{preview.0}} </p>
