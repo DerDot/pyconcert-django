@@ -181,6 +181,7 @@ LOGIN_EXEMPT_URLS = (
      r'admin/+',
      r'account/(login|signup|password/reset)/+',
      r'account/add_profile/.*',
+     r'account/confirm_email/.*',
      r'login.*',
      r'complete.*',
      r'about/+$',
