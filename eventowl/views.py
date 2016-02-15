@@ -30,7 +30,7 @@ class CustomListView(ListView):
         raise NotImplementedError
 
     def get_queryset(self):
-        name_filter = self.request.GET.get("filter", "")
+        name_filter = self.request.GET.get("name_filter", "")
         return self._filtered_and_sorted(name_filter, self.request.user)
 
 

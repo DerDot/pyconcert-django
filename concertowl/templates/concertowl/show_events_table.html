@@ -53,7 +53,7 @@ $('#events-table').jExpand();
 {% include "eventowl/pagination.html" %}
 
 {% else %}
-    {% if request.GET.filter%}
+    {% if request.GET|get_item:'name_filter'|default:'' %}
         <p>No events matching {{ request.GET.filter }}.</p>
     {% else %}
         <p>Your <a href="{% url 'concertowl:show_artists' %}">subscribed artists</a> don't have events any time soon :(</p>
