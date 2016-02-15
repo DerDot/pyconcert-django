@@ -14,3 +14,8 @@ def settings_value(name):
 @register.filter
 def concat(values, sep, title=True):
     return sep.join(str(val).title() for val in values)
+
+
+@register.filter
+def get_item(obj, key):
+    return obj.get(key)

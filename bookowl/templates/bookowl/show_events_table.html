@@ -1,4 +1,6 @@
 {% extends 'bookowl/base.html' %}
+{% load common_tags %}
+
 {% block content %}
 <legend>All new book releases. We hope you find something nice.</legend>
 
@@ -48,14 +50,13 @@
     </table>
 
 
-<script type="text/javascript">
-$('#events-table').jExpand();
-</script>
-    
-{% include "eventowl/pagination.html" %}
+    <script type="text/javascript">
+    $('#events-table').jExpand();
+    </script>
 
+    {% include "eventowl/pagination.html" %}
 {% else %}
-    {% if request.GET.filter%}
+    {% if request.GET|get_item:'name_filter'|default:'' %}
         <p>No events matching {{ request.GET.filter }}.</p>
     {% else %}
         <p>Your subscribed authors don't release any books anytime soon :(</p>

@@ -1,10 +1,12 @@
+{% load common_tags %}
+
 <div class="input-group">
   <span class="input-group-addon"><i class="glyphicon glyphicon-search"></i></span>
   <input id="id_filter"
        class="form-control"
        placeholder="Filter..."
-       value="{{ request.GET.filter|default:"" }}"
-       name="filter"
+       value="{{ request.GET|get_item:'name_filter'|default:'' }}"
+       name="name_filter"
        type="text">
   <span class="input-group-btn">
     <button class="btn btn-default" type="submit">Go!</button>
