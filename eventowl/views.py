@@ -1,9 +1,12 @@
 from datetime import date, timedelta
 
 import os
+
+from django.contrib.auth.decorators import user_passes_test
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse
 from django.shortcuts import redirect
+from django.utils.decorators import method_decorator
 from django.views.generic import TemplateView, ListView, FormView, View
 from account import views as account_views
 
@@ -211,6 +214,7 @@ class SettingsView(FormView):
         return kwargs
 
 
+@method_decorator(user_passes_test(lambda u: u.is_superuser), 'dispatch')
 class LogDirectoryView(TemplateView):
     template_name = 'eventowl/log_directory.html'
 
@@ -220,6 +224,7 @@ class LogDirectoryView(TemplateView):
         return super().get_context_data(**kwargs)
 
 
+@method_decorator(user_passes_test(lambda u: u.is_superuser), 'dispatch')
 class LogView(TemplateView):
     template_name = 'eventowl/log_viewer.html'
 
