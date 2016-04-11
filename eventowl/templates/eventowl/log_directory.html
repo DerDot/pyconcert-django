@@ -1,9 +1,0 @@
-{% extends 'eventowl/base.html' %}
-
-{% block content %}
-    <ul>
-        {% for log_path in log_paths %}
-            <li><a href="{% url 'eventowl:log' %}?log_path={{ log_path }}">{{ log_path }}</a></li>
-        {% endfor %}
-    </ul>
-{%endblock content %}
