@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/1.7/ref/settings/
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
 import platform
+import dj_database_url
 from django.conf import global_settings
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
@@ -76,15 +77,7 @@ WSGI_APPLICATION = 'eventowlproject.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'pyconcert',
-        'USER': 'pyconcert',
-        'PASSWORD': '*pyconcert*',
-        'HOST': '127.0.0.1'
-    }
-}
+DATABASES = {'default': dj_database_url.config()}
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.7/topics/i18n/
@@ -101,7 +94,7 @@ USE_TZ = False
 
 
 nodename = platform.uname()[1]
-IS_LOCAL = nodename != 'ip-172-31-1-209'
+IS_LOCAL = False
 
 TEMPLATE_SETTINGS = ['IS_LOCAL']
 
