@@ -2,7 +2,6 @@ from io import StringIO
 
 from django.views.generic import FormView
 from django.core.urlresolvers import reverse
-import pandas as pd
 
 from .models import Book, Author
 from eventowl import views as baseviews
@@ -40,6 +39,7 @@ class AddAuthorsView(baseviews.AddView):
 
 
 def _parse_csv(request):
+    # TODO: do not use pandas anymore
     author_stream = StringIO(request.FILES["authors"].read())
     df = pd.read_csv(author_stream,
                      encoding='utf-8-sig')
