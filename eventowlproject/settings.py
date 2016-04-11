@@ -21,12 +21,12 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 # See https://docs.djangoproject.com/en/1.7/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '$#_4d0rf#(!a2dm(^=!s5h^ic(t3la6v$n)l8pp49br)19z+iq'
+SECRET_KEY = os.environ["SECRET_KEY"]
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ["DEBUG"] == "True"
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = os.environ["ALLOWED_HOSTS"].split(',')
 
 
 # Application definition
@@ -94,7 +94,7 @@ USE_TZ = False
 
 
 nodename = platform.uname()[1]
-IS_LOCAL = False
+IS_LOCAL = os.environ['IS_LOCAL'] == "True"
 
 TEMPLATE_SETTINGS = ['IS_LOCAL']
 
@@ -140,10 +140,10 @@ EMAIL_SUBJECT_PREFIX = "[EventOwl] "
 DEFAULT_FROM_EMAIL = 'mail@concertowl'
 
 EMAIL_USE_TLS = True
-EMAIL_HOST = 'smtp.host'
+EMAIL_HOST = os.environ['EMAIL_HOST']
 EMAIL_PORT = 587
-EMAIL_HOST_USER = 'mail@concertowl'
-EMAIL_HOST_PASSWORD = 'password'
+EMAIL_HOST_USER = os.environ['EMAIL_HOST_USER']
+EMAIL_HOST_PASSWORD = os.environ['EMAIL_HOST_PASSWORD']
 
 DAYS_BACK = 3
 
@@ -152,8 +152,8 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTOCOL', 'https')
 AUTHENTICATION_BACKENDS = ('social.backends.google.GoogleOAuth2',
                            'django.contrib.auth.backends.ModelBackend')
 
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '644485068854-o865p7v8kb55o1u9sbskl2908tggljlp.apps.googleusercontent.com'
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = '61fdhJA17NI2yTRmETinqEf3'
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = os.environ["SOCIAL_AUTH_GOOGLE_OAUTH2_KEY"]
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.environ["SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET"]
 
 SOCIAL_AUTH_PIPELINE = (
     'social.pipeline.social_auth.social_details',
