@@ -6,7 +6,10 @@ from geoip2.database import Reader
 from geoip2.errors import AddressNotFoundError
 from eventowl.utils.string_helpers import normalize
 
-READER = Reader('GeoLite2-City.mmdb')
+try:
+    READER = Reader('GeoLite2-City.mmdb')
+except FileNotFoundError:
+    READER = None
 
 def current_position(request):
     ip = get_ip(request)
