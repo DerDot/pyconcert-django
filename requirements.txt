@@ -53,4 +53,5 @@ sqlparse==0.1.19
 traitlets==4.2.1
 ua-parser==0.7.0
 user-agents==1.0.1
+whitenoise==3.0
 xmltodict==0.10.1

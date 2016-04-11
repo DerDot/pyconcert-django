@@ -128,6 +128,8 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, "provided_static"),
 )
 
+STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
+
 ACCOUNT_EMAIL_CONFIRMATION_REQUIRED = True
 
 PAGINATION_SIZE = 25
