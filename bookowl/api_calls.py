@@ -65,7 +65,8 @@ def _id_for_author_name(author_name):
     print("    Got response")
     result = xmltodict.parse(resp.text)
     print("    Parsed Response")
-    return result['GoodreadsResponse']['author']['@id']
+    response = result['GoodreadsResponse']
+    return response['author']['@id'] if 'author' in response else None
 
 
 def _call_book_api(url_parameters):
@@ -136,6 +137,8 @@ def _release_from_api_book(book):
 
 def _book_release(author_name):
     author_id = _id_for_author_name(author_name)
+    if author_id is None:
+        return []
     author_books = _books_by_author(author_id)
 
     releases = []
