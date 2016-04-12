@@ -6,7 +6,7 @@ from geoip2.database import Reader
 from geoip2.errors import AddressNotFoundError
 from eventowl.utils.string_helpers import normalize
 
-READER = Reader('vendor/GeoLiteCity.dat')
+READER = Reader('vendor/maxmind.mmdb')
 
 def current_position(request):
     ip = get_ip(request)
