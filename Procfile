@@ -1,1 +1,1 @@
-web: gunicorn eventowlproject.wsgi --log-file -
+web: gunicorn eventowlproject.wsgi --log-file - -c serverconf/gunicorn.conf
