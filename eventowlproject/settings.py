@@ -193,6 +193,8 @@ NUMBER_OF_PREVIEW_OBJECTS = 6
 
 NOTIFICATIONS_USE_JSONFIELD = True
 
+WHITENOISE_ROOT = 'provided_static/icons/favicons/'
+
 LOGGING = {
     'version': 1,
     'formatters': {
