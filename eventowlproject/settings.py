@@ -57,8 +57,11 @@ APPS_WITH_PREVIEW = (
     'bookowl',
 )
 
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SECURE_SSL_REDIRECT = True
+
 MIDDLEWARE_CLASSES = (
-    'sslify.middleware.SSLifyMiddleware',
+    'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -70,8 +73,6 @@ MIDDLEWARE_CLASSES = (
     'account.middleware.TimezoneMiddleware',
     'eventowlproject.middleware.LoginRequiredMiddleware'
 )
-
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 ROOT_URLCONF = 'eventowlproject.urls'
 
