@@ -2,15 +2,14 @@ from celery import shared_task
 from django.contrib.auth.models import User
 from notifications.signals import notify
 
-from concertowl.views import _update_artists
 from .models import Artist, RecommendedArtist
-from concertowl import api_calls
+from concertowl import api_calls, views
 
 
 @shared_task
 def spotify_artists(token, user):
     artists = api_calls.spotify_artists(token)
-    _update_artists(artists, user)
+    views.update_artists(artists, user)
     message = "Got {} artists from spotify.".format(len(artists))
     notify.send(user, recipient=user,
                 verb=message)

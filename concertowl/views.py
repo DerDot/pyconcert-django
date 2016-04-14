@@ -12,7 +12,7 @@ from concertowl.api_calls import spotify_auth, spotify_token
 from concertowl.tasks import spotify_artists, update_recommended_artists
 
 
-def _update_artists(new_artists, user):
+def update_artists(new_artists, user):
     added_artists = []
     for new_artist in new_artists:
         new_artist = normalize(new_artist)
@@ -80,7 +80,7 @@ class RecommendationsView(baseviews.CustomListView):
     def get(self, request):
         new_artist = request.GET.get("new_artist")
         if new_artist is not None:
-            _update_artists([new_artist], request.user)
+            update_artists([new_artist], request.user)
 
         return baseviews.CustomListView.get(self, request)
 
@@ -111,7 +111,7 @@ def upload_json(request):
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
             artists = _parse_json_file(request)
-            _update_artists(artists, request.user)
+            update_artists(artists, request.user)
             artists_str = ', '.join(sorted(artists))
             return render(request,
                           'concertowl/update_result.html',
