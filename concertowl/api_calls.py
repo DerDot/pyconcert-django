@@ -84,7 +84,6 @@ def _call(url, args, append_args=tuple()):
     return parsed
 
 
-
 def _bandsintown_artist(name):
     url = "http://api.bandsintown.com/artists"
     args = [('api_version', '2.0')]
@@ -199,7 +198,7 @@ def spotify_auth():
     api_call = "https://accounts.spotify.com/authorize"
     args = [("client_id", config["SPOTIFY_ID"]),
             ("response_type", "code"),
-            ("redirect_uri", config["URL"]),
+            ("redirect_uri", config["SPOTIFY_URL"]),
             ("scope", "user-library-read"),
             ("state", state)]
     api_call = "%s?%s" % (api_call, urllib.parse.urlencode(args))
@@ -209,16 +208,15 @@ def spotify_auth():
 def spotify_token(code):
     api_call = "https://accounts.spotify.com/api/token"
     response = requests.post(api_call, data={'code': code,
-                                             'grant_type':'authorization_code',
-                                             'redirect_uri':config["SPOTIFY_URL"],
-                                             'client_id':config["SPOTIFY_ID"],
-                                             'client_secret':config["SPOTIFY_SECRET"]})
+                                             'grant_type': 'authorization_code',
+                                             'redirect_uri': config["SPOTIFY_URL"],
+                                             'client_id': config["SPOTIFY_ID"],
+                                             'client_secret': config["SPOTIFY_SECRET"]})
     token_info = response.json()
     import logging
     logger = logging.getLogger()
     logger.error(token_info)
     return token_info
-
 
 
 @retry(wait_exponential_multiplier=500,
@@ -228,7 +226,7 @@ def _call_spotify_api(limit, iteration, token):
     base_api_call = "https://api.spotify.com/v1/me/tracks"
     args = [("limit", limit),
             ("offset", limit * iteration)]
-    api_call = "%s?%s" % (base_api_call, urllib.parse.urlencode(args))    
+    api_call = "%s?%s" % (base_api_call, urllib.parse.urlencode(args))
     headers = {'Authorization': 'Bearer ' + token}
     resp = requests.get(api_call, headers=headers)
     response = parse_json(resp.text)
@@ -242,7 +240,7 @@ def spotify_artists(token, limit=50):
     while True:
         response = _call_spotify_api(limit, iteration, token)
         print(("Iteration {} of {}".format(iteration + 1,
-                                          int(math.ceil(1. * response["total"] / limit)) + 1)))
+                                           int(math.ceil(1. * response["total"] / limit)) + 1)))
         if not response["items"]:
             break
         for track in response["items"]:
@@ -263,4 +261,3 @@ def previews(city, country):
             previews.append(event)
     print(("Got {}".format(len(previews))))
     return previews
-
