@@ -33,6 +33,14 @@ def _user_events(user):
 
 @login_required
 def spotify(request):
+    if request.GET.get('import') is not None:
+        token = request.session.get("token")
+        token = None
+        if token is None:
+            auth_url, state = spotify_auth()
+            request.session["state"] = state
+            return redirect(auth_url)
+
     if request.GET.get('code') is not None:
         code = request.GET.get('code')
         state = request.GET.get('state')
@@ -42,15 +50,8 @@ def spotify(request):
         request.session["token"] = token_info["access_token"]
         request.session["refresh_token"] = token_info["refresh_token"]
         spotify_artists.delay(token_info["access_token"], request.user, _update_artists)
-    elif request.GET.get('import') is not None:
-        token = request.session.get("token")
-        token = None
-        if token is None:
-            auth_url, state = spotify_auth()
-            request.session["state"] = state
-            return redirect(auth_url)
-    else:
-        return render(request, 'concertowl/spotify.html')
+
+    return render(request, 'concertowl/spotify.html')
 
 
 class EventsView(baseviews.EventsView):
