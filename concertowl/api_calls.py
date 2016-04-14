@@ -213,9 +213,6 @@ def spotify_token(code):
                                              'client_id': config["SPOTIFY_ID"],
                                              'client_secret': config["SPOTIFY_SECRET"]})
     token_info = response.json()
-    print("RESPONSE")
-    print(token_info)
-    print("END RESPONSE")
     return token_info
 
 
