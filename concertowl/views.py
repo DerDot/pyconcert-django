@@ -49,7 +49,8 @@ def spotify(request):
         token_info = spotify_token(code)
         request.session["token"] = token_info["access_token"]
         request.session["refresh_token"] = token_info["refresh_token"]
-        spotify_artists.delay(token_info["access_token"], request.user, _update_artists)
+        spotify_artists.delay(token_info["access_token"], request.user)
+        return render(request, 'concertowl/spotify_running.html')
 
     return render(request, 'concertowl/spotify.html')
 
