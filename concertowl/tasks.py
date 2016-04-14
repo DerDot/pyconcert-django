@@ -12,7 +12,7 @@ def spotify_artists(token, user):
     views.update_artists(artists, user)
     message = "Got {} artists from spotify.".format(len(artists))
     notify.send(user, recipient=user,
-                verb=message)
+                verb=message, url_name='concertowl:show_artists')
 
 
 @shared_task(ignore_result=True)
