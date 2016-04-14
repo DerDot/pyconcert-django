@@ -85,7 +85,7 @@ def _call_book_api(url_parameters):
 
 
 def _call_title_api(url_parameters):
-    url = '{base_url}/book/title/{title}?key={key}&author={author}'.format(**url_parameters)
+    url = '{base_url}/book/title.xml/?title={title}&key={key}&author={author}'.format(**url_parameters)
     resp = requests.get(url)
     try:
         parsed = xmltodict.parse(resp.text)
@@ -183,7 +183,7 @@ def _new_releases():
 
 
 def previews():
-    previews = []
+    api_previews = []
     print("Getting new releases...")
     new_releases = _new_releases()
     for author_name, title in new_releases:
@@ -196,5 +196,7 @@ def previews():
             print("No photo. Skip...")
             continue
         print("Done")
-        previews.append(preview)
-    return previews
+        api_previews.append(preview)
+    return api_previews
+
+previews()
