@@ -16,6 +16,7 @@ django-ipware==1.1.4
 django-js-reverse==0.7.0
 django-model-utils==2.4
 django-notifications-hq==1.1
+django-sslify==0.2.7
 django-user-accounts==1.3.1
 django-widget-tweaks==1.4.1
 fake-factory==0.5.7
@@ -44,6 +45,7 @@ python-social-auth==0.2.14
 python3-openid==3.0.10
 pytz==2016.3
 rauth==0.7.2
+redis==2.10.5
 requests==2.9.1
 requests-oauthlib==0.6.1
 retrying==1.3.3
