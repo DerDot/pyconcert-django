@@ -94,7 +94,7 @@ class AddArtistsView(baseviews.AddView):
     template_name = 'concertowl/add_artists.html'
 
     def update_func(self, *args, **kwargs):
-        return _update_artists(*args, **kwargs)
+        return update_artists(*args, **kwargs)
 
 
 def _parse_json_file(request):
