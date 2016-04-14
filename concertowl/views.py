@@ -41,15 +41,7 @@ def spotify(request):
         token_info = spotify_token(code)
         request.session["token"] = token_info["access_token"]
         request.session["refresh_token"] = token_info["refresh_token"]
-        task = spotify_artists.delay(token_info["access_token"])
-        artists = task.get()
-        _update_artists(artists, request.user)
-        artists_str = ', '.join(sorted(artists))
-        return render(request,
-                      'concertowl/update_result.html',
-                      {'artists':artists_str,
-                       'source':'Spotify'})
-
+        spotify_artists.delay(token_info["access_token"], lambda artists: _update_artists(artists, request.user))
     elif request.GET.get('import') is not None:
         token = request.session.get("token")
         token = None

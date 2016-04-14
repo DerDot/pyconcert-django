@@ -6,8 +6,9 @@ from concertowl import api_calls
 
 
 @shared_task
-def spotify_artists(token):
-    return api_calls.spotify_artists(token)
+def spotify_artists(token, update_func):
+    artists = api_calls.spotify_artists(token)
+    update_func(artists)
 
 
 @shared_task(ignore_result=True)
