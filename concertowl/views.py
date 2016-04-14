@@ -99,7 +99,7 @@ class AddArtistsView(baseviews.AddView):
 
 def _parse_json_file(request):
     try:
-        parsed = parse_json(request.FILES["artists"].read().encode("utf8"))
+        parsed = parse_json(request.FILES["artists"].read().decode("utf8"))
     except ValueError:
         parsed = []
     return parsed
