@@ -210,10 +210,13 @@ def spotify_token(code):
     api_call = "https://accounts.spotify.com/api/token"
     response = requests.post(api_call, data={'code': code,
                                              'grant_type':'authorization_code',
-                                             'redirect_uri':config["URL"],
+                                             'redirect_uri':config["SPOTIFY_URL"],
                                              'client_id':config["SPOTIFY_ID"],
                                              'client_secret':config["SPOTIFY_SECRET"]})
-    token_info = parse_json(response.text)
+    token_info = response.json()
+    import logging
+    logger = logging.getLogger()
+    logger.error(token_info)
     return token_info
 
 
