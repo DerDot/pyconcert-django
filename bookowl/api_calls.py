@@ -198,5 +198,3 @@ def previews():
         print("Done")
         api_previews.append(preview)
     return api_previews
-
-previews()
