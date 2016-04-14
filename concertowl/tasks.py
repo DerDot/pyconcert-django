@@ -1,7 +1,7 @@
-from celery import shared_task, current_task, task
+from celery import shared_task
+from django.contrib.auth.models import User
 
 from .models import Artist, RecommendedArtist
-from django.contrib.auth.models import User
 from concertowl import api_calls
 
 
