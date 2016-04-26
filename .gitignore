@@ -64,3 +64,4 @@ vendor/
 *.sqlite3
 *~
 *.mmdb
+db.sqlite
