@@ -1,3 +1,4 @@
+import csv
 from io import StringIO
 
 from django.views.generic import FormView
@@ -39,11 +40,13 @@ class AddAuthorsView(baseviews.AddView):
 
 
 def _parse_csv(request):
-    # TODO: do not use pandas anymore
-    author_stream = StringIO(request.FILES["authors"].read())
-    df = pd.read_csv(author_stream,
-                     encoding='utf-8-sig')
-    return set(df['authors'])
+    author_stream = StringIO(request.FILES["authors"].read().decode('utf-8-sig'))
+    reader = csv.DictReader(author_stream, delimiter=';')
+    try:
+        authors = {row['authors'] for row in reader}
+    except KeyError:
+        authors = set()
+    return authors
 
 
 class UploadCsv(FormView):
