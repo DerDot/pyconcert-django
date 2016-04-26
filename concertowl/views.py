@@ -4,25 +4,12 @@ from django.views.generic import TemplateView
 
 from .models import Event, Artist
 from eventowl import views as baseviews
-from eventowl.utils.string_helpers import normalize, parse_json
+from eventowl.utils.string_helpers import parse_json
 from concertowl.forms import UploadFileForm
-from concertowl.management.commands.update_events import ConcertConnector
+from concertowl.utils import model_helpers
 from eventowlproject import settings
 from concertowl.api_calls import spotify_auth, spotify_token
 from concertowl.tasks import spotify_artists, update_recommended_artists
-
-
-def update_artists(new_artists, user):
-    added_artists = []
-    for new_artist in new_artists:
-        new_artist = normalize(new_artist)
-        artist, created = Artist.objects.get_or_create(name=new_artist)
-        if created:
-            added_artists.append(new_artist)
-            artist.save()
-        artist.subscribers.add(user)
-    con = ConcertConnector()
-    con.update_events(added_artists, cities=[user.userprofile.city])
 
 
 def _user_events(user):
@@ -34,7 +21,6 @@ def _user_events(user):
 @login_required
 def spotify(request):
     if request.GET.get('import') is not None:
-        token = request.session.get("token")
         token = None
         if token is None:
             auth_url, state = spotify_auth()
@@ -80,7 +66,7 @@ class RecommendationsView(baseviews.CustomListView):
     def get(self, request):
         new_artist = request.GET.get("new_artist")
         if new_artist is not None:
-            update_artists([new_artist], request.user)
+            model_helpers.update_artists([new_artist], request.user)
 
         return baseviews.CustomListView.get(self, request)
 
@@ -94,7 +80,7 @@ class AddArtistsView(baseviews.AddView):
     template_name = 'concertowl/add_artists.html'
 
     def update_func(self, *args, **kwargs):
-        return update_artists(*args, **kwargs)
+        return model_helpers.update_artists(*args, **kwargs)
 
 
 def _parse_json_file(request):
@@ -111,7 +97,7 @@ def upload_json(request):
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
             artists = _parse_json_file(request)
-            update_artists(artists, request.user)
+            model_helpers.update_artists(artists, request.user)
             artists_str = ', '.join(sorted(artists))
             return render(request,
                           'concertowl/update_result.html',

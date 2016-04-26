@@ -3,13 +3,14 @@ from django.contrib.auth.models import User
 from notifications.signals import notify
 
 from .models import Artist, RecommendedArtist
-from concertowl import api_calls, views
+from concertowl import api_calls
+from concertowl.utils import model_helpers
 
 
 @shared_task
 def spotify_artists(token, user):
     artists = api_calls.spotify_artists(token)
-    views.update_artists(artists, user)
+    model_helpers.update_artists(artists, user)
     message = "Got {} artists from spotify.".format(len(artists))
     notify.send(user, recipient=user,
                 verb=message, url_name='concertowl:show_artists')
