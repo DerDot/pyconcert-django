@@ -55,11 +55,12 @@ docs/_build/
 
 # PyBuilder
 target/
+vendor/
 
-config.json
 .project
 .pydevproject
 .settings
 .idea
 *.sqlite3
 *~
+*.mmdb
