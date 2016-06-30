@@ -71,7 +71,8 @@ def records_for_artist(name):
         current_year = date.today().year
 
         for record in records_for_artist_id(artist_id):
-            if record[YEAR_KEY] < current_year:
+            year = record.get(YEAR_KEY)
+            if year is None or year < current_year:
                 break
             detailed_record = record_details(record[ID_KEY])
             release_date = detailed_record[RELEASED_KEY]
