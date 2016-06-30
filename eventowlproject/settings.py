@@ -149,6 +149,7 @@ LOGIN_EXEMPT_URLS = (
      r'complete.*',
      r'about/+$',
      r'impressum/+$',
+     r'feed/.*'
 )
 
 SITE_ID = 1
