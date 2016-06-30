@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.views.generic import TemplateView
 
-from .models import Event, Artist
+from .models import Event, Artist, Record
 from eventowl import views as baseviews
 from eventowl.utils.string_helpers import parse_json
 from concertowl.forms import UploadFileForm
@@ -50,6 +50,13 @@ class EventsView(baseviews.EventsView):
     def _filtered_and_sorted(self, name_filter, user):
         pre_filtered = super(self.__class__, self)._filtered_and_sorted(name_filter, user)
         return pre_filtered.filter(city__iexact=user.userprofile.city)
+
+
+class RecordsView(baseviews.EventsView):
+    template_name = 'concertowl/show_records_table.html'
+    event_model = Record
+    originator_model = Artist
+    originator_name = 'artists'
 
 
 class ArtistsView(baseviews.OriginatorView):
