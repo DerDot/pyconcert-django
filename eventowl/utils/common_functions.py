@@ -21,6 +21,10 @@ class EventConnector(ABC):
     def _url_name():
         pass
 
+    @abstractstaticmethod
+    def _description(event):
+        pass
+
     def update_events(self, originators, **kwargs):
         api_events = self._get_events(originators, **kwargs)
         for api_event in api_events:
@@ -46,5 +50,5 @@ class EventConnector(ABC):
         for user in db_originator.subscribers.all():
             message = self._message_for_originator(db_originator)
             url_name = self._url_name()
-            notify.send(user, recipient=user,
-                        verb=message, url_name=url_name)
+            description = self._description(event)
+            notify.send(user, recipient=user, verb=message, url_name=url_name, description=description)

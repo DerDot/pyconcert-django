@@ -40,6 +40,10 @@ class ReleaseConnector(EventConnector):
     def _url_name():
         return 'bookowl:show_events'
 
+    @staticmethod
+    def _description(release):
+        return "The book's title is {} and it's going to be released on {}.".format(release.title.title(), release.date)
+
 
 class Command(BaseCommand):
     help = 'Update book releases for all authors. Used by cron.'

@@ -62,6 +62,16 @@ class ConcertConnector(EventConnector):
     def _url_name():
         return 'concertowl:show_events'
 
+    @staticmethod
+    def _description(event):
+        return "This concert takes place in {city} ({country}) on {date} ({time}) at {venue}.".format(
+            city=event.city.title(),
+            country=event.country.title(),
+            date=event.date,
+            time=event.time,
+            venue=event.venue.title()
+        )
+
 
 class Command(BaseCommand):
     help = 'Update events for all artists. Used by cron.'

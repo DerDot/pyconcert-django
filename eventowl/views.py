@@ -1,5 +1,7 @@
 from datetime import date, timedelta
 
+import notifications
+from django.contrib.syndication.views import Feed
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse
 from django.shortcuts import redirect
@@ -226,3 +228,24 @@ class ICalView(View):
         response['Filename'] = filename
         response['Content-Disposition'] = 'attachment; filename={}'.format(filename)
         return response
+
+class NotificationsFeed(Feed):
+    title = "Whats new on eventowl"
+    link = '/feed/'
+    description = "All your new concerts, book releases and everything else."
+
+    def get_object(self, request, uuid):
+        return UserProfile.objects.get(uuid=uuid).user
+
+    def items(self, obj):
+        return notifications.models.Notification.objects.filter(recipient=obj).order_by('-timestamp')
+
+    def item_title(self, item):
+        return item.verb
+
+    def item_description(self, item):
+        return item.description
+
+    def item_link(self, item):
+        url_name = item.data.get('url_name')
+        return url_name
