@@ -68,7 +68,6 @@ def _call(url, args, append_args=tuple()):
         url += '/{}'.format(url_arg)
 
     api_call = "%s?%s" % (url, urllib.parse.urlencode(args))
-    print(api_call)
     resp = requests.get(api_call)
     try:
         parsed = parse_json(resp.text)
