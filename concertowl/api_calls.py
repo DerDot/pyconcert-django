@@ -115,7 +115,7 @@ def _get_bandsintown_events(artist, city, country=None, image=False):
             city = normalize(event["venue"]["city"])
             country = normalize(event["venue"]["country"])
             date, time = _split_datetime(event["datetime"])
-            url = event["ticket_url"]
+            url = event["ticket_url"] if event["ticket_url"] else 'http://www.bandsintown.com'
             result_event = Event(artists,
                                  venue,
                                  city,
@@ -184,11 +184,12 @@ def events_for_artists_bandsintown(artists, city):
     artists, city = _normalize_inputs(artists, city)
     all_events = []
     for idx, artist in enumerate(artists):
-        print("Working on artist number {}".format(idx))
         events = _get_bandsintown_events(artist, city)
-        print(("Got {} events".format(len(events))))
         for event in events:
             all_events.append(event)
+
+        if not idx % 50:
+            print("Finished {} artists. Found {} events in total.".format(idx+1, len(all_events)))
     return all_events
 
 
