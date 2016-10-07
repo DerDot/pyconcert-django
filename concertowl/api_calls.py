@@ -68,6 +68,7 @@ def _call(url, args, append_args=tuple()):
         url += '/{}'.format(url_arg)
 
     api_call = "%s?%s" % (url, urllib.parse.urlencode(args))
+    print(api_call)
     resp = requests.get(api_call)
     try:
         parsed = parse_json(resp.text)
@@ -91,19 +92,18 @@ def _bandsintown_artist(name):
     return _call(url, args, append_args)
 
 
-def _get_bandsintown_events(city, country=None, artists=tuple(), image=False):
+def _get_bandsintown_events(artist, city, country=None, image=False):
     if country is None:
         location = city
     elif city is None:
         location = country
     else:
         location = '{},{}'.format(city, country)
-    url = "http://api.bandsintown.com/events/search"
-    args = [("location", location)]
-    for artist in artists:
-        args.append(("artists[]", artist))
-    resp = _call(url, args)
+    args = [("location", location), ('api_version', '2.0')]
     ret = []
+    api_url = "http://api.bandsintown.com/artists/{}/events/search.json".format(artist.decode('utf8'))
+    resp = _call(api_url, args)
+    print(resp)
     if resp:
         for event in resp:
             artists = [normalize(artist["name"]) for artist in event["artists"]]
@@ -116,7 +116,7 @@ def _get_bandsintown_events(city, country=None, artists=tuple(), image=False):
             city = normalize(event["venue"]["city"])
             country = normalize(event["venue"]["country"])
             date, time = _split_datetime(event["datetime"])
-            url = event["url"]
+            url = event["ticket_url"]
             result_event = Event(artists,
                                  venue,
                                  city,
@@ -184,9 +184,9 @@ def _seatgeek_performer_id(artist):
 def events_for_artists_bandsintown(artists, city):
     artists, city = _normalize_inputs(artists, city)
     all_events = []
-    for idx, artists_chunk in enumerate(_chunks(list(artists), 50)):
-        print(("Working on artists number {} to {}".format(idx * 50, (idx + 1) * 50)))
-        events = _get_bandsintown_events(city, artists=artists_chunk)
+    for idx, artist in enumerate(artists):
+        print("Working on artist number {}".format(idx))
+        events = _get_bandsintown_events(artist, city)
         print(("Got {} events".format(len(events))))
         for event in events:
             all_events.append(event)
@@ -258,3 +258,5 @@ def previews(city, country):
             previews.append(event)
     print(("Got {}".format(len(previews))))
     return previews
+
+events_for_artists_bandsintown(['billy talent'], 'berlin')
