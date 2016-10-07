@@ -67,7 +67,7 @@
 					   <a href="#" class="dropdown-toggle" data-toggle="dropdown"> {{ user.username }} <b class="caret"></b></a>
 					   <ul class="dropdown-menu" role="menu">
 							<li><a href="{% url 'account_settings' %}">Settings</a></li>
-							<li><a href="{% url 'django.contrib.auth.views.logout' %}">Log out</a></li>
+							<li><a href="{% url 'logout' %}">Log out</a></li>
 					  </ul>
 				   </li>
 				{%endif%}
