@@ -103,7 +103,6 @@ def _get_bandsintown_events(artist, city, country=None, image=False):
     ret = []
     api_url = "http://api.bandsintown.com/artists/{}/events/search.json".format(artist.decode('utf8'))
     resp = _call(api_url, args)
-    print(resp)
     if resp:
         for event in resp:
             artists = [normalize(artist["name"]) for artist in event["artists"]]
@@ -258,5 +257,3 @@ def previews(city, country):
             previews.append(event)
     print(("Got {}".format(len(previews))))
     return previews
-
-events_for_artists_bandsintown(['billy talent'], 'berlin')
