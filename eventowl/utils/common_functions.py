@@ -16,6 +16,10 @@ class EventConnector(ABC):
     @abstractmethod
     def _message_for_originator(self, db_originator):
         pass
+
+    @abstractmethod
+    def _name_for_originator(self, db_originator):
+        pass
     
     @abstractstaticmethod
     def _url_name():
@@ -50,5 +54,7 @@ class EventConnector(ABC):
         for user in db_originator.subscribers.all():
             message = self._message_for_originator(db_originator)
             url_name = self._url_name()
+            originator_name = self._name_for_originator(db_originator)
             description = self._description(event)
-            notify.send(user, recipient=user, verb=message, url_name=url_name, description=description)
+            notify.send(user, recipient=user, verb=message, url_name=url_name, originator_name=originator_name,
+                        description=description)

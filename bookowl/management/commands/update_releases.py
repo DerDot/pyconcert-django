@@ -34,7 +34,10 @@ class ReleaseConnector(EventConnector):
         return release, should_save
     
     def _message_for_originator(self, author):
-        return "New book by {}".format(author.name.title()) 
+        return "New book by {}".format(author.name.title())
+
+    def _name_for_originator(self, author):
+        return author.name.lower()
     
     @staticmethod
     def _url_name():

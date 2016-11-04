@@ -56,7 +56,10 @@ class ConcertConnector(EventConnector):
         return event, should_save
     
     def _message_for_originator(self, artist):
-        return "New concert by {}".format(artist.name.title()) 
+        return "New concert by {}".format(artist.name.title())
+
+    def _name_for_originator(self, artist):
+        return artist.name.lower()
     
     @staticmethod
     def _url_name():

@@ -12,8 +12,9 @@ function fill_notification_list_with_link(data) {
             }
             var item_data = JSON.parse(item.data);
             var url_name = item_data['url_name']
+            var originator_name = item_data['originator_name']
             url = Urls[url_name]()
-            menu.innerHTML = menu.innerHTML + "<li><a href='" + url +  "'>"+ message + "</a></li>";
+            menu.innerHTML = menu.innerHTML + "<li><a href='" + url + "?name_filter=" + originator_name + "'>"+ message + "</a></li>";
         }
         menu.innerHTML = menu.innerHTML + "<li class=\"divider\"></li>";
         url = Urls['notifications:all']()

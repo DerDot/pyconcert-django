@@ -3,24 +3,16 @@
 <legend>News for you</legend>
 <ul class="list-group">
 {% for notice in notifications %}
-	<li class="list-group-item">
-	    {% if notice.unread %}
-	    	<b><a href="{% url notice.data.url_name %}">{{ notice.verb }}</a></b>
-		    <a href="{% url 'notifications:mark_as_read' notice.slug %}" class="btn btn-xs pull-right" name="read">
-		    	<span class="fa fa-envelope"></span>
-		    </a>
-		{% else %}
-			<a href="{% url notice.data.url_name %}">{{ notice.verb }}</a>
-			<a href="{% url 'notifications:mark_as_unread' notice.slug %}" class="btn btn-xs pull-right" name="unread">
-		    	<span class="fa fa-envelope-o"></span>
-		    </a>
-		{% endif %}
-		<a href="{% url 'notifications:delete' notice.slug %}" class="btn btn-xs pull-right" name="delete">
-	    	<span class="fa fa-trash"></span>
-	    </a>
-		<br/>
-		<font size=2pt>Sent {{ notice.timesince }} ago.</font>
-	</li>
+    {% if notice.unread %}
+        <li class="list-group-item">
+            <b><a href="{% url notice.data.url_name %}?name_filter={{ notice.data.originator_name }}">{{ notice.verb }}</a></b>
+            <a href="{% url 'notifications:mark_as_read' notice.slug %}" class="btn btn-xs pull-right" name="read">
+                <span class="fa fa-envelope"></span>
+            </a>
+            <br/>
+            <font size=2pt>Sent {{ notice.timesince }} ago.</font>
+        </li>
+    {% endif %}
 {% endfor %}
 </ul>
 {% include "eventowl/pagination.html"%}
