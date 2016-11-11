@@ -36,7 +36,7 @@ def spotify_artists(token):
     artists = set(playlist_artists(spotify_client))
     artists.update(saved_artists(spotify_client))
     artists.update(followed_artists(spotify_client))
-    return (normalize(artist) for artist in artists)
+    return [normalize(artist) for artist in artists]
 
 
 def playlist_artists(client):
