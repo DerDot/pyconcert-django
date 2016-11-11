@@ -56,9 +56,9 @@ class AddView(TemplateView):
     template_name = None
 
     def get(self, request):
-        add_originator = request.GET.get("add")
+        add_originator = request.GET.get('add')
         if add_originator is not None:
-            self.update_func([add_originator], request.user)
+            self.update_func(add_originator.split(','), request.user)
         return TemplateView.get(self, request)
 
 

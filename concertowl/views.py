@@ -116,5 +116,5 @@ def upload_json(request):
                    'max_size_mb': settings.MAX_UPLOAD_SIZE / 1024 ** 2})
 
 
-class ToolView(TemplateView):
-    template_name = 'concertowl/tool.html'
+class UploadLocalView(TemplateView):
+    template_name = 'concertowl/upload_local.html'

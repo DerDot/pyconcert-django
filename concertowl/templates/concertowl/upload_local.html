@@ -1,0 +1,40 @@
+{% extends 'concertowl/base.html' %}
+{% load staticfiles%}
+
+{% block more_extra_header %}
+<script src="{% static 'id3.min.js' %}"></script>
+<script src="{% static 'jquery/bootstrap-filestyle.min.js' %}"></script>
+{% endblock more_extra_header %}
+
+{% block content %}
+<legend>Scan your local library without actually uploading anything. That's something now, isn't it?</legend>
+<p>In very modern browsers you can select a directory and we will find every artists in there. In just regularly modern browsers, you'll have to select multiple files manually, sorry.</p>
+<input type="file" id="filepicker" class="filestyle" data-input="false" data-buttonText="Choose directory or files" name="fileList" webkitdirectory multiple />
+<span id="resulttext"></span>
+
+<script>
+    document.getElementById("filepicker").addEventListener("change", function(event) {
+        let files = event.target.files;
+
+        let artists = [];
+        for (let i=0; i<files.length; i++) {
+            id3(files[i], function(err, tags) {
+                artists.push(tags.artist);
+                if (i === files.length - 1) {
+                    collected_artists(artists)
+                }
+            });
+        };
+    }, false);
+
+    function collected_artists(artists) {
+        let unique_artists = unique(artists);
+        base_url = Urls["concertowl:add_artists"]()
+        add_url = base_url + "?add=" + unique_artists.join()
+        $.get(add_url);
+
+        let item = document.getElementById("resulttext");
+        item.innerHTML = "Found and added " + unique_artists.length + " unique artists.";
+    }
+</script>
+{%endblock content %}

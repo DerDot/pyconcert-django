@@ -21,3 +21,9 @@ function addWhitespace() {
         content_div.style.height = desired + "px";
     }
 }
+
+function unique(arr) {
+  return arr.filter(function(x, i) {
+    return arr.indexOf(x) === i && x !== undefined
+  })
+}
