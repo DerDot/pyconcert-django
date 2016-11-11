@@ -2,7 +2,7 @@ from django.core.management.base import BaseCommand
 from django.db import IntegrityError
 
 from concertowl.models import Preview
-from concertowl.api_calls import previews
+from concertowl.api_calls.bandsintown import previews
 from eventowl.models import VisitorLocation
 
 

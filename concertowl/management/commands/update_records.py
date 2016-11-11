@@ -1,9 +1,8 @@
 from django.core.management.base import BaseCommand
 
-from concertowl.api_calls_records import records_for_artists
-from eventowl.utils.common_functions import EventConnector
-
+from concertowl.api_calls.discogs import records_for_artists
 from concertowl.models import Artist, Record
+from eventowl.utils.common_functions import EventConnector
 
 
 class RecordConnector(EventConnector):

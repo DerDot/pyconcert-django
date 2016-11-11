@@ -3,13 +3,14 @@ from django.contrib.auth.models import User
 from notifications.signals import notify
 
 from .models import Artist, RecommendedArtist
-from concertowl import api_calls
+from concertowl.api_calls import spotify, seatgeek
 from concertowl.utils import model_helpers
+from eventowl.utils.string_helpers import normalize
 
 
 @shared_task
 def spotify_artists(token, user):
-    artists = api_calls.spotify_artists(token)
+    artists = spotify.spotify_artists(token)
     model_helpers.update_artists(artists, user)
     message = "Got {} artists from spotify.".format(len(artists))
     notify.send(user, recipient=user,
@@ -18,13 +19,13 @@ def spotify_artists(token, user):
 
 @shared_task(ignore_result=True)
 def update_recommended_artists(artists, username):
-    recommended = api_calls.recommended_artists(artists)
+    recommended = seatgeek.recommended_artists(artists)
     _add_recommendations(recommended, username)
 
 
 def _add_recommendations(recommended, username):
     for artist, genre, score in recommended:
-        artist = api_calls.normalize(artist)
+        artist = normalize(artist)
         artist, created = Artist.objects.get_or_create(name=artist)
         if created:
             artist.genre = genre

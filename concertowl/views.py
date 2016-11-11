@@ -8,7 +8,7 @@ from eventowl.utils.string_helpers import parse_json
 from concertowl.forms import UploadFileForm
 from concertowl.utils import model_helpers
 from eventowlproject import settings
-from concertowl.api_calls import spotify_auth, spotify_token
+from concertowl.api_calls.spotify import spotify_auth_url, spotify_token_from_code
 from concertowl.tasks import spotify_artists, update_recommended_artists
 
 
@@ -21,18 +21,16 @@ def _user_events(user):
 @login_required
 def spotify(request):
     if request.GET.get('import') is not None:
-        token = None
-        if token is None:
-            auth_url, state = spotify_auth()
-            request.session["state"] = state
-            return redirect(auth_url)
+        auth_url, state = spotify_auth_url()
+        request.session["state"] = state
+        return redirect(auth_url)
 
     if request.GET.get('code') is not None:
         code = request.GET.get('code')
         state = request.GET.get('state')
         if request.session.get("state") != state:
             print("Oh noes...")
-        token_info = spotify_token(code)
+        token_info = spotify_token_from_code(code)
         request.session["token"] = token_info["access_token"]
         request.session["refresh_token"] = token_info["refresh_token"]
         spotify_artists.delay(token_info["access_token"], request.user)

@@ -4,7 +4,7 @@ from eventowl.utils.common_functions import EventConnector
 from eventowl.models import UserProfile
 
 from concertowl.models import Artist, Event
-from concertowl.api_calls import events_for_artists_bandsintown
+from concertowl.api_calls.bandsintown import events_for_artists_bandsintown
 from eventowl.utils.django_helpers import set_if_different
 
 

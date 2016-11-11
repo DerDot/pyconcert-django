@@ -1,14 +1,10 @@
 from datetime import datetime
-
-import math
-import random
 import urllib.parse
 
 import requests
 from retrying import retry
 
-from eventowl.utils import config
-from eventowl.utils.string_helpers import normalize, random_string, parse_json
+from eventowl.utils.string_helpers import normalize, parse_json
 
 EMPTY_IMAGE = 'https://s3.amazonaws.com/bit-photos/artistLarge.jpg'
 EMPTY_THUMB = 'https://s3.amazonaws.com/bit-photos/artistThumb.jpg'
@@ -139,46 +135,6 @@ def _normalize_inputs(artists, location):
     return normalized_artists, location
 
 
-def _random_subset(collection, size=20):
-    if len(collection) > size:
-        return random.sample(collection, size)
-    return collection
-
-
-def recommended_artists(artists):
-    api_call = 'http://api.seatgeek.com/2/recommendations/performers'
-    args = [('client_id', config["SEATGEEK_ID"]),
-            ('per_page', 50)]
-    artists = _random_subset(artists)
-    for artist in artists:
-        performer_id = _seatgeek_performer_id(artist)
-        if performer_id is None:
-            continue
-        args.append(("performers.id", performer_id))
-    api_call = "%s?%s" % (api_call, urllib.parse.urlencode(args))
-    resp = parse_json(requests.get(api_call).text)
-    ret = []
-    for recommendation in resp['recommendations']:
-        name = recommendation['performer']['name']
-        genres = [genre['name'] for genre in recommendation['performer'].get('genres', [])]
-        genre = ", ".join(genres)
-        score = float(recommendation['score'])
-        ret.append((name, genre, score))
-    return ret
-
-
-def _seatgeek_performer_id(artist):
-    api_call = 'http://api.seatgeek.com/2/performers'
-    args = [('q', artist)]
-    api_call = "%s?%s" % (api_call, urllib.parse.urlencode(args))
-    resp = parse_json(requests.get(api_call).text)
-    performers = resp['performers']
-    if performers:
-        return performers[0]['id']
-    else:
-        return None
-
-
 def events_for_artists_bandsintown(artists, city):
     artists, city = _normalize_inputs(artists, city)
     all_events = []
@@ -190,62 +146,6 @@ def events_for_artists_bandsintown(artists, city):
         if not idx % 50:
             print("Finished {} artists. Found {} events in total.".format(idx+1, len(all_events)))
     return all_events
-
-
-def spotify_auth():
-    state = random_string()
-    api_call = "https://accounts.spotify.com/authorize"
-    args = [("client_id", config["SPOTIFY_ID"]),
-            ("response_type", "code"),
-            ("redirect_uri", config["SPOTIFY_URL"]),
-            ("scope", "user-library-read"),
-            ("state", state)]
-    api_call = "%s?%s" % (api_call, urllib.parse.urlencode(args))
-    return api_call, state
-
-
-def spotify_token(code):
-    api_call = "https://accounts.spotify.com/api/token"
-    response = requests.post(api_call, data={'code': code,
-                                             'grant_type': 'authorization_code',
-                                             'redirect_uri': config["SPOTIFY_URL"],
-                                             'client_id': config["SPOTIFY_ID"],
-                                             'client_secret': config["SPOTIFY_SECRET"]})
-    token_info = response.json()
-    return token_info
-
-
-@retry(wait_exponential_multiplier=500,
-       wait_exponential_max=5000,
-       stop_max_delay=20000)
-def _call_spotify_api(limit, iteration, token):
-    base_api_call = "https://api.spotify.com/v1/me/tracks"
-    args = [("limit", limit),
-            ("offset", limit * iteration)]
-    api_call = "%s?%s" % (base_api_call, urllib.parse.urlencode(args))
-    headers = {'Authorization': 'Bearer ' + token}
-    resp = requests.get(api_call, headers=headers)
-    response = parse_json(resp.text)
-    assert 'error' not in response
-    return response
-
-
-def spotify_artists(token, limit=50):
-    all_artists = set()
-    iteration = 0
-    while True:
-        response = _call_spotify_api(limit, iteration, token)
-        print(("Iteration {} of {}".format(iteration + 1,
-                                           int(math.ceil(1. * response["total"] / limit)) + 1)))
-        if not response["items"]:
-            break
-        for track in response["items"]:
-            artists = track["track"]["artists"]
-            for artist in artists:
-                normalized_artist = normalize(artist["name"])
-                all_artists.add(normalized_artist)
-        iteration += 1
-    return all_artists
 
 
 def previews(city, country):
