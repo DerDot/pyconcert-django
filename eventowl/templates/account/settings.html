@@ -24,6 +24,6 @@
      <p><i>Sorry, couldn't save settings: {{ form.errors.values.0|striptags}}</i></p>
 {% endif %}
 
-<p>Here is your <a href={% url 'eventowl:feed' uuid=user.userprofile.uuid %}>personalized RSS feed</a> and your <a href={% url 'eventowl:calendar' uuid=user.userprofile.uuid %}>personnal calendar</a></p>
+<p>Here is your <a href={% url 'eventowl:feed' uuid=user.userprofile.uuid %}>personalized RSS feed</a> and your <a href={% url 'eventowl:calendar' uuid=user.userprofile.uuid %}>personal calendar</a></p>
 
 {% endblock %}

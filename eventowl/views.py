@@ -17,6 +17,7 @@ from eventowlproject import settings
 from eventowl import app_previews
 from eventowl.utils.location import current_position
 from eventowl.utils.user_agents import is_robot
+from eventowlproject.settings import DATABASES
 
 
 class ChoiceView(TemplateView):
@@ -34,7 +35,7 @@ class CustomListView(ListView):
         return self._filtered_and_sorted(name_filter, self.request.user)
 
 
-def _subscribed_originators(originator_model, originator_name, event_model, user, name_filter=''):
+def _subscribed_events(originator_model, originator_name, event_model, user, name_filter=''):
     subscribed_originators = originator_model.objects.filter(subscribers=user,
                                                              name__icontains=name_filter)
 
@@ -43,7 +44,7 @@ def _subscribed_originators(originator_model, originator_name, event_model, user
     kwargs = {originator_name + '__in': subscribed_originators,
               'date__gte': oldest_shown}
     subscribed_events = event_model.objects.filter(**kwargs).distinct()
-    return subscribed_events.order_by("date")
+    return subscribed_events.order_by("date").distinct()
 
 
 class EventsView(CustomListView):
@@ -54,8 +55,8 @@ class EventsView(CustomListView):
     originator_name = None
 
     def _filtered_and_sorted(self, name_filter, user):
-        return _subscribed_originators(self.originator_model, self.originator_name, self.event_model,
-                                       user, name_filter)
+        return _subscribed_events(self.originator_model, self.originator_name, self.event_model,
+                                  user, name_filter)
 
 
 class AddView(TemplateView):
@@ -260,7 +261,17 @@ class NotificationsFeed(Feed):
 class CalendarView(View):
     def get(self, request, uuid):
         user = UserProfile.objects.get(uuid=uuid).user
-        events = _subscribed_originators(Artist, 'artists', Event, user)
+        if 'postgres' in DATABASES['default']['ENGINE']:
+            events = _subscribed_events(Artist, 'artists', Event, user).order_by('date', 'time', 'venue').distinct('date', 'time', 'venue')
+        else:
+            events = []
+            seen = set()
+            for event in _subscribed_events(Artist, 'artists', Event, user):
+                key = (event.date, event.time, event.venue)
+                if key not in seen:
+                    events.append(event)
+                    seen.add(key)
+
 
         cal = None
         for event in events:
