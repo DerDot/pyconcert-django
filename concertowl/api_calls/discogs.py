@@ -49,7 +49,7 @@ def records_for_artist(name):
     for release in search_result:
         year = int(release.year)
         if year < current_year - 1:
-            break
+            continue
         detailed_record = record_details(release.id)
         release_date = detailed_record.get(RELEASED_KEY, '')
         try:
