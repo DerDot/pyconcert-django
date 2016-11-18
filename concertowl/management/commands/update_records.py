@@ -23,6 +23,9 @@ class RecordConnector(EventConnector):
     
     def _message_for_originator(self, artist):
         return "New record by {}".format(artist.name.title())
+
+    def _name_for_originator(self, artist):
+        return artist.name.lower()
     
     @staticmethod
     def _url_name():
