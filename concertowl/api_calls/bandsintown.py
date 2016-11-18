@@ -104,7 +104,7 @@ def _get_bandsintown_events(artist, city, country=None, image=False):
     resp = _call(api_url, args)
     if resp:
         for event in resp:
-            artists = [normalize(artist) for artist in event['artists']]
+            artists = [normalize(artist['name']) for artist in event['artists']]
             image_url = None
             if image:
                 artist = _bandsintown_artist(artists[0])
