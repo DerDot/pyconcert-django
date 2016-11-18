@@ -68,14 +68,18 @@ def _call(url, args, append_args=tuple()):
     try:
         parsed = parse_json(resp.text)
     except ValueError:
-        parsed = None
+        return None
 
     if isinstance(parsed, dict) and 'errors' in parsed:
         message = '; '.join(parsed['errors'])
         if 'exceeded' in message:
             raise IOError(message)
         else:
-            parsed = None
+            return None
+
+    if not isinstance(parsed, list):
+        print("Got malformed event for '{}'".format(url))
+        return None
 
     return parsed
 
@@ -85,15 +89,6 @@ def _bandsintown_artist(name):
     args = [('api_version', '2.0')]
     append_args = [name]
     return _call(url, args, append_args)
-
-
-def _normalized_artists(event):
-    for artist in event["artists"]:
-        try:
-            name = artist["name"]
-        except TypeError:
-            name = artist
-        yield normalize(name)
 
 
 def _get_bandsintown_events(artist, city, country=None, image=False):
@@ -109,7 +104,7 @@ def _get_bandsintown_events(artist, city, country=None, image=False):
     resp = _call(api_url, args)
     if resp:
         for event in resp:
-            artists = list(_normalized_artists(event))
+            artists = [normalize(artist) for artist in event['artists']]
             image_url = None
             if image:
                 artist = _bandsintown_artist(artists[0])
