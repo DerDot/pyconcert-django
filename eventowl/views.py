@@ -8,9 +8,10 @@ from django.shortcuts import redirect
 from django.views.generic import TemplateView, ListView, FormView, View
 from account import views as account_views
 
+from concertowl.models import Event, Artist
 from eventowl.models import UserProfile, VisitorLocation
 from eventowl.forms import SignupForm, SettingsForm, AddProfileForm
-from eventowl.utils.dates_and_times import ical_string
+from eventowl.utils.dates_and_times import ical_event
 from eventowl.utils.string_helpers import as_filename
 from eventowlproject import settings
 from eventowl import app_previews
@@ -33,6 +34,18 @@ class CustomListView(ListView):
         return self._filtered_and_sorted(name_filter, self.request.user)
 
 
+def _subscribed_originators(originator_model, originator_name, event_model, user, name_filter=''):
+    subscribed_originators = originator_model.objects.filter(subscribers=user,
+                                                             name__icontains=name_filter)
+
+    oldest_shown = date.today() - timedelta(days=settings.DAYS_BACK)
+
+    kwargs = {originator_name + '__in': subscribed_originators,
+              'date__gte': oldest_shown}
+    subscribed_events = event_model.objects.filter(**kwargs).distinct()
+    return subscribed_events.order_by("date")
+
+
 class EventsView(CustomListView):
     template_name = None
     context_object_name = 'events'
@@ -41,15 +54,8 @@ class EventsView(CustomListView):
     originator_name = None
 
     def _filtered_and_sorted(self, name_filter, user):
-        subscribed_originators = self.originator_model.objects.filter(subscribers=user,
-                                                                      name__icontains=name_filter)
-
-        oldest_shown = date.today() - timedelta(days=settings.DAYS_BACK)
-
-        kwargs = {self.originator_name + '__in': subscribed_originators,
-                  'date__gte': oldest_shown}
-        subscribed_events = self.event_model.objects.filter(**kwargs).distinct()
-        return subscribed_events.order_by("date")
+        return _subscribed_originators(self.originator_model, self.originator_name, self.event_model,
+                                       user, name_filter)
 
 
 class AddView(TemplateView):
@@ -221,8 +227,8 @@ class ICalView(View):
         description = get_params.get('description')
         filename = as_filename(summary) + '.ics' if summary else 'cal.ics'
 
-        istring = ical_string(start_date, start_time, duration,
-                              location, summary, description)
+        istring = ical_event(start_date, start_time, duration,
+                             location, summary, description).to_ical()
 
         response = HttpResponse(istring, content_type='text/calendar')
         response['Filename'] = filename
@@ -249,3 +255,23 @@ class NotificationsFeed(Feed):
     def item_link(self, item):
         url_name = item.data.get('url_name')
         return url_name
+
+
+class CalendarView(View):
+    def get(self, request, uuid):
+        user = UserProfile.objects.get(uuid=uuid).user
+        events = _subscribed_originators(Artist, 'artists', Event, user)
+
+        cal = None
+        for event in events:
+            location = "{}, {}".format(event.venue.title(), event.city.title())
+            summary = ", ".join(artist.name.title() for artist in event.artists.all())
+            duration = 120
+            description = ""
+            cal = ical_event(event.date, event.time, duration, location, summary, description, cal)
+
+        filename = 'events.ics'
+        response = HttpResponse(cal.to_ical(), content_type='text/calendar')
+        response['Filename'] = filename
+        response['Content-Disposition'] = 'attachment; filename={}'.format(filename)
+        return response

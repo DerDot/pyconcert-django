@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date, time
 import icalendar
 
 
@@ -12,27 +12,32 @@ def date_from_timestamp(timestamp):
     return datetime.fromtimestamp(ts).date()
 
 
-def add_time_to_datetime(dt, time_string):
-    hours, minutes = time_string.split(':')
-    return dt.replace(hour=int(hours), minute=int(minutes))
+def add_time_to_datetime(dt, time_obj):
+    try:
+        hours = time_obj.hour
+        minutes = time_obj.minute
+    except AttributeError:
+        hours, minutes = time_obj.split(':')
+        hours = int(hours)
+        minutes = int(minutes)
+
+    return datetime.combine(dt, time(hours, minutes))
 
 
-def ical_string(start_date=None, start_time=None, duration=None,
-                location=None, summary=None, description=None):
+def ical_event(start_date=None, start_time=None, duration=None,
+               location=None, summary=None, description=None, cal=None):
     event = icalendar.Event()
 
-    start_dt = None
     if start_date:
+        if not (isinstance(start_date, datetime) or isinstance(start_date, date)):
+            start_date = datetime_from_timestamp(start_date)
         if start_time:
-            start_dt = datetime_from_timestamp(start_date)
-            start_dt = add_time_to_datetime(start_dt, start_time)
-            event.add('dtstart', start_dt)
-        else:
-            event.add('dtstart', date_from_timestamp(start_date))
+            start_date = add_time_to_datetime(start_date, start_time)
+            event.add('dtstart', start_date)
 
-    if duration and start_dt is not None:
+    if duration and start_date is not None:
         duration = int(duration)
-        event.add('dtend', start_dt + timedelta(minutes=duration))
+        event.add('dtend', start_date + timedelta(minutes=duration))
 
     if summary:
         event['summary'] = summary
@@ -45,7 +50,8 @@ def ical_string(start_date=None, start_time=None, duration=None,
 
     event.add('dtstamp', datetime.now())
 
-    cal = icalendar.Calendar()
+    if cal is None:
+        cal = icalendar.Calendar()
     cal.add_component(event)
-    return cal.to_ical()
+    return cal
 
