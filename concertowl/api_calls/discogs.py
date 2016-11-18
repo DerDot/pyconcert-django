@@ -1,26 +1,20 @@
 from datetime import date, datetime
 
+import discogs_client
 import requests
 from retrying import retry
 
 from eventowl.utils import config
 
 TOKEN = config['DISCOGS_TOKEN']
+USER_AGENT = 'EventOwl/0.1'
+CLIENT = discogs_client.Client(USER_AGENT, user_token=TOKEN)
 
-RECORDS_KEY = 'releases'
-YEAR_KEY = 'year'
-TYPE_KEY = 'type'
-STATUS_KEY = 'status'
-ID_KEY = 'id'
+SEARCH_TYPE = 'release'
+
 RELEASED_KEY = 'released'
-RESULTS_KEY = 'results'
 TITLE_KEY = 'title'
 URL_KEY = 'uri'
-
-RELEASE_TYPE = 'release'
-ACCEPTED_STATUS = 'Accepted'
-
-YMD_LENGTH = 10
 
 
 class Release:
@@ -36,26 +30,9 @@ class Release:
        wait_exponential_max=8000,
        stop_max_delay=50000)
 def _call_api(url):
-    response = requests.get(url)
+    response = requests.get(url, headers={'User-Agent': USER_AGENT, 'Accept-Encoding': 'gzip'})
     response.raise_for_status()
     return response
-
-
-def artist_id_for_name(name):
-    url = "https://api.discogs.com/database/search?q={name}&type=artist&token={token}".format(name=name, token=TOKEN)
-    response = _call_api(url)
-    artists = response.json()[RESULTS_KEY]
-    if artists:
-        return artists[0][ID_KEY]
-    else:
-        raise ValueError("No id for artist {}".format(name))
-
-
-def records_for_artist_id(artist_id):
-    url = "https://api.discogs.com/artists/{aid}/releases?sort=year&sort_order=desc".format(aid=artist_id)
-    response = _call_api(url)
-    records = response.json()[RECORDS_KEY]
-    return [r for r in records if r[TYPE_KEY] == RELEASE_TYPE and r[STATUS_KEY] == ACCEPTED_STATUS]
 
 
 def record_details(record_id):
@@ -66,29 +43,26 @@ def record_details(record_id):
 
 def records_for_artist(name):
     records = []
-    try:
-        artist_id = artist_id_for_name(name)
-        current_year = date.today().year
+    current_year = date.today().year
 
-        for record in records_for_artist_id(artist_id):
-            year = record.get(YEAR_KEY)
-            if year is None or year < current_year:
-                break
-            detailed_record = record_details(record[ID_KEY])
-            release_date = detailed_record[RELEASED_KEY]
-
-            if len(release_date) != YMD_LENGTH:
-                continue
+    search_result = CLIENT.search(type=SEARCH_TYPE, artist=name)
+    for release in search_result:
+        year = int(release.year)
+        if year < current_year - 1:
+            break
+        detailed_record = record_details(release.id)
+        release_date = detailed_record.get(RELEASED_KEY, '')
+        try:
             release_date = datetime.strptime(release_date, '%Y-%m-%d').date()
-            api_record = Release(
-                detailed_record[TITLE_KEY],
-                release_date,
-                [name],
-                detailed_record[URL_KEY]
-            )
-            records.append(api_record)
-    except ValueError:
-        pass
+        except ValueError:
+            continue
+        api_record = Release(
+            detailed_record[TITLE_KEY],
+            release_date,
+            [name],
+            detailed_record[URL_KEY]
+        )
+        records.append(api_record)
 
     return records
 
