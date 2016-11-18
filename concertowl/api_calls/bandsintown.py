@@ -87,6 +87,15 @@ def _bandsintown_artist(name):
     return _call(url, args, append_args)
 
 
+def _normalized_artists(event):
+    for artist in event["artists"]:
+        try:
+            name = artist["name"]
+        except TypeError:
+            name = artist
+        yield normalize(name)
+
+
 def _get_bandsintown_events(artist, city, country=None, image=False):
     if country is None:
         location = city
@@ -100,7 +109,7 @@ def _get_bandsintown_events(artist, city, country=None, image=False):
     resp = _call(api_url, args)
     if resp:
         for event in resp:
-            artists = [normalize(artist["name"]) for artist in event["artists"]]
+            artists = list(_normalized_artists(event))
             image_url = None
             if image:
                 artist = _bandsintown_artist(artists[0])
@@ -149,6 +158,7 @@ def events_for_artists_bandsintown(artists, city):
 
 
 def previews(city, country):
+    return []
     previews = []
     print("Getting events near {} ({})".format(city, country))
     events = _get_bandsintown_events(city, country, image=True)
