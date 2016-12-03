@@ -261,7 +261,7 @@ class NotificationsFeed(Feed):
 class CalendarView(View):
     def get(self, request, uuid):
         user = UserProfile.objects.get(uuid=uuid).user
-        if 'postgres' in DATABASES['default']['ENGINE']:
+        if 'postgres_disabled' in DATABASES['default']['ENGINE']:
             events = _subscribed_events(Artist, 'artists', Event, user).order_by('date', 'time', 'venue').distinct('date', 'time', 'venue')
         else:
             events = []
@@ -271,7 +271,6 @@ class CalendarView(View):
                 if key not in seen:
                     events.append(event)
                     seen.add(key)
-
 
         cal = None
         for event in events:
