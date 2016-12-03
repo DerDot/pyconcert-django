@@ -38,8 +38,8 @@
 {% include "eventowl/pagination.html"%}
     
 {% else %}
-    {% if request.GET.filter%}
-        <p>No events matching {{ request.GET.filter }}.</p>
+    {% if request.GET.name_filter%}
+        <p>No events matching '{{ request.GET.name_filter }}'.</p>
     {% else %}
         <p>Your subscribed artists don't have events any time soon :(</p>
     {% endif %}

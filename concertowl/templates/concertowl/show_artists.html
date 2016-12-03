@@ -32,8 +32,8 @@
 {% include "eventowl/pagination.html"%}
 
 {% else %}
-    {% if request.GET.filter%}
-        <p>No artists matching {{ request.GET.filter }}.</p>
+    {% if request.GET.name_filter%}
+        <p>No artists matching '{{ request.GET.name_filter }}'.</p>
     {% else %}
         <p>You are not subscribed to any artists yet. Add some :)</p>
     {% endif %}

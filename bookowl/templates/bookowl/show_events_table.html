@@ -57,7 +57,7 @@
     {% include "eventowl/pagination.html" %}
 {% else %}
     {% if request.GET|get_item:'name_filter'|default:'' %}
-        <p>No events matching {{ request.GET.filter }}.</p>
+        <p>No events matching '{{ request.GET.name_filter }}'.</p>
     {% else %}
         <p>Your subscribed authors don't release any books anytime soon :(</p>
     {% endif %}

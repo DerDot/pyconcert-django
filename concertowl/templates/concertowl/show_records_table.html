@@ -53,7 +53,7 @@ $('#events-table').jExpand();
 
 {% else %}
     {% if request.GET|get_item:'name_filter'|default:'' %}
-        <p>No records matching {{ request.GET.filter }}.</p>
+        <p>No records matching '{{ request.GET.name_filter }}'.</p>
     {% else %}
         <p>Your <a href="{% url 'concertowl:show_artists' %}">subscribed artists</a> don't have records any time soon :(</p>
     {% endif %}
