@@ -11,13 +11,13 @@
     {% for artist in artists %}
         <li class="list-group-item">
 	        {{ artist.name|title }}
-	        <button type="button" class="btn btn-xs pull-right" name="remove" value="{{ artist.name }}" onclick="$.get(window.location.pathname + '?remove=' + encodeURIComponent('{{ artist.name }}')); $(this).parent().hide()">
+	        <button type="button" class="btn btn-xs pull-right" name="remove" value="{{ artist.name }}" onclick="$.get(window.location.pathname + '?remove={{ artist.name|urlencode }}'); $(this).parent().hide()">
 	            <span class="glyphicon glyphicon-remove"></span>
 	        </button>
-            <button type="button" id="unfavorite_{{ forloop.counter }}" class="btn btn-xs pull-right" name="unfavorite" value="{{ artist.name }}" onclick="$.get(window.location.pathname + '?unfavorite=' + encodeURIComponent('{{ artist.name }}')); $(this).hide(); $('#favorite_{{ forloop.counter }}').show()">
+            <button type="button" id="unfavorite_{{ forloop.counter }}" class="btn btn-xs pull-right" name="unfavorite" value="{{ artist.name }}" onclick="$.get(window.location.pathname + '?unfavorite={{ artist.name|urlencode }}'); $(this).hide(); $('#favorite_{{ forloop.counter }}').show()">
                  <font color="DarkOrange"><span class="glyphicon glyphicon-star"></span></font>
             </button>
-            <button type="button" id="favorite_{{ forloop.counter }}" class="btn btn-xs pull-right" name="favorite" value="{{ artist.name }}" onclick="$.get(window.location.pathname + '?favorite=' + encodeURIComponent('{{ artist.name }}')); $(this).hide(); $('#unfavorite_{{ forloop.counter }}').show()">
+            <button type="button" id="favorite_{{ forloop.counter }}" class="btn btn-xs pull-right" name="favorite" value="{{ artist.name }}" onclick="$.get(window.location.pathname + '?favorite={{ artist.name|urlencode }}'); $(this).hide(); $('#unfavorite_{{ forloop.counter }}').show()">
                  <span class="glyphicon glyphicon-star"></span>
             </button>
             {% if artist in favorites %}
