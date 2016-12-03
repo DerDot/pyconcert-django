@@ -7,28 +7,29 @@
 </form>
 
 {% if authors %}
-    <form action="{% url 'bookowl:show_authors' %}" method="get">
     <ul class="list-group">
-    <button type="submit" style="display:none;"></button>
     {% for author in authors %}
         <li class="list-group-item">
 	        {{ author.name|title }}
-	        <button type="submit" class="btn btn-xs pull-right" name="remove" value="{{ author.name }}">
+	        <button type="button" class="btn btn-xs pull-right" name="remove" value="{{ author.name }}" onclick="$.get(window.location.pathname + '?remove={{ author.name }}'); $(this).parent().hide()">
 	            <span class="glyphicon glyphicon-remove"></span>
 	        </button>
-	        {% if author in favorites %}
-		        <button type="submit" class="btn btn-xs pull-right" name="unfavorite" value="{{ author.name }}">
-	                 <font color="DarkOrange"><span class="glyphicon glyphicon-star"></span></font>
-	            </button>
-	        {% else %}
-	            <button type="submit" class="btn btn-xs pull-right" name="favorite" value="{{ author.name }}">
-                     <span class="glyphicon glyphicon-star"></span>
-                </button>
+
+            <button type="button" id="unfavorite_{{ forloop.counter }}" class="btn btn-xs pull-right" name="unfavorite" value="{{ author.name }}" onclick="$.get(window.location.pathname + '?unfavorite={{ author.name }}'); $(this).hide(); $('#favorite_{{ forloop.counter }}').show()">
+                 <font color="DarkOrange"><span class="glyphicon glyphicon-star"></span></font>
+            </button>
+
+            <button type="button" id="favorite_{{ forloop.counter }}" class="btn btn-xs pull-right" name="favorite" value="{{ artist.name }}" onclick="$.get(window.location.pathname + '?favorite={{ author.name }}'); $(this).hide(); $('#unfavorite_{{ forloop.counter }}').show()">
+                 <span class="glyphicon glyphicon-star"></span>
+            </button>
+            {% if author in favorites %}
+                <script>$('#favorite_{{ forloop.counter }}').hide()</script>
+            {% else %}
+                <script>$('#unfavorite_{{ forloop.counter }}').hide()</script>
 	        {% endif %}
         </li>
     {% endfor %}
     </ul>
-    </form>
 {% include "eventowl/pagination.html"%}
 
 {% else %}
