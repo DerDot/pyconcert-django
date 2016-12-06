@@ -1,5 +1,6 @@
 from datetime import date, timedelta
 
+import icalendar
 import notifications
 from django.contrib.syndication.views import Feed
 from django.core.urlresolvers import reverse
@@ -261,18 +262,19 @@ class NotificationsFeed(Feed):
 class CalendarView(View):
     def get(self, request, uuid):
         user = UserProfile.objects.get(uuid=uuid).user
+        db_events = _subscribed_events(Artist, 'artists', Event, user).filter(city__iexact=user.userprofile.city)
         if 'postgres_disabled' in DATABASES['default']['ENGINE']:
-            events = _subscribed_events(Artist, 'artists', Event, user).order_by('date', 'time', 'venue').distinct('date', 'time', 'venue')
+            events = db_events.order_by('date', 'time', 'venue').distinct('date', 'time', 'venue')
         else:
-            events = []
             seen = set()
-            for event in _subscribed_events(Artist, 'artists', Event, user):
+            events = []
+            for event in db_events:
                 key = (event.date, event.time, event.venue)
                 if key not in seen:
                     events.append(event)
                     seen.add(key)
 
-        cal = None
+        cal = icalendar.Calendar()
         for event in events:
             location = "{}, {}".format(event.venue.title(), event.city.title())
             summary = ", ".join(artist.name.title() for artist in event.artists.all())
