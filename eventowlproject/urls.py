@@ -11,5 +11,5 @@ urlpatterns = [
     url(r'^account/logout/$', logout, {'next_page': '/'}, name='logout'),
     url(r'^account/', include('account.urls')),
     url('^inbox/notifications/', include(notification_urls)),
-    url('', include('social.apps.django_app.urls', 'social')),
+    url('', include('social_django.urls', 'social')),
 ]
