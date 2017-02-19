@@ -75,6 +75,10 @@ class ConcertConnector(EventConnector):
             venue=event.venue.title()
         )
 
+    @staticmethod
+    def _should_notify(user, event):
+        return user.city == event.city
+
 
 class Command(BaseCommand):
     help = 'Update events for all artists. Used by cron.'

@@ -47,6 +47,10 @@ class ReleaseConnector(EventConnector):
     def _description(release):
         return "The book's title is {} and it's going to be released on {}.".format(release.title.title(), release.date)
 
+    @staticmethod
+    def _should_notify(user, event):
+        return True
+
 
 class Command(BaseCommand):
     help = 'Update book releases for all authors. Used by cron.'
