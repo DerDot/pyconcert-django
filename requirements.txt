@@ -7,7 +7,6 @@ bottlenose==1.1.1
 celery==3.1.25
 decorator==4.0.11
 defusedxml==0.5.0rc1
-discogs-client==2.2.1
 dj-database-url==0.4.2
 Django==1.10.5
 django-appconf==1.0.2
