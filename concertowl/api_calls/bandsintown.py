@@ -52,12 +52,11 @@ def _split_datetime(date_time):
     return proper_datetime.date(), proper_datetime.time()
 
 
-@retry(wait_exponential_multiplier=500,
-       wait_exponential_max=8000,
-       stop_max_delay=50000)
+@retry(wait_exponential_multiplier=1*1000,
+       wait_exponential_max=60*1000,
+       stop_max_delay=240*1000)
 def _call(url, args, append_args=tuple()):
-    args = args + [("format", "json"),
-                   ("app_id", "eventowl")]
+    args += [("format", "json"), ("app_id", "eventowl")]
 
     for arg in append_args:
         url_arg = urllib.parse.quote(arg)
