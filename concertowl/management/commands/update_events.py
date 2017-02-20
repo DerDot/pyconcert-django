@@ -77,7 +77,7 @@ class ConcertConnector(EventConnector):
 
     @staticmethod
     def _should_notify(user, event):
-        return user.city == event.city
+        return user.userprofile.city == event.city
 
 
 class Command(BaseCommand):
