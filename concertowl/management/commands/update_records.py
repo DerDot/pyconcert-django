@@ -38,6 +38,10 @@ class RecordConnector(EventConnector):
             date=event.date
         )
 
+    @staticmethod
+    def _should_notify(user, event):
+        return True
+
 
 class Command(BaseCommand):
     help = 'Update records for all artists. Used by cron.'
