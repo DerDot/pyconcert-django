@@ -1,6 +1,7 @@
 from datetime import date, datetime
 
 import requests
+from requests import HTTPError
 from retrying import retry
 
 from eventowl.utils import config
@@ -35,7 +36,8 @@ class Release:
 
 @retry(wait_exponential_multiplier=500,
        wait_exponential_max=8000,
-       stop_max_delay=50000)
+       stop_max_delay=50000,
+       retry_on_exception=lambda exception: exception.response.status_code != 404)
 def _call_api(url):
     response = requests.get(url, headers={'User-Agent': USER_AGENT, 'Accept-Encoding': 'gzip'})
     response.raise_for_status()
@@ -54,9 +56,12 @@ def artist_id_for_name(name):
 
 def records_for_artist_id(artist_id):
     url = "https://api.discogs.com/artists/{aid}/releases?sort=year&sort_order=desc".format(aid=artist_id)
-    response = _call_api(url)
-    records = response.json()[RECORDS_KEY]
-    return [r for r in records if r[TYPE_KEY] == RELEASE_TYPE and r[STATUS_KEY] == ACCEPTED_STATUS]
+    try:
+        response = _call_api(url)
+        records = response.json()[RECORDS_KEY]
+        return [r for r in records if r[TYPE_KEY] == RELEASE_TYPE and r[STATUS_KEY] == ACCEPTED_STATUS]
+    except HTTPError:
+        return []
 
 
 def record_details(record_id):
@@ -101,3 +106,5 @@ def records_for_artists(names):
         records += records_for_artist(name)
     print("Got a total of {} records".format(len(records)))
     return records
+
+records_for_artists(["kreator"])
