@@ -55,6 +55,7 @@ class RecordsView(baseviews.EventsView):
     event_model = Record
     originator_model = Artist
     originator_name = 'artists'
+    override_days_back = 365
 
 
 class ArtistsView(baseviews.OriginatorView):

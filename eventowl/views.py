@@ -36,11 +36,12 @@ class CustomListView(ListView):
         return self._filtered_and_sorted(name_filter, self.request.user)
 
 
-def _subscribed_events(originator_model, originator_name, event_model, user, name_filter=''):
+def _subscribed_events(originator_model, originator_name, event_model, user, name_filter='', override_days_back=None):
     subscribed_originators = originator_model.objects.filter(subscribers=user,
                                                              name__icontains=name_filter)
 
-    oldest_shown = date.today() - timedelta(days=settings.DAYS_BACK)
+    days_back = override_days_back if override_days_back is not None else settings.DAYS_BACK
+    oldest_shown = date.today() - timedelta(days=days_back)
 
     kwargs = {originator_name + '__in': subscribed_originators,
               'date__gte': oldest_shown}
@@ -54,10 +55,11 @@ class EventsView(CustomListView):
     event_model = None
     originator_model = None
     originator_name = None
+    override_days_back = None
 
     def _filtered_and_sorted(self, name_filter, user):
         return _subscribed_events(self.originator_model, self.originator_name, self.event_model,
-                                  user, name_filter)
+                                  user, name_filter, self.override_days_back)
 
 
 class AddView(TemplateView):
