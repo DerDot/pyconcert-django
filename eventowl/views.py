@@ -224,13 +224,13 @@ class ICalView(View):
         start_time = get_params.get('start_time')
         start_date = get_params.get('start_date')
         duration = get_params.get('duration')
+        whole_day = get_params.get('whole_day') == '1'
         location = get_params.get('location')
         summary = get_params.get('summary')
         description = get_params.get('description')
         filename = as_filename(summary) + '.ics' if summary else 'cal.ics'
-
-        istring = ical_event(start_date, start_time, duration,
-                             location, summary, description).to_ical()
+        istring = ical_event(start_date, start_time, duration, location,
+                             summary, description, whole_day=whole_day).to_ical()
 
         response = HttpResponse(istring, content_type='text/calendar')
         response['Filename'] = filename

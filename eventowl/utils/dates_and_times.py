@@ -24,16 +24,18 @@ def add_time_to_datetime(dt, time_obj):
     return datetime.combine(dt, time(hours, minutes))
 
 
-def ical_event(start_date=None, start_time=None, duration=None,
-               location=None, summary=None, description=None, cal=None):
+def ical_event(start_date=None, start_time=None, duration=None, location=None,
+               summary=None, description=None, cal=None, whole_day=False):
     event = icalendar.Event()
 
     if start_date:
         if not (isinstance(start_date, datetime) or isinstance(start_date, date)):
             start_date = datetime_from_timestamp(start_date)
+            if whole_day:
+                start_date = start_date.date()
         if start_time:
             start_date = add_time_to_datetime(start_date, start_time)
-            event.add('dtstart', start_date)
+        event.add('dtstart', start_date)
 
     if duration and start_date is not None:
         duration = int(duration)
