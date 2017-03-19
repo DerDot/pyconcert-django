@@ -1,6 +1,7 @@
 from collections import OrderedDict
 from datetime import date
 
+import logging
 import requests
 
 import bottlenose
@@ -9,6 +10,8 @@ import xmltodict
 from eventowl.utils import config
 from eventowl.utils.string_helpers import normalize
 from eventowl.utils.collection_helpers import as_list
+
+logger = logging.getLogger(__name__)
 
 GOODREADS_URL = 'https://goodreads.com'
 
@@ -139,7 +142,11 @@ def _book_release(author_name):
     author_id = _id_for_author_name(author_name)
     if author_id is None:
         return []
-    author_books = _books_by_author(author_id)
+    try:
+        author_books = _books_by_author(author_id)
+    except Exception as e:
+        logger.error("Couldn't get book releases for {}: {}".format(author_name, e))
+        return []
 
     releases = []
     for book in author_books:
