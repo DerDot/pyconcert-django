@@ -1,6 +1,6 @@
 amqp==1.4.9
 anyjson==0.3.3
-appdirs==1.4.2
+appdirs==1.4.3
 beautifulsoup4==4.5.3
 billiard==3.5.0.2
 bottlenose==1.1.2
@@ -20,7 +20,7 @@ django-notifications-hq==1.2
 django-user-accounts==2.0.0
 django-widget-tweaks==1.4.1
 fake-factory==0.7.2
-Faker==0.7.9
+Faker==0.7.10
 geoip2==2.4.2
 goodreads==0.3.2
 gunicorn==19.7.0
@@ -38,10 +38,10 @@ packaging==16.8
 path.py==8.2.1
 pexpect==4.2.1
 pickleshare==0.7.4
-psycopg2==2.7
+psycopg2==2.7.1
 ptyprocess==0.5.1
 PyJWT==1.4.2
-pyparsing==2.1.10
+pyparsing==2.2.0
 python-dateutil==2.6.0
 python-openid==2.2.5
 python3-openid==3.0.10
