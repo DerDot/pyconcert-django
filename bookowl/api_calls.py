@@ -46,15 +46,26 @@ class Release(object):
 
 
 def _publication_date(book):
-    day = book['publication_day']
-    month = book['publication_month']
-    year = book['publication_year']
+    day = book.get('publication_day')
+    month = book.get('publication_month')
+    year = book.get('publication_year')
     if day is None or month is None or year is None:
         return None
     else:
-        return date(int(year),
-                    int(month),
-                    int(day))
+        year = int(year)
+        month = int(month)
+        day = int(day)
+        return _try_dates(year, month, day)
+
+
+def _try_dates(year, month, day):
+    try:
+        return date(year, month, day)
+    except ValueError:
+        try:
+            return date(year, month, "1")
+        except ValueError:
+            return None
 
 
 def _id_for_author_name(author_name):
