@@ -34,16 +34,9 @@ class Release:
         self.url = url
 
 
-def _not_404(exception):
-    try:
-        return exception.response.status_code != 404
-    except AttributeError:
-        return True
-
 @retry(wait_exponential_multiplier=500,
        wait_exponential_max=8000,
-       stop_max_delay=50000,
-       retry_on_exception=_not_404)
+       stop_max_delay=50000)
 def _call_api(url):
     response = requests.get(url, headers={'User-Agent': USER_AGENT, 'Accept-Encoding': 'gzip'})
     response.raise_for_status()

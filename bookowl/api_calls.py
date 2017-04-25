@@ -63,7 +63,7 @@ def _try_dates(year, month, day):
         return date(year, month, day)
     except ValueError:
         try:
-            return date(year, month, "1")
+            return date(year, month, 1)
         except ValueError:
             return None
 
