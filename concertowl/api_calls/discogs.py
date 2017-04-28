@@ -59,7 +59,7 @@ def records_for_artist_id(artist_id):
         response = _call_api(url)
         records = response.json()[RECORDS_KEY]
         return [r for r in records if r[TYPE_KEY] == RELEASE_TYPE and r[STATUS_KEY] == ACCEPTED_STATUS]
-    except HTTPError:
+    except (HTTPError, TimeoutError):
         return []
 
 
