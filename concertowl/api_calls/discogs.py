@@ -64,9 +64,12 @@ def records_for_artist_id(artist_id):
 
 
 def record_details(record_id):
-    url = "https://api.discogs.com/releases/{}".format(record_id)
-    response = _call_api(url)
-    return response.json()
+    try:
+        url = "https://api.discogs.com/releases/{}".format(record_id)
+        response = _call_api(url)
+        return response.json()
+    except (HTTPError, TimeoutError):
+        return {}
 
 
 def records_for_artist(name):
@@ -80,8 +83,9 @@ def records_for_artist(name):
             if year is None or year < current_year:
                 break
             detailed_record = record_details(record[ID_KEY])
+            if TITLE_KEY not in detailed_record or RELEASED_KEY not in detailed_record:
+                continue
             release_date = detailed_record[RELEASED_KEY]
-
             if len(release_date) != YMD_LENGTH:
                 continue
             release_date = datetime.strptime(release_date, '%Y-%m-%d').date()
@@ -89,7 +93,7 @@ def records_for_artist(name):
                 detailed_record[TITLE_KEY],
                 release_date,
                 [name],
-                detailed_record[URL_KEY]
+                detailed_record.get(URL_KEY)
             )
             records.append(api_record)
     except ValueError:
