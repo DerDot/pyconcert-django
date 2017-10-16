@@ -9,6 +9,8 @@ class Command(BaseCommand):
     help = 'Update previews for bookowl. Used by cron.'
 
     def handle(self, *args, **options):
+        print("Disabled")
+        return
         for preview in previews():
             author = [a.title() for a in preview.authors][0]
             description = '{} by {}'.format(preview.title.title(),
