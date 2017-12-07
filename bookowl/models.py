@@ -14,8 +14,8 @@ class Author(models.Model):
 
 
 class RecommendedAuthor(models.Model):
-    artist = models.ForeignKey(Author, related_name="recommendation")
-    user = models.ForeignKey(User)
+    artist = models.ForeignKey(Author, related_name="recommendation", on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     score = models.FloatField(null=True)
 
 

@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 
 
 class UserProfile(models.Model):
-    user = models.OneToOneField(User, unique=True)
+    user = models.OneToOneField(User, unique=True, on_delete=models.CASCADE)
     city = models.CharField(max_length=200)
     uuid = models.UUIDField(default=uuid.uuid4, editable=False)
 
