@@ -43,7 +43,7 @@ class Preview(base_models.Preview):
 
 
 class Record(models.Model):
-    title = models.CharField(max_length=200)
+    title = models.CharField(max_length=500)
     date = models.DateField()
     details_url = models.URLField()
     artists = models.ManyToManyField(Artist, related_name='releases')
