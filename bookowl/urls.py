@@ -1,6 +1,8 @@
 from django.conf.urls import url
 from bookowl import views
 
+app_name = 'bookowl'
+
 urlpatterns = [
     url(r'^$', views.EventsView.as_view(), name='show_events'),
     url(r'^add_authors/$', views.AddAuthorsView.as_view(), name='add_authors'),

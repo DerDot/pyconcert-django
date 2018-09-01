@@ -14,6 +14,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='recommendedartist',
             name='artist',
-            field=models.ForeignKey(related_name='recommendation', to='concertowl.Artist'),
+            field=models.ForeignKey(
+                related_name='recommendation', to='concertowl.Artist', on_delete=models.CASCADE),
         ),
     ]

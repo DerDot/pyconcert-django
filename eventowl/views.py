@@ -3,7 +3,7 @@ from datetime import date, timedelta
 import icalendar
 import notifications
 from django.contrib.syndication.views import Feed
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.views.generic import TemplateView, ListView, FormView, View
@@ -95,7 +95,8 @@ class OriginatorView(CustomListView):
 
     def get_context_data(self, **kwargs):
         context = CustomListView.get_context_data(self, **kwargs)
-        context['favorites'] = self.originator_model.objects.filter(favoritedby=self.request.user)
+        context['favorites'] = self.originator_model.objects.filter(
+            favoritedby=self.request.user)
         return context
 
     def _filtered_and_sorted(self, name_filter, user):
@@ -104,7 +105,8 @@ class OriginatorView(CustomListView):
         return subscribed_originators.order_by(self.order_by)
 
     def _update_recommendations(self, user):
-        objs = [o.name for o in self.originator_model.objects.filter(favoritedby=user)]
+        objs = [o.name for o in self.originator_model.objects.filter(
+            favoritedby=user)]
         self.update_recommendation_func.delay(objs, user.username)
 
     def _unfavorite(self, originator, user):
@@ -236,8 +238,10 @@ class ICalView(View):
 
         response = HttpResponse(istring, content_type='text/calendar')
         response['Filename'] = filename
-        response['Content-Disposition'] = 'attachment; filename={}'.format(filename)
+        response['Content-Disposition'] = 'attachment; filename={}'.format(
+            filename)
         return response
+
 
 class NotificationsFeed(Feed):
     title = "Whats new on eventowl"
@@ -264,9 +268,11 @@ class NotificationsFeed(Feed):
 class CalendarView(View):
     def get(self, request, uuid):
         user = UserProfile.objects.get(uuid=uuid).user
-        db_events = _subscribed_events(Artist, 'artists', Event, user).filter(city__iexact=user.userprofile.city)
+        db_events = _subscribed_events(Artist, 'artists', Event, user).filter(
+            city__iexact=user.userprofile.city)
         if 'postgres_disabled' in DATABASES['default']['ENGINE']:
-            events = db_events.order_by('date', 'time', 'venue').distinct('date', 'time', 'venue')
+            events = db_events.order_by(
+                'date', 'time', 'venue').distinct('date', 'time', 'venue')
         else:
             seen = set()
             events = []
@@ -279,13 +285,16 @@ class CalendarView(View):
         cal = icalendar.Calendar()
         for event in events:
             location = "{}, {}".format(event.venue.title(), event.city.title())
-            summary = ", ".join(artist.name.title() for artist in event.artists.all())
+            summary = ", ".join(artist.name.title()
+                                for artist in event.artists.all())
             duration = 120
             description = ""
-            cal = ical_event(event.date, event.time, duration, location, summary, description, cal)
+            cal = ical_event(event.date, event.time, duration,
+                             location, summary, description, cal)
 
         filename = 'events.ics'
         response = HttpResponse(cal.to_ical(), content_type='text/calendar')
         response['Filename'] = filename
-        response['Content-Disposition'] = 'attachment; filename={}'.format(filename)
+        response['Content-Disposition'] = 'attachment; filename={}'.format(
+            filename)
         return response

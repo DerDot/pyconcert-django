@@ -3,10 +3,10 @@ import dj_database_url
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
-SECRET_KEY = os.environ["SECRET_KEY"]
-DEBUG = os.environ["DEBUG"] == "True"
+SECRET_KEY = os.getenv("SECRET_KEY", "verysecret")
+DEBUG = os.getenv("DEBUG", "True") == "True"
 
-ALLOWED_HOSTS = os.environ["ALLOWED_HOSTS"].split(',')
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", 'localhost,127.0.0.1').split(',')
 
 INSTALLED_APPS = [
     'django.contrib.auth',
@@ -21,7 +21,6 @@ INSTALLED_APPS = [
     'account',
     'widget_tweaks',
     'social_django',
-    'debug_toolbar',
     'django_js_reverse',
     'eventowl',
     'concertowl',
@@ -34,30 +33,31 @@ APPS_WITH_PREVIEW = (
     'bookowl',
 )
 
-MIDDLEWARE_CLASSES = [
+MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
-    'account.middleware.LocaleMiddleware',
-    'account.middleware.TimezoneMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'eventowlproject.middleware.LoginRequiredMiddleware'
 ]
 
 if not DEBUG:
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTOCOL', 'https')
     SECURE_SSL_REDIRECT = True
-    MIDDLEWARE_CLASSES.insert(0, 'django.middleware.security.SecurityMiddleware')
+    MIDDLEWARE.insert(
+        0, 'django.middleware.security.SecurityMiddleware'
+    )
 
 ROOT_URLCONF = 'eventowlproject.urls'
 
 WSGI_APPLICATION = 'eventowlproject.wsgi.application'
 
-DATABASES = {'default': dj_database_url.config()}
+DATABASES = {
+    'default': dj_database_url.config(default='sqlite:///./db.sqlite')
+}
 
 LANGUAGE_CODE = 'en-us'
 USE_I18N = True
@@ -65,7 +65,7 @@ USE_L10N = True
 TIME_ZONE = 'Europe/Berlin'
 USE_TZ = False
 
-IS_LOCAL = os.environ['IS_LOCAL'] == "True"
+IS_LOCAL = os.getenv('IS_LOCAL', "True") == "True"
 
 TEMPLATE_SETTINGS = ['IS_LOCAL', 'MAX_UPLOAD_SIZE_MB']
 
@@ -97,9 +97,6 @@ TEMPLATES = [
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, "provided_static"),
 )
-
-STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
-
 ACCOUNT_EMAIL_CONFIRMATION_REQUIRED = True
 
 PAGINATION_SIZE = 100
@@ -108,21 +105,25 @@ MAX_UPLOAD_SIZE_MB = 2
 MAX_UPLOAD_SIZE = MAX_UPLOAD_SIZE_MB * 1024 ** 2
 
 EMAIL_SUBJECT_PREFIX = "[EventOwl] "
-DEFAULT_FROM_EMAIL = "eventowl@" +  os.environ['SPARKPOST_SANDBOX_DOMAIN']
+DEFAULT_FROM_EMAIL = "eventowl@{}".format(
+    os.getenv('SPARKPOST_SANDBOX_DOMAIN', 'eventowl.com')
+)
 
 EMAIL_USE_TLS = True
-EMAIL_HOST = os.environ['SPARKPOST_SMTP_HOST']
-EMAIL_PORT = int(os.environ['SPARKPOST_SMTP_PORT'])
-EMAIL_HOST_USER = os.environ['SPARKPOST_SMTP_USERNAME']
-EMAIL_HOST_PASSWORD = os.environ['SPARKPOST_SMTP_PASSWORD']
+EMAIL_HOST = os.getenv('SPARKPOST_SMTP_HOST')
+EMAIL_PORT = int(os.getenv('SPARKPOST_SMTP_PORT', 465))
+EMAIL_HOST_USER = os.getenv('SPARKPOST_SMTP_USERNAME')
+EMAIL_HOST_PASSWORD = os.getenv('SPARKPOST_SMTP_PASSWORD')
 
 DAYS_BACK = 3
 
 AUTHENTICATION_BACKENDS = ('social_core.backends.google.GoogleOAuth2',
                            'django.contrib.auth.backends.ModelBackend')
 
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = os.environ["SOCIAL_AUTH_GOOGLE_OAUTH2_KEY"]
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.environ["SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET"]
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = os.getenv("SOCIAL_AUTH_GOOGLE_OAUTH2_KEY")
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = os.getenv(
+    "SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET"
+)
 
 SOCIAL_AUTH_PIPELINE = (
     'social_core.pipeline.social_auth.social_details',
@@ -142,16 +143,16 @@ LOGIN_URL = '/account/signup'
 LOGIN_REDIRECT_URL = '/'
 
 LOGIN_EXEMPT_URLS = (
-     r'admin/+',
-     r'account/(login|signup|password/reset)/+',
-     r'account/add_profile/.*',
-     r'account/confirm_email/.*',
-     r'login.*',
-     r'complete.*',
-     r'about/+$',
-     r'impressum/+$',
-     r'feed/.*',
-     r'calendar/.*'
+    r'admin/+',
+    r'account/(login|signup|password/reset)/+',
+    r'account/add_profile/.*',
+    r'account/confirm_email/.*',
+    r'login.*',
+    r'complete.*',
+    r'about/+$',
+    r'impressum/+$',
+    r'feed/.*',
+    r'calendar/.*'
 )
 
 SITE_ID = 1
@@ -159,8 +160,6 @@ SITE_ID = 1
 NUMBER_OF_PREVIEW_OBJECTS = 6
 
 NOTIFICATIONS_USE_JSONFIELD = True
-
-WHITENOISE_ROOT = 'provided_static/icons/favicons/'
 
 LOGGING = {
     'version': 1,
@@ -177,13 +176,13 @@ LOGGING = {
             'level': 'DEBUG',
             'class': 'logging.StreamHandler',
             'formatter': 'verbose'
-            },
         },
+    },
     'loggers': {
         'django': {
             'handlers': ['console'],
             'level': 'DEBUG' if DEBUG else 'INFO',
             'propagate': True,
-            },
-        }
+        },
     }
+}

@@ -2,7 +2,7 @@ import csv
 from io import StringIO
 
 from django.views.generic import FormView
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 
 from .models import Book, Author
 from eventowl import views as baseviews
@@ -40,7 +40,8 @@ class AddAuthorsView(baseviews.AddView):
 
 
 def _parse_csv(request):
-    author_stream = StringIO(request.FILES["authors"].read().decode('utf-8-sig'))
+    author_stream = StringIO(
+        request.FILES["authors"].read().decode('utf-8-sig'))
     reader = csv.DictReader(author_stream, delimiter=';')
     try:
         authors = {row['authors'] for row in reader}
