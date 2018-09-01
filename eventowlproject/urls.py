@@ -8,8 +8,7 @@ urlpatterns = [
     url(r'^artists/', include('concertowl.urls', 'concertowl')),
     url(r'^books/', include('bookowl.urls', 'bookowl')),
     url(r'^admin/', admin.site.urls),
-    url(r'^account/logout/$', auth_views.LogoutView, name='logout'),
+    url(r'^account/logout/$', auth_views.LogoutView.as_view(), name='logout'),
     url(r'^account/', include('account.urls')),
     url('^inbox/notifications/', include(notification_urls)),
-    url('', include('social_django.urls', 'social')),
 ]

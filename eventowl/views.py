@@ -11,7 +11,7 @@ from account import views as account_views
 
 from concertowl.models import Event, Artist
 from eventowl.models import UserProfile, VisitorLocation
-from eventowl.forms import SignupForm, SettingsForm, AddProfileForm
+from eventowl.forms import SignupForm, SettingsForm
 from eventowl.utils.dates_and_times import ical_event
 from eventowl.utils.string_helpers import as_filename
 from eventowlproject import settings
@@ -137,20 +137,6 @@ class ImpressumView(TemplateView):
 
 class AboutView(TemplateView):
     template_name = 'eventowl/about.html'
-
-
-class AddProfileView(FormView):
-    form_class = AddProfileForm
-    template_name = 'eventowl/profile.html'
-
-    def form_valid(self, form):
-        backend = self.request.session['backend']
-        self.request.session['city'] = form.cleaned_data['city']
-        return redirect(reverse('social:complete', args=(backend,)))
-
-    def get(self, request):
-        self.request.session['backend'] = self.request.GET.get('backend')
-        return super(AddProfileView, self).get(request)
 
 
 def _get_location(request):

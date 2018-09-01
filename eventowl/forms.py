@@ -23,7 +23,8 @@ class RestrictedFileField(forms.FileField):
             content_type = afile.content_type
             if content_type in self.content_types:
                 if afile._size > self.max_upload_size:
-                    raise ValidationError('Please keep filesize under %s. Current filesize %s' % (filesizeformat(self.max_upload_size), filesizeformat(afile._size)))
+                    raise ValidationError('Please keep filesize under %s. Current filesize %s' % (
+                        filesizeformat(self.max_upload_size), filesizeformat(afile._size)))
             else:
                 raise ValidationError('Filetype not supported.')
         except AttributeError:
@@ -34,11 +35,7 @@ class RestrictedFileField(forms.FileField):
 
 class SignupForm(account_forms.SignupForm):
     city = forms.CharField(max_length=200)
-    
 
-class AddProfileForm(forms.Form):
-    city = forms.CharField(max_length=200, required=True)
-    
 
 class SettingsForm(forms.Form):
     city = forms.CharField(max_length=200)
@@ -52,6 +49,6 @@ class SettingsForm(forms.Form):
         cleaned_data = super(SettingsForm, self).clean()
         email = cleaned_data.get("email")
         if (email.lower() != self.user.email.lower() and
-            User.objects.filter(email__iexact=email).exists()):
+                User.objects.filter(email__iexact=email).exists()):
             raise ValidationError('E-mail already in use.')
         return cleaned_data
