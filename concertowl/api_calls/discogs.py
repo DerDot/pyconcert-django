@@ -38,13 +38,15 @@ class Release:
        wait_exponential_max=8000,
        stop_max_delay=50000)
 def _call_api(url):
-    response = requests.get(url, headers={'User-Agent': USER_AGENT, 'Accept-Encoding': 'gzip'})
+    response = requests.get(
+        url, headers={'User-Agent': USER_AGENT, 'Accept-Encoding': 'gzip'})
     response.raise_for_status()
     return response
 
 
 def artist_id_for_name(name):
-    url = "https://api.discogs.com/database/search?q={name}&type=artist&token={token}".format(name=name, token=TOKEN)
+    url = "https://api.discogs.com/database/search?q={name}&type=artist&token={token}".format(
+        name=name, token=TOKEN)
     response = _call_api(url)
     artists = response.json()[RESULTS_KEY]
     if artists:
@@ -54,7 +56,8 @@ def artist_id_for_name(name):
 
 
 def records_for_artist_id(artist_id):
-    url = "https://api.discogs.com/artists/{aid}/releases?sort=year&sort_order=desc".format(aid=artist_id)
+    url = "https://api.discogs.com/artists/{aid}/releases?sort=year&sort_order=desc".format(
+        aid=artist_id)
     try:
         response = _call_api(url)
         records = response.json()[RECORDS_KEY]
@@ -109,5 +112,3 @@ def records_for_artists(names):
         records += records_for_artist(name)
     print("Got a total of {} records".format(len(records)))
     return records
-
-records_for_artists(["kreator"])
