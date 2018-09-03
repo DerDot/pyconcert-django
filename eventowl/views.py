@@ -3,7 +3,6 @@ from datetime import date, timedelta
 import icalendar
 import notifications
 from django.contrib.syndication.views import Feed
-from django.urls import reverse
 from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.views.generic import TemplateView, ListView, FormView, View

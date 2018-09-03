@@ -5,7 +5,15 @@
 {% for notice in notifications %}
     {% if notice.unread %}
         <li class="list-group-item">
-            <b><a href="{% url notice.data.url_name %}?name_filter={{ notice.data.originator_name }}">{{ notice.verb }}</a></b>
+            <b>
+                {% if notice.data %}
+                <a href="{% url notice.data.url_name %}?name_filter={{ notice.data.originator_name }}">
+                {% else %}
+                <a>
+                {% endif %}
+                    {{ notice.verb }}
+                </a>
+            </b>
             <a href="{% url 'notifications:mark_as_read' notice.slug %}" class="btn btn-xs pull-right" name="read">
                 <span class="fa fa-envelope"></span>
             </a>
