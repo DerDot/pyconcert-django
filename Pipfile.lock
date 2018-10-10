@@ -91,11 +91,11 @@
         },
         "django": {
             "hashes": [
-                "sha256:04f2e423f2e60943c02bd2959174b844f7d1bcd19eabb7f8e4282999958021fd",
-                "sha256:e1cc1cd6b658aa4e052f5f2b148bfda08091d7c3558529708342e37e4e33f72c"
+                "sha256:acdcc1f61fdb0a0c82a1d3bf1879a414e7732ea894a7632af7f6d66ec7ab5bb3",
+                "sha256:efbcad7ebb47daafbcead109b38a5bd519a3c3cd92c6ed0f691ff97fcdd16b45"
             ],
             "index": "pypi",
-            "version": "==2.1.1"
+            "version": "==2.1.2"
         },
         "django-appconf": {
             "hashes": [
@@ -214,11 +214,11 @@
         },
         "icalendar": {
             "hashes": [
-                "sha256:2f7166b36ed52e7ab3f2c6aacabb4300095e10c3a6244a53e2f77410633989ae",
-                "sha256:80362a9f3c2686b88791fdb78c063f33bd96451f7b1b12140c5aad2df81c008c"
+                "sha256:07c2447a1d44cbb27c90b8c6a5c98e890cc1853c6223e2a52195cddec26c6356",
+                "sha256:83f7248b7485ddd29c7d69b706b21c441e34855d9c1d888939fd24aefdd9d19b"
             ],
             "index": "pypi",
-            "version": "==4.0.2"
+            "version": "==4.0.3"
         },
         "idna": {
             "hashes": [
