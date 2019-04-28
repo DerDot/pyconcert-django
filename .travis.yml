@@ -6,6 +6,7 @@ install:
   - pip install pipenv
   - pipenv install --dev --deploy
 script:
+  - ./scripts/get_maxmind.sh
   - python manage.py test
 cache:
   directories:
