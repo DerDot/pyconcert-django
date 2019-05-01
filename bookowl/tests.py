@@ -8,21 +8,13 @@ from nose.tools import assert_list_equal
 from . import api_calls
 from bookowl.models import Author, Book
 from bookowl.views import EventsView
-
-
-class APITestCase(TestCase):
-
-    def test_book_releases(self):
-        authors = ['terry pratchett', 'neil gaiman', 'ben aaronovitch']
-        api_calls.book_releases(authors)
         
         
 class EventsViewTest(TestCase):
     
     def setUp(self):
         self.user = User.objects.create()
-        self.author = Author.objects.create(name="TestAuthor",
-                                            binding="TestBinding")
+        self.author = Author.objects.create(name="TestAuthor")
         self.author.subscribers.add(self.user)
         
         self.book1 = Book.objects.create(title="TestTitle1",

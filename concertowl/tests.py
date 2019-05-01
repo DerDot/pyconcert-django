@@ -7,16 +7,16 @@ from django.test import TestCase
 from django.contrib.auth.models import User
 from nose.tools import assert_equal, assert_list_equal
 
-from . import api_calls
+from concertowl.api_calls import bandsintown
 from concertowl.models import Artist, Event
 from concertowl.views import EventsView
 from eventowl.models import UserProfile
 
 
-ori_urlopen = api_calls.urllib.urlopen
+ori_requests_get = bandsintown.requests.get
 
 
-def urlopen_bit_mock(*args, **kwargs):
+def requests_get_mock(*args, **kwargs):
     response = [{'url': 'test.com',
                  'venue': {'city': 'New York',
                             'name': 'Webster Hall',
@@ -34,23 +34,25 @@ def urlopen_bit_mock(*args, **kwargs):
                                'name': 'ümlautbänd'}],
                  'ticket_status': 'available',
                  'id': 1234567}]
-    file_like = StringIO(json.dumps(response))
-    return file_like
+
+    class Mock():
+        text = json.dumps(response)
+    return Mock()
 
 
 class APITestCase(TestCase):
     def setUp(self):
-        api_calls.urllib.urlopen = urlopen_bit_mock
+        bandsintown.requests.get = requests_get_mock
 
     def tearDown(self):
-        api_calls.urllib.urlopen = ori_urlopen
+        bandsintown.urllib.urlopen = ori_requests_get
 
     def test_events_for_artists_bandsintown(self):
         """Test events_for_artists_bandsintown"""
         artists = ["banda", "bandb", "ümlautbänd"]
         location = "new york"
-        result = api_calls.events_for_artists_bandsintown(artists, location)
-        expected = api_calls.Event(["ümlautbänd"], "Webster Hall", "New York", "United States",
+        result = bandsintown.events_for_artists_bandsintown(artists, location)
+        expected = bandsintown.Event(["ümlautbänd"], "Webster Hall", "New York", "United States",
                                    date(2015, 5, 13), time(19), 'test.com?app_id=concertowl')
         assert_equal(result[0], expected)
 
@@ -58,14 +60,14 @@ class APITestCase(TestCase):
         """Test events_for_artists_bandsintown with unicode"""
         artists = ["ümlautbänd"]
         location = "nüw york"
-        result = api_calls.events_for_artists_bandsintown(artists, location)
-        expected = api_calls.Event(["ümlautbänd"], "Webster Hall", "New York", "United States",
+        result = bandsintown.events_for_artists_bandsintown(artists, location)
+        expected = bandsintown.Event(["ümlautbänd"], "Webster Hall", "New York", "United States",
                                    date(2015, 5, 13), time(19), 'test.com?app_id=concertowl')
         assert_equal(result[0], expected)
 
     def test_event_repr(self):
         """Test utf8 support for event representation."""
-        result = api_calls.Event(["ümlautbänd"], "Webster Hall", "New York", "United States",
+        result = bandsintown.Event(["ümlautbänd"], "Webster Hall", "New York", "United States",
                                  date(2015, 5, 13), time(19), 'test.com?app_id=concertowl')
         expected = "Event by ümlautbänd in Webster Hall (New York, United States)."
         assert_equal(result.__repr__(), expected)
@@ -83,8 +85,7 @@ class EventsViewTest(TestCase):
 
         self.user = User.objects.create()
         user_profile = UserProfile.objects.create(user=self.user,
-                                                  city=USER_CITY,
-                                                  api_region='US')
+                                                  city=USER_CITY)
 
         self.artist = Artist.objects.create(name="TestArtist",
                                             genre="TestGenre")

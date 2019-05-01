@@ -72,7 +72,7 @@ def _id_for_author_name(author_name):
     print("    Getting ID...")
     url_parameters = {'base_url': GOODREADS_URL,
                       'author_name': author_name,
-                      'key': config['GOODREADS_KEY']}
+                      'key': config.get('GOODREADS_KEY')}
 
     url = '{base_url}/api/author_url/{author_name}?key={key}'.format(**url_parameters)
     resp = requests.get(url)
