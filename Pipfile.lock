@@ -129,11 +129,11 @@
         },
         "django-js-reverse": {
             "hashes": [
-                "sha256:6a7cc6fc16c23cfcd5d79022a06465f2a29d0cb91e6ca56c0f0deb178c202c76",
-                "sha256:d2afc68cbe432d7b99966c7a5532f415a8b639342f3786c87cb9add4dd3b30a3"
+                "sha256:2a392d169f44e30b883c30dfcfd917a14167ce8fe196c99d2385b31c90d77aa0",
+                "sha256:8134c2ab6307c945edfa90671ca65e85d6c1754d48566bdd6464be259cc80c30"
             ],
             "index": "pypi",
-            "version": "==0.8.2"
+            "version": "==0.9.1"
         },
         "django-model-utils": {
             "hashes": [
