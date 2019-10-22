@@ -177,10 +177,10 @@
         },
         "email-validator": {
             "hashes": [
-                "sha256:ddc4b5b59fa699bb10127adcf7ad4de78fde4ec539a072b104b8bb16da666ae5"
+                "sha256:e3e6ede1765d7c1e580d2050d834b2689361f7da2d50ce74df6a5968fca7cb13"
             ],
             "index": "pypi",
-            "version": "==1.0.3"
+            "version": "==1.0.5"
         },
         "faker": {
             "hashes": [
