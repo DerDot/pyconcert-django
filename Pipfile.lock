@@ -207,11 +207,11 @@
         },
         "gunicorn": {
             "hashes": [
-                "sha256:0806b5e8a2eb8ba9ac1be65d7b743ec896fc25f5d6cb16c5e051540157b315bb",
-                "sha256:ef69dea4814df95e64e3f40b47b7ffedc6911c5009233be9d01cfd0d14aa3f50"
+                "sha256:676f98d5230dbad6d983827577b3b66d723afacdc8e67a75504c0607f4223511",
+                "sha256:af142bd7f6d176872e18681c847b9c0e79bc98ac24b91f95da04b18a6a77f282"
             ],
             "index": "pypi",
-            "version": "==20.0.0"
+            "version": "==20.0.1"
         },
         "icalendar": {
             "hashes": [
