@@ -184,11 +184,11 @@
         },
         "faker": {
             "hashes": [
-                "sha256:202ad3b2ec16ae7c51c02904fb838831f8d2899e61bf18db1e91a5a582feab11",
-                "sha256:92c84a10bec81217d9cb554ee12b3838c8986ce0b5d45f72f769da22e4bb5432"
+                "sha256:047d4d1791bfb3756264da670d99df13d799bb36e7d88774b1585a82d05dbaec",
+                "sha256:1b1a58961683b30c574520d0c739c4443e0ef6a185c04382e8cc888273dbebed"
             ],
             "index": "pypi",
-            "version": "==3.0.0"
+            "version": "==4.0.0"
         },
         "geoip2": {
             "hashes": [
@@ -249,13 +249,6 @@
             ],
             "index": "pypi",
             "version": "==1.5.2"
-        },
-        "mock": {
-            "hashes": [
-                "sha256:83657d894c90d5681d62155c82bda9c1187827525880eda8ff5df4ec813437c3",
-                "sha256:d157e52d4e5b938c550f39eb2fd15610db062441a9c2747d3dbfa9298211d0f8"
-            ],
-            "version": "==3.0.5"
         },
         "nose": {
             "hashes": [
@@ -344,11 +337,11 @@
         },
         "spotipy": {
             "hashes": [
-                "sha256:ccb0ba5442c63446bcdb601a6a742f9e54a2dead95f1e4feae02bde90303aa95",
-                "sha256:cedd3ccdd8e398efc1725716c60c71fc6b2ece378d1b59ef299435f5e6502b29"
+                "sha256:00820352bcf70ebef68b09e8f44c7b3a376974f9af5afeed9209bdc2244df2ca",
+                "sha256:62c83815ccfb8c7b0cb8b017bae1847a193a3dce3c8fae3eb177209b8aa99451"
             ],
             "index": "pypi",
-            "version": "==2.6.0"
+            "version": "==2.6.1"
         },
         "sqlparse": {
             "hashes": [
@@ -436,11 +429,11 @@
         },
         "faker": {
             "hashes": [
-                "sha256:202ad3b2ec16ae7c51c02904fb838831f8d2899e61bf18db1e91a5a582feab11",
-                "sha256:92c84a10bec81217d9cb554ee12b3838c8986ce0b5d45f72f769da22e4bb5432"
+                "sha256:047d4d1791bfb3756264da670d99df13d799bb36e7d88774b1585a82d05dbaec",
+                "sha256:1b1a58961683b30c574520d0c739c4443e0ef6a185c04382e8cc888273dbebed"
             ],
             "index": "pypi",
-            "version": "==3.0.0"
+            "version": "==4.0.0"
         },
         "flake8": {
             "hashes": [
