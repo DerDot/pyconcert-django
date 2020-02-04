@@ -359,11 +359,11 @@
         },
         "ua-parser": {
             "hashes": [
-                "sha256:3908c19ea0abdcdfe7245366dc03e5b4a8901ec17105bd66ba2ccbe3948dce8a",
-                "sha256:97bbcfc9321a3151d96bb5d62e54270247b0e3be0590a6f2ff12329851718dcb"
+                "sha256:421999f5e852b458833dd9a74765180f75bffb882cb750909c6a4db6748e4887",
+                "sha256:be17242abcd4f3d11543e9b82826f152b47c724623a32bb94ce02e549b0cfce2"
             ],
             "index": "pypi",
-            "version": "==0.8.0"
+            "version": "==0.9.0"
         },
         "urllib3": {
             "hashes": [
