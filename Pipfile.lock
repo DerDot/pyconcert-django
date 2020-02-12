@@ -230,11 +230,11 @@
         },
         "jsonfield": {
             "hashes": [
-                "sha256:a0a7fdee736ff049059409752b045281a225610fecbda9b9bd588ba976493c12",
-                "sha256:beb1cd4850d6d6351c32daefcb826c01757744e9c863228a642f87a1a4acb834"
+                "sha256:11fd69f83a7f44de749f91beea0d41871a893178cdb8ff5564cfeb3e12d7ff9e",
+                "sha256:cded15ff4ae9b77cceb93a6662ecef8fb2baa66f2756ca0e0e02a96fdd527344"
             ],
             "index": "pypi",
-            "version": "==2.0.2"
+            "version": "==2.1.0"
         },
         "kombu": {
             "hashes": [
