@@ -145,11 +145,11 @@
         },
         "django-notifications-hq": {
             "hashes": [
-                "sha256:0332f10d10135301587b2bec9b69984c5484354b1365728939c1f2d8b33a9b16",
-                "sha256:8ed19d2172876d8821e3e3ecf842323bfa09c5a6f9312995bfc9d01708b926e3"
+                "sha256:debeb71b7076b08487b40bf07664d1cc43b9977c4480bbc969b30236dda7a461",
+                "sha256:dfc6f8bd4034ceae91143bc3802ddfb6e276eaec90e63dd23e2584c052561576"
             ],
             "index": "pypi",
-            "version": "==1.5.0"
+            "version": "==1.6.0"
         },
         "django-user-accounts": {
             "hashes": [
@@ -350,6 +350,13 @@
                 "sha256:7c3dca29c022744e95b547e867cee89f4fce4373f3549ccd8797d8eb52cdb873"
             ],
             "version": "==0.3.0"
+        },
+        "swapper": {
+            "hashes": [
+                "sha256:51651018fb027354dd27ff38d5eb47a225d3e642c99b04cff878ae65b1872f64",
+                "sha256:f3bc7b77b76daf46fcbd41fda9b2f599974ac8c564e129f2a9bae73871c4116e"
+            ],
+            "version": "==1.1.2.post1"
         },
         "text-unidecode": {
             "hashes": [
