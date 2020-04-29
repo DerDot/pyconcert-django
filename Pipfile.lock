@@ -153,11 +153,11 @@
         },
         "django-user-accounts": {
             "hashes": [
-                "sha256:417ec5249c5b4e37ae35c983bebb2c60f367eccac633266414dd7f2b19a28147",
-                "sha256:f03af93ce4b4ba0f8f2a45c498c921d2506b2459771dc271c92178cd5fbd20fc"
+                "sha256:191eb543a6e2e35328712b641a9f5f3f0dd05e9aba59817d36b6a640a0bacbc4",
+                "sha256:b58f749be5ce3f3acacc7ebdca39f7760cd49dfdf074aa402cd59ec641b6e830"
             ],
             "index": "pypi",
-            "version": "==3.0.1"
+            "version": "==3.0.2"
         },
         "django-widget-tweaks": {
             "hashes": [
