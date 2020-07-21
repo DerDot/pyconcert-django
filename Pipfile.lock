@@ -246,10 +246,10 @@
         },
         "maxminddb": {
             "hashes": [
-                "sha256:f4d28823d9ca23323d113dc7af8db2087aa4f657fafc64ff8f7a8afda871425b"
+                "sha256:0b942eb6230beb2cfd1f49282ee04c95506cc7f28e1d433e480c2614218f30e4"
             ],
             "index": "pypi",
-            "version": "==1.5.4"
+            "version": "==2.0.0"
         },
         "nose": {
             "hashes": [
