@@ -224,11 +224,11 @@
         },
         "geoip2": {
             "hashes": [
-                "sha256:95da5f6bd9c3f84face1626b56e50e90eb94742bdf131149d024b7775558e61b",
-                "sha256:d966dc32e33d3d16f1021b2c5c1ef13900d46e1e2af45d237d0fbae782fc91b4"
+                "sha256:4afb5d899eac08444e461239c8afb165c90234adc0b5dc952792d9da74c9091b",
+                "sha256:eb052541e5a5fae2ca67ad98d0d8e5baab2caea9b36536da70aeb7449627c774"
             ],
             "index": "pypi",
-            "version": "==4.0.1"
+            "version": "==4.0.2"
         },
         "goodreads": {
             "hashes": [
