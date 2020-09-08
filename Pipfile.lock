@@ -391,12 +391,12 @@
         },
         "spotipy": {
             "hashes": [
-                "sha256:ab10d6525b7f85267c19f0eb5d31b7f15ae7c32d052bc62e21d9e24273d53f3a",
-                "sha256:ba8413d16297df46246a3153299ad8e5f38e1d583e90ea0fc3e4638c0974d67c",
-                "sha256:c8d735b0507f88e45316d40965e1d3afbf387aa0e0a56a43d0a329ab10370f77"
+                "sha256:6ccbf3f99e2ecefa67b4a6b19b1e8f66c3562bd22a4a1ed350b674de8b1b3c4b",
+                "sha256:713082ec298b478722e4bb8b42d1c1a6a9dcb46a21e12b7e5fe1d3c5013dae9e",
+                "sha256:f972e4a92cbe06584ab092b1198d082ee666264819a07b6742abbca6fb4722b6"
             ],
             "index": "pypi",
-            "version": "==2.14.0"
+            "version": "==2.15.0"
         },
         "sqlparse": {
             "hashes": [
