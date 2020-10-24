@@ -16,7 +16,6 @@ INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'djcelery',
     'email_html',
     'account',
     'widget_tweaks',
@@ -137,7 +136,7 @@ SITE_ID = 1
 
 NUMBER_OF_PREVIEW_OBJECTS = 6
 
-DJANGO_NOTIFICATIONS_CONFIG = { 'USE_JSONFIELD': True}
+DJANGO_NOTIFICATIONS_CONFIG = {'USE_JSONFIELD': True}
 
 LOGGING = {
     'version': 1,
@@ -159,7 +158,7 @@ LOGGING = {
     'loggers': {
         'django': {
             'handlers': ['console'],
-            'level': 'DEBUG' if DEBUG else 'INFO',
+            'level': 'INFO' if DEBUG else 'INFO',
             'propagate': True,
         },
     }

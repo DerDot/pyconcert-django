@@ -25,7 +25,7 @@ class ConcertConnector(EventConnector):
 
         all_api_events = []
         for city in cities:
-            print(("Updating events for", city))
+            print("Updating events for", city)
             api_events = events_for_artists_bandsintown(artists, city)
             all_api_events.extend(api_events)
 
@@ -52,15 +52,15 @@ class ConcertConnector(EventConnector):
                                          venue=api_event.venue,
                                          time=api_event.time)
             should_save = True
-        
+
         return event, should_save
-    
+
     def _message_for_originator(self, artist):
         return "New concert by {}".format(artist.name.title())
 
     def _name_for_originator(self, artist):
         return artist.name.lower()
-    
+
     @staticmethod
     def _url_name():
         return 'concertowl:show_events'

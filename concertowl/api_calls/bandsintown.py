@@ -56,7 +56,7 @@ def _split_datetime(date_time):
        wait_exponential_max=60*1000,
        stop_max_delay=240*1000)
 def _call(url, args, append_args=tuple()):
-    args += [("format", "json"), ("app_id", "eventowl")]
+    args += [("app_id", "eventowl")]
 
     for arg in append_args:
         url_arg = urllib.parse.quote(arg)
@@ -97,30 +97,39 @@ def _get_bandsintown_events(artist, city, country=None, image=False):
         location = country
     else:
         location = '{},{}'.format(city, country)
-    args = [("location", location), ('api_version', '2.0')]
     ret = []
-    api_url = "http://api.bandsintown.com/artists/{}/events/search.json".format(artist.decode('utf8'))
-    resp = _call(api_url, args)
+    api_url = "https://rest.bandsintown.com/artists/{}/events/".format(
+        artist.decode('utf8'))
+    resp = _call(api_url, [])
     if resp:
         for event in resp:
-            artists = [normalize(artist['name']) for artist in event['artists']]
+            artists = [normalize(artist)
+                       for artist in event['lineup']]
             image_url = None
             if image:
                 artist = _bandsintown_artist(artists[0])
                 if artist is not None:
                     image_url = artist.get('thumb_url')
             venue = normalize(event["venue"]["name"])
-            city = normalize(event["venue"]["city"])
+            event_city = normalize(event["venue"]["city"])
+            if event_city != city.decode('utf8'):
+                continue
             country = normalize(event["venue"]["country"])
             date, time = _split_datetime(event["datetime"])
-            url = event["ticket_url"] if event["ticket_url"] else 'http://www.bandsintown.com'
+            ticket = {}
+            for offer in event.get("offers", []):
+                if offer.get("type") == "Tickets":
+                    ticket = offer
+                    break
+            event_url = event.get("url", 'http://www.bandsintown.com')
+            ticket_url = ticket.get("url", event_url)
             result_event = Event(artists,
                                  venue,
-                                 city,
+                                 event_city,
                                  country,
                                  date,
                                  time,
-                                 url,
+                                 ticket_url,
                                  image_url)
             ret.append(result_event)
     return ret
@@ -147,7 +156,8 @@ def events_for_artists_bandsintown(artists, city):
             all_events.append(event)
 
         if not idx % 50:
-            print("Finished {} artists. Found {} events in total.".format(idx+1, len(all_events)))
+            print("Finished {} artists. Found {} events in total.".format(
+                idx+1, len(all_events)))
     return all_events
 
 
