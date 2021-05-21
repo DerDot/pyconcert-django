@@ -8,6 +8,7 @@ autopep8 = "*"
 pylint = "*"
 flake8 = "*"
 mixer = "*"
+mypy = "*"
 
 [packages]
 anyjson = "*"

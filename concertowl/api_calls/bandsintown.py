@@ -91,12 +91,6 @@ def _bandsintown_artist(name):
 
 
 def _get_bandsintown_events(artist, city, country=None, image=False):
-    if country is None:
-        location = city
-    elif city is None:
-        location = country
-    else:
-        location = '{},{}'.format(city, country)
     ret = []
     api_url = "https://rest.bandsintown.com/artists/{}/events/".format(
         artist.decode('utf8'))
