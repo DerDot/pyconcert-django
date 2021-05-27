@@ -8,7 +8,7 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'eventowlproject.settings')
 
 BROKER_URL = os.environ.get('REDIS_TLS_URL', 'localhost')
 
-app = Celery('eventowlproject', broker=BROKER_URL,
+app = Celery('eventowlproject', broker=BROKER_URL + '?ssl_cert_reqs=optional',
              backend='djcelery.backends.database:DatabaseBackend')
 app.autodiscover_tasks(lambda: settings.INSTALLED_APPS)
 app.conf.update(
