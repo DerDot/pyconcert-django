@@ -6,9 +6,9 @@ from celery import Celery
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'eventowlproject.settings')
 
 
-BROKER_URL = os.environ.get('REDIS_TLS_URL', 'localhost')
+BROKER_URL = os.environ.get('REDISTOGO_URL', 'localhost')
 
-app = Celery('eventowlproject', broker=BROKER_URL + '?ssl_cert_reqs=optional',
+app = Celery('eventowlproject', broker=BROKER_URL,
              backend='djcelery.backends.database:DatabaseBackend')
 app.autodiscover_tasks(lambda: settings.INSTALLED_APPS)
 app.conf.update(
