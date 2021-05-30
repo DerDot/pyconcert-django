@@ -6,7 +6,7 @@ from celery import Celery
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'eventowlproject.settings')
 
 
-BROKER_URL = os.environ.get('REDISTOGO_URL', 'localhost')
+BROKER_URL = os.environ.get('REDIS_URL', 'localhost')
 
 app = Celery('eventowlproject', broker=BROKER_URL,
              backend='django-db')
