@@ -44,6 +44,7 @@ Django = "*"
 email_validator = "*"
 Faker = "*"
 Goodreads = "*"
+django-celery-results = "*"
 
 [requires]
 python_version = "3"

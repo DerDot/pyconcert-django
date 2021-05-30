@@ -33,7 +33,7 @@ def spotify(request):
         token_info = spotify_token_from_code(code)
         request.session["token"] = token_info["access_token"]
         request.session["refresh_token"] = token_info["refresh_token"]
-        spotify_artists.delay(token_info["access_token"], request.user)
+        spotify_artists.delay(token_info["access_token"])
         return render(request, 'concertowl/spotify_running.html')
 
     return render(request, 'concertowl/spotify.html')
@@ -46,7 +46,8 @@ class EventsView(baseviews.EventsView):
     originator_name = 'artists'
 
     def _filtered_and_sorted(self, name_filter, user):
-        pre_filtered = super(self.__class__, self)._filtered_and_sorted(name_filter, user)
+        pre_filtered = super(self.__class__, self)._filtered_and_sorted(
+            name_filter, user)
         return pre_filtered.filter(city__iexact=user.userprofile.city)
 
 
@@ -78,7 +79,7 @@ class RecommendationsView(baseviews.CustomListView):
 
     def _filtered_and_sorted(self, name_filter, user):
         _recommended_artists = Artist.objects.filter(recommendedtos=user,
-                                                    name__icontains=name_filter).exclude(subscribers=user)
+                                                     name__icontains=name_filter).exclude(subscribers=user)
         return _recommended_artists.order_by('-recommendation__score')
 
 

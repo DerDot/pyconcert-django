@@ -24,6 +24,7 @@ INSTALLED_APPS = [
     'concertowl',
     'bookowl',
     'notifications',
+    'django_celery_results',
 ]
 
 APPS_WITH_PREVIEW = (
